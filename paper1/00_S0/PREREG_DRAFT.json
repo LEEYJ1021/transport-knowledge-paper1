@@ -175,15 +175,25 @@
   "risk_name": {
     "n_variants": 7,
     "per_year": 12,
+    "variant_defs": {
+      "ambig_only": "ambiguous만 제외",
+      "base": "ambiguous 또는 heavy(현재 F2, 위험군 1,431개)",
+      "both_only": "ambiguous이면서 heavy인 이름만 제외(90개)",
+      "heavy_20": "ambiguous 또는 연 20편 이상",
+      "heavy_8": "ambiguous 또는 연 8편 이상",
+      "heavy_only": "heavy(연 12편 이상)만 제외",
+      "none": "위험군 제외 안 함(상한 대조군)"
+    },
     "variant_names": [
-      "...",
-      "...",
-      "...",
-      "...",
-      "...",
-      "...",
-      "..."
-    ]
+      "base",
+      "ambig_only",
+      "heavy_only",
+      "both_only",
+      "heavy_8",
+      "heavy_20",
+      "none"
+    ],
+    "variant_note": "변형 7종은 S2 결과를 보기 전에 정했다. 임계값 8과 20은 임의 값이다. 구성 근거: EDA의 ambiguous/heavy 플래그(1,431개 = ambiguous만 1,223 + heavy만 118 + 둘 다 90)."
   },
   "seed": 2026,
   "version": "v4",
