@@ -1,0 +1,5 @@
+{
+  "primary": "NONE",
+  "tol": null,
+  "fallback": "continuous_exposure"
+}

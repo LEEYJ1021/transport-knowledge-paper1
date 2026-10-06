@@ -1,0 +1,197 @@
+{
+  "K_sensitivity": {
+    "K": [
+      75,
+      150,
+      300
+    ],
+    "seeds": 5
+  },
+  "bootstrap_B": 2000,
+  "country_acc": 0.95,
+  "country_cov_min": 0.8,
+  "decomposition": {
+    "primary": "griliches_regev_midpoint",
+    "sensitivity": [
+      "fhk",
+      "price"
+    ]
+  },
+  "event": {
+    "E1_corpus_entry": "F1X(제외 pid 반영)에서 저널의 첫 논문 연도",
+    "E1_founding": "출판사·서지 기록의 창간(또는 현 제호 개명) 연도: 카탈로그 founding/founding_oa 최소 연도",
+    "catalog_file": "events_catalog.csv",
+    "catalog_rule": "저널 연혁 검색으로 만든 사건 목록(결과를 본 뒤 작성). 게이트 대상 사건은 confidence=high AND source_url 존재, low는 전면 제외",
+    "circ_shift_B": 2000,
+    "cp_range": [
+      2003,
+      2023
+    ],
+    "entry_event_def": "entry_year_ruling(override)이 있으면 그 값, 없으면 E1_corpus_entry. 두 E1이 다르고 판정이 없으면 pending",
+    "event_groups": {
+      "apc_start": "C",
+      "first_issue_oa": "C",
+      "first_jif": "D",
+      "founding": "A",
+      "founding_oa": "A",
+      "indexing": "D",
+      "publisher_change": "C",
+      "rename": "B",
+      "rename_publisher": "B",
+      "split": "B"
+    },
+    "event_min_year": 2000,
+    "exclude_rule": "REVIEW_*_prefounding.csv의 decision==EXCLUDE 및 exclude_pids.csv. 사건·노출 계산과 이후 모든 파생 분석에서 제외(원본 F 파일은 불변)",
+    "exposure_def": "고정 저널 밖 저널들의 연도별 코퍼스 비중 합",
+    "exposure_test": {
+      "null": "exposure 시계열 순환이동 2000회(자기상관 보존)",
+      "outcome": "d_all(t) - d_fixed(t): 전체 표본과 고정 저널 표본의 주제 분포(topic150 비중) 연간 JS 거리 차 = 구성 유발 변화",
+      "sensitivity": "사건 시나리오 S-A/B/C/E 대조(tol 0과 ±1), 사건 크기 가중",
+      "series": "EXPOSURE_nonfixed.csv: 연도별 비고정 저널 비중 합",
+      "stat": "Spearman(Δexposure(t), outcome(t)), t=2001~2025"
+    },
+    "fixed_venues": [
+      "AAP",
+      "CACIE",
+      "JTG",
+      "T-ITS",
+      "TR-A",
+      "TR-B",
+      "TR-C",
+      "TR-D",
+      "TR-E",
+      "TR-F",
+      "TRR",
+      "TransSci",
+      "TranspPol",
+      "TranspRev"
+    ],
+    "fixed_venues_rule": "F1X 기준 2000~2025 매년 논문이 1편 이상 있는 저널(손으로 추가·삭제 금지)",
+    "gate_scenario_when_none": "S-B",
+    "large_event_consecutive_years": 2,
+    "large_event_threshold": 0.05,
+    "primary_candidates": [
+      "S-A",
+      "S-B",
+      "S-C"
+    ],
+    "primary_conf": "high",
+    "primary_fallback": "continuous_exposure",
+    "primary_rule": {
+      "max_chance_hit": 0.5,
+      "min_unique_years": 6,
+      "pick": "조건을 만족하는 후보 중 고유 사건 연도 수 최대, 동률이면 더 작은 시나리오",
+      "tol_order": [
+        1,
+        0
+      ]
+    },
+    "require_source_url": true,
+    "scenarios": {
+      "S-A 창간": "A",
+      "S-B 창간+구조변경": "AB",
+      "S-C 창간+구조+출판환경": "ABC",
+      "S-D 평판(첫 JIF·색인)": "D",
+      "S-F 합집합": "ABCDX"
+    },
+    "sensitivity_scenarios": [
+      "S-D",
+      "S-E",
+      "S-F"
+    ],
+    "share_thresholds": [
+      0.02,
+      0.05,
+      0.1
+    ],
+    "size_def": "첫 임계 돌파 이후 3년 평균 비중 - 직전 연도 비중",
+    "tol_years": 1
+  },
+  "extended_window": [
+    1995,
+    1999
+  ],
+  "fdr_q": 0.05,
+  "grade_A_min_share": 0.5,
+  "k_shrink": 5,
+  "lens_n": 500,
+  "main_window": [
+    2000,
+    2025
+  ],
+  "manual_n": 200,
+  "multiverse_flip_max": 0.25,
+  "n_topics": 150,
+  "periods": {
+    "P00_04": [
+      2000,
+      2004
+    ],
+    "P05_09": [
+      2005,
+      2009
+    ],
+    "P10_14": [
+      2010,
+      2014
+    ],
+    "P12_14": [
+      2012,
+      2014
+    ],
+    "P15_19": [
+      2015,
+      2019
+    ],
+    "P20_24": [
+      2020,
+      2024
+    ],
+    "P22_24": [
+      2022,
+      2024
+    ],
+    "P95_99": [
+      1995,
+      1999
+    ]
+  },
+  "pool": {
+    "min_active_years": 10,
+    "min_regimes": 2,
+    "min_topic_papers": 3,
+    "strata_min": 25
+  },
+  "primary_weight": "equal",
+  "quadrant_stability_min": 0.7,
+  "regime": {
+    "k_max": 6,
+    "min_len": 3,
+    "penalty": "BIC",
+    "perm_B": 1000,
+    "topic_split_B": 200,
+    "trend_sim_B": 1000
+  },
+  "risk_name": {
+    "n_variants": 7,
+    "per_year": 12,
+    "variant_names": [
+      "...",
+      "...",
+      "...",
+      "...",
+      "...",
+      "...",
+      "..."
+    ]
+  },
+  "seed": 2026,
+  "version": "v4",
+  "weights": [
+    "equal",
+    "inv_n_authors",
+    "first_last",
+    "full_count"
+  ],
+  "wilson_low": 0.9
+}
