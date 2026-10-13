@@ -1,0 +1,15 @@
+{
+  "n_checked": 41,
+  "n_agree": 41,
+  "n_disagree": 0,
+  "n_unjudged": 0,
+  "disagree_pids": [],
+  "wilson": [
+    0.914,
+    1.0
+  ],
+  "includes_forced": true,
+  "checker": "LEEYJ",
+  "method": "출판사 DOI 페이지의 저자 소속란과 대조",
+  "at": "2026-10-13T11:08:19"
+}

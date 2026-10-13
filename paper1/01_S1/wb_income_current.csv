@@ -1,0 +1,297 @@
+iso2,name,income,region
+AW,Aruba,HIC,LCN
+ZH,Africa Eastern and Southern,NA,NA
+AF,Afghanistan,LIC,MEA
+A9,Africa,NA,NA
+ZI,Africa Western and Central,NA,NA
+AO,Angola,LMC,SSF
+AL,Albania,UMC,ECS
+AD,Andorra,HIC,ECS
+1A,Arab World,NA,NA
+AE,United Arab Emirates,HIC,MEA
+AR,Argentina,UMC,LCN
+AM,Armenia,UMC,ECS
+AS,American Samoa,HIC,EAS
+AG,Antigua and Barbuda,HIC,LCN
+AU,Australia,HIC,EAS
+AT,Austria,HIC,ECS
+AZ,Azerbaijan,UMC,ECS
+BI,Burundi,LIC,SSF
+B4,East Asia & Pacific (IBRD-only countries),NA,NA
+B7,Europe & Central Asia (IBRD-only countries),NA,NA
+BE,Belgium,HIC,ECS
+BJ,Benin,LMC,SSF
+BF,Burkina Faso,LIC,SSF
+BD,Bangladesh,LMC,SAS
+BG,Bulgaria,HIC,ECS
+B1,IBRD countries classified as high income,NA,NA
+BH,Bahrain,HIC,MEA
+BS,"Bahamas, The",HIC,LCN
+BA,Bosnia and Herzegovina,UMC,ECS
+B2,Latin America & the Caribbean (IBRD-only countries),NA,NA
+BY,Belarus,UMC,ECS
+BZ,Belize,UMC,LCN
+B3,"Middle East, North Africa, Afghanistan & Pakistan (IBRD only)",NA,NA
+BM,Bermuda,HIC,NAC
+BO,Bolivia,LMC,LCN
+BR,Brazil,UMC,LCN
+BB,Barbados,HIC,LCN
+BN,Brunei Darussalam,HIC,EAS
+B6,Sub-Saharan Africa (IBRD-only countries),NA,NA
+BT,Bhutan,LMC,SAS
+BW,Botswana,UMC,SSF
+C9,Sub-Saharan Africa (IFC classification),NA,NA
+CF,Central African Republic,LIC,SSF
+CA,Canada,HIC,NAC
+C4,East Asia and the Pacific (IFC classification),NA,NA
+B8,Central Europe and the Baltics,NA,NA
+C5,Europe and Central Asia (IFC classification),NA,NA
+CH,Switzerland,HIC,ECS
+JG,Channel Islands,HIC,ECS
+CL,Chile,HIC,LCN
+CN,China,UMC,EAS
+CI,Cote d'Ivoire,LMC,SSF
+C6,Latin America and the Caribbean (IFC classification),NA,NA
+C7,Middle East and North Africa (IFC classification),NA,NA
+CM,Cameroon,LMC,SSF
+CD,"Congo, Dem. Rep.",LIC,SSF
+CG,"Congo, Rep.",LMC,SSF
+CO,Colombia,UMC,LCN
+KM,Comoros,LMC,SSF
+CV,Cabo Verde,UMC,SSF
+CR,Costa Rica,HIC,LCN
+C8,South Asia (IFC classification),NA,NA
+S3,Caribbean small states,NA,NA
+CU,Cuba,UMC,LCN
+CW,Curacao,HIC,LCN
+KY,Cayman Islands,HIC,LCN
+CY,Cyprus,HIC,ECS
+CZ,Czechia,HIC,ECS
+D4,East Asia & Pacific (IDA-eligible countries),NA,NA
+D7,Europe & Central Asia (IDA-eligible countries),NA,NA
+DE,Germany,HIC,ECS
+DJ,Djibouti,LMC,MEA
+D2,Latin America & the Caribbean (IDA-eligible countries),NA,NA
+DM,Dominica,UMC,LCN
+D3,"Middle East, North Africa, Afghanistan & Pakistan (IDA total)",NA,NA
+DK,Denmark,HIC,ECS
+N6,IDA countries in Sub-Saharan Africa not classified as fragile situations ,NA,NA
+DO,Dominican Republic,UMC,LCN
+D5,South Asia (IDA-eligible countries),NA,NA
+F6,IDA countries in Sub-Saharan Africa classified as fragile situations ,NA,NA
+D6,Sub-Saharan Africa (IDA-eligible countries),NA,NA
+DZ,Algeria,UMC,MEA
+4E,East Asia & Pacific (excluding high income),NA,NA
+V2,Early-demographic dividend,NA,NA
+Z4,East Asia & Pacific,NA,NA
+7E,Europe & Central Asia (excluding high income),NA,NA
+Z7,Europe & Central Asia,NA,NA
+EC,Ecuador,UMC,LCN
+EG,"Egypt, Arab Rep.",LMC,MEA
+XC,Euro area,NA,NA
+ER,Eritrea,LIC,SSF
+ES,Spain,HIC,ECS
+EE,Estonia,HIC,ECS
+ET,Ethiopia,LIC,SSF
+EU,European Union,NA,NA
+F2,"Fragility, Conflict, and Violence (FCV) situations",NA,NA
+FI,Finland,HIC,ECS
+FJ,Fiji,UMC,EAS
+FR,France,HIC,ECS
+FO,Faroe Islands,HIC,ECS
+FM,"Micronesia, Fed. Sts.",UMC,EAS
+6F,"IDA countries classified as fragile situations, excluding Sub-Saharan Africa",NA,NA
+GA,Gabon,UMC,SSF
+GB,United Kingdom,HIC,ECS
+GE,Georgia,UMC,ECS
+GH,Ghana,LMC,SSF
+GI,Gibraltar,HIC,ECS
+GN,Guinea,LMC,SSF
+GM,"Gambia, The",LIC,SSF
+GW,Guinea-Bissau,LIC,SSF
+GQ,Equatorial Guinea,UMC,SSF
+GR,Greece,HIC,ECS
+GD,Grenada,UMC,LCN
+GL,Greenland,HIC,ECS
+GT,Guatemala,UMC,LCN
+GU,Guam,HIC,EAS
+GY,Guyana,HIC,LCN
+XD,High income,NA,NA
+HK,"Hong Kong SAR, China",HIC,EAS
+HN,Honduras,LMC,LCN
+XE,Heavily indebted poor countries (HIPC),NA,NA
+HR,Croatia,HIC,ECS
+HT,Haiti,LMC,LCN
+HU,Hungary,HIC,ECS
+ZB,"IBRD, including blend",NA,NA
+XF,IBRD only,NA,NA
+ZT,IDA & IBRD total,NA,NA
+XG,IDA total,NA,NA
+XH,IDA blend,NA,NA
+ID,Indonesia,UMC,EAS
+XI,IDA only,NA,NA
+IM,Isle of Man,HIC,ECS
+IN,India,LMC,SAS
+XY,Not classified,NA,NA
+IE,Ireland,HIC,ECS
+IR,"Iran, Islamic Rep.",UMC,MEA
+IQ,Iraq,UMC,MEA
+IS,Iceland,HIC,ECS
+IL,Israel,HIC,MEA
+IT,Italy,HIC,ECS
+JM,Jamaica,UMC,LCN
+JO,Jordan,UMC,MEA
+JP,Japan,HIC,EAS
+KZ,Kazakhstan,UMC,ECS
+KE,Kenya,LMC,SSF
+KG,Kyrgyz Republic,LMC,ECS
+KH,Cambodia,LMC,EAS
+KI,Kiribati,LMC,EAS
+KN,St. Kitts and Nevis,HIC,LCN
+KR,"Korea, Rep.",HIC,EAS
+KW,Kuwait,HIC,MEA
+XJ,Latin America & Caribbean (excluding high income),NA,NA
+LA,Lao PDR,LMC,EAS
+LB,Lebanon,LMC,MEA
+LR,Liberia,LIC,SSF
+LY,Libya,UMC,MEA
+LC,St. Lucia,UMC,LCN
+ZJ,Latin America & Caribbean ,NA,NA
+XL,Least developed countries: UN classification,NA,NA
+XM,Low income,NA,NA
+LI,Liechtenstein,HIC,ECS
+LK,Sri Lanka,UMC,SAS
+XN,Lower middle income,NA,NA
+XO,Low & middle income,NA,NA
+LS,Lesotho,LMC,SSF
+V3,Late-demographic dividend,NA,NA
+LT,Lithuania,HIC,ECS
+LU,Luxembourg,HIC,ECS
+LV,Latvia,HIC,ECS
+MO,"Macao SAR, China",HIC,EAS
+MF,St. Martin (French part),HIC,LCN
+MA,Morocco,LMC,MEA
+MC,Monaco,HIC,ECS
+MD,Moldova,UMC,ECS
+M1,Middle East (developing only),NA,NA
+MG,Madagascar,LIC,SSF
+MV,Maldives,UMC,SAS
+ZQ,"Middle East, North Africa, Afghanistan & Pakistan",NA,NA
+MX,Mexico,UMC,LCN
+MH,Marshall Islands,UMC,EAS
+XP,Middle income,NA,NA
+MK,North Macedonia,UMC,ECS
+ML,Mali,LIC,SSF
+MT,Malta,HIC,MEA
+MM,Myanmar,LMC,EAS
+XQ,"Middle East, North Africa, Afghanistan & Pakistan (excluding high income)",NA,NA
+ME,Montenegro,UMC,ECS
+MN,Mongolia,UMC,EAS
+MP,Northern Mariana Islands,HIC,EAS
+MZ,Mozambique,LIC,SSF
+MR,Mauritania,LMC,SSF
+MU,Mauritius,UMC,SSF
+MW,Malawi,LIC,SSF
+MY,Malaysia,UMC,EAS
+XU,North America,NA,NA
+M2,North Africa,NA,NA
+NA,Namibia,LMC,SSF
+NC,New Caledonia,HIC,EAS
+NE,Niger,LIC,SSF
+NG,Nigeria,LMC,SSF
+NI,Nicaragua,LMC,LCN
+NL,Netherlands,HIC,ECS
+NO,Norway,HIC,ECS
+NP,Nepal,LMC,SAS
+6X,Non-resource rich Sub-Saharan Africa countries,NA,NA
+NR,Naoero,HIC,EAS
+6N,"IDA countries not classified as fragile situations, excluding Sub-Saharan Africa",NA,NA
+NZ,New Zealand,HIC,EAS
+OE,OECD members,NA,NA
+OM,Oman,HIC,MEA
+S4,Other small states,NA,NA
+PK,Pakistan,LMC,MEA
+PA,Panama,HIC,LCN
+PE,Peru,UMC,LCN
+PH,Philippines,UMC,EAS
+PW,Palau,HIC,EAS
+PG,Papua New Guinea,LMC,EAS
+PL,Poland,HIC,ECS
+V1,Pre-demographic dividend,NA,NA
+PR,Puerto Rico (US),HIC,LCN
+KP,"Korea, Dem. People's Rep.",LIC,EAS
+PT,Portugal,HIC,ECS
+PY,Paraguay,UMC,LCN
+PS,West Bank and Gaza,LMC,MEA
+S2,Pacific island small states,NA,NA
+V4,Post-demographic dividend,NA,NA
+PF,French Polynesia,HIC,EAS
+QA,Qatar,HIC,MEA
+RO,Romania,HIC,ECS
+R6,Resource rich Sub-Saharan Africa countries,NA,NA
+RU,Russian Federation,HIC,ECS
+RW,Rwanda,LIC,SSF
+8S,South Asia,NA,NA
+SA,Saudi Arabia,HIC,MEA
+SD,Sudan,LIC,SSF
+SN,Senegal,LMC,SSF
+SG,Singapore,HIC,EAS
+SB,Solomon Islands,LMC,EAS
+SL,Sierra Leone,LIC,SSF
+SV,El Salvador,UMC,LCN
+SM,San Marino,HIC,ECS
+SO,"Somalia, Fed. Rep.",LIC,SSF
+RS,Serbia,UMC,ECS
+ZF,Sub-Saharan Africa (excluding high income),NA,NA
+SS,South Sudan,LIC,SSF
+ZG,Sub-Saharan Africa ,NA,NA
+S1,Small states,NA,NA
+ST,Sao Tome and Principe,LMC,SSF
+SR,Suriname,UMC,LCN
+SK,Slovak Republic,HIC,ECS
+SI,Slovenia,HIC,ECS
+SE,Sweden,HIC,ECS
+SZ,Eswatini,LMC,SSF
+SX,Sint Maarten (Dutch part),HIC,LCN
+A4,Sub-Saharan Africa excluding South Africa,NA,NA
+SC,Seychelles,HIC,SSF
+SY,Syrian Arab Republic,LIC,MEA
+TC,Turks and Caicos Islands,HIC,LCN
+TD,Chad,LIC,SSF
+T4,East Asia & Pacific (IDA & IBRD countries),NA,NA
+T7,Europe & Central Asia (IDA & IBRD countries),NA,NA
+TG,Togo,LMC,SSF
+TH,Thailand,UMC,EAS
+TJ,Tajikistan,LMC,ECS
+TM,Turkmenistan,UMC,ECS
+T2,Latin America & the Caribbean (IDA & IBRD countries),NA,NA
+TL,Timor-Leste,LMC,EAS
+T3,"Middle East, North Africa, Afghanistan & Pakistan (IDA & IBRD)",NA,NA
+TO,Tonga,UMC,EAS
+T5,South Asia (IDA & IBRD),NA,NA
+T6,Sub-Saharan Africa (IDA & IBRD countries),NA,NA
+TT,Trinidad and Tobago,HIC,LCN
+TN,Tunisia,LMC,MEA
+TR,Turkiye,UMC,ECS
+TV,Tuvalu,UMC,EAS
+TZ,Tanzania,LMC,SSF
+UG,Uganda,LIC,SSF
+UA,Ukraine,UMC,ECS
+XT,Upper middle income,NA,NA
+UY,Uruguay,HIC,LCN
+US,United States,HIC,NAC
+UZ,Uzbekistan,LMC,ECS
+VC,St. Vincent and the Grenadines,UMC,LCN
+VE,"Venezuela, RB",LMC,LCN
+VG,British Virgin Islands,HIC,LCN
+VI,Virgin Islands (U.S.),HIC,LCN
+VN,Viet Nam,UMC,EAS
+VU,Vanuatu,LMC,EAS
+1W,World,NA,NA
+WS,Samoa,UMC,EAS
+XK,Kosovo,UMC,ECS
+A5,Sub-Saharan Africa excluding South Africa and Nigeria,NA,NA
+YE,"Yemen, Rep.",LIC,MEA
+ZA,South Africa,UMC,SSF
+ZM,Zambia,LMC,SSF
+ZW,Zimbabwe,LMC,SSF
