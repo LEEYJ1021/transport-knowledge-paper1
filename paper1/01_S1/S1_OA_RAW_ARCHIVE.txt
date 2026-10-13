@@ -1,0 +1,6 @@
+archive: /home/yjlee/Research/Minnesota_Transport/archive/oa_raw_20261013.tar.gz
+archive_sha256: 3bdc9b92a028da5867086b906299d69a917c5513cc15b0ee0db22ce7f8e630f2
+size_mb: 40.8
+created: 2026-10-13T11:49:16
+missing_dois.txt: 6d208b34f1fa8381ca92bc1a8e0eb10a54f11c8532800c7a58f71c48fb2f4b5d
+works_by_doi.jsonl: b118077eb3ad7d47dfa9e4b96bbe753f4e43eec7afb2598afdd738f22eb87160
