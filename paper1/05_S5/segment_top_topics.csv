@@ -1,0 +1,161 @@
+﻿sample,seg,kind,rank,topic,share,name,between,within,grade_A
+all,2000-2011,top_share,1,72,0.025360930113708956,"transportation, projects, project, highway, construction, as",,,
+all,2000-2011,top_share,2,137,0.023955538520505942,"lane, rural, lanes, freeway, safety, capacity, highways, rou",,,
+all,2000-2011,top_share,3,30,0.018270090711639198,"injury, crashes, crash, injuries, risk, accidents, severity,",,,
+all,2000-2011,top_share,4,107,0.017695157787147055,"signal, intersections, signalized, priority, intersection, t",,,
+all,2000-2011,top_share,5,87,0.017503513478983008,"choice, activity, travel, mode, route, modeling, choices, di",,,
+all,2000-2011,top_share,6,10,0.017184106298709596,"simulation, microsimulation, microscopic, traffic, calibrati",,,
+all,2000-2011,top_share,7,40,0.015587070397342532,"signs, zones, work, flashing, message, red, yellow, evaluati",,,
+all,2000-2011,top_share,8,92,0.01526766321706912,"transit, bus, rapid, ridership, service, rail, dwell, york, ",,,
+all,2000-2011,top_share,9,140,0.015139900344959755,"transport, projects, infrastructure, cost, public, benefit, ",,,
+all,2000-2011,top_share,10,102,0.014564967420467612,"pavement, maintenance, pavements, mechanistic, life, rehabil",,,
+all,2012-2019,top_share,1,75,0.016794876958395426,"travel, satisfaction, behaviour, mode, behavior, social, com",,,
+all,2012-2019,top_share,2,138,0.01623102017801764,"driving, drivers, young, risky, self, anger, older, reported",,,
+all,2012-2019,top_share,3,145,0.014982480164323976,"pedestrian, crossing, pedestrians, crosswalks, street, cross",,,
+all,2012-2019,top_share,4,22,0.014539449836884289,"data, travel, card, gps, trip, patterns, destination, smart,",,,
+all,2012-2019,top_share,5,52,0.014418623383946193,"crashes, crash, severity, injury, safety, factors, rural, pe",,,
+all,2012-2019,top_share,6,83,0.014217245962382698,"safety, road, surrogate, crash, risk, intersections, functio",,,
+all,2012-2019,top_share,7,92,0.0141366949937573,"transit, bus, rapid, ridership, service, rail, dwell, york, ",,,
+all,2012-2019,top_share,8,61,0.013895042087881107,"lane, driving, behavior, changing, driver, drivers, speed, i",,,
+all,2012-2019,top_share,9,137,0.013895042087881107,"lane, rural, lanes, freeway, safety, capacity, highways, rou",,,
+all,2012-2019,top_share,10,78,0.013411736276128721,"driving, driver, drivers, naturalistic, simulator, training,",,,
+all,2020-2025,top_share,1,69,0.018355661488726336,"prediction, graph, traffic, temporal, forecasting, flow, con",,,
+all,2020-2025,top_share,2,50,0.01797211035314101,"charging, electric, stations, battery, scheduling, station, ",,,
+all,2020-2025,top_share,3,66,0.017068025533547027,"connected, vehicles, mixed, automated, traffic, autonomous, ",,,
+all,2020-2025,top_share,4,123,0.016574888359223036,"mobility, shared, maas, service, public, scooter, micromobil",,,
+all,2020-2025,top_share,5,88,0.016547491849538368,"permanent, magnet, motor, flux, machines, machine, synchrono",,,
+all,2020-2025,top_share,6,71,0.015095476836251061,"covid, 19, pandemic, travel, post, mobility, public, spread,",,,
+all,2020-2025,top_share,7,4,0.014848908249089066,"mobility, walking, older, adults, commuting, people, home, w",,,
+all,2020-2025,top_share,8,8,0.01446535711350374,"accessibility, transit, equity, spatial, access, oriented, p",,,
+all,2020-2025,top_share,9,133,0.014191392016657077,"prediction, trajectory, intention, autonomous, driving, lear",,,
+all,2020-2025,top_share,10,22,0.014136598997287746,"data, travel, card, gps, trip, patterns, destination, smart,",,,
+all,2000-2011 -> 2012-2019,top_change,1,72,-0.014083794506153277,"transportation, projects, project, highway, construction, as",-0.010925749668008605,-0.003158044838144668,True
+all,2000-2011 -> 2012-2019,top_change,2,10,-0.01235104818118573,"simulation, microsimulation, microscopic, traffic, calibrati",-0.003349023434377826,-0.009002024746807905,True
+all,2000-2011 -> 2012-2019,top_change,3,147,-0.011883179504087505,"transit, transportation, paratransit, california, north, tra",-0.004861746632991096,-0.007021432871096406,False
+all,2000-2011 -> 2012-2019,top_change,4,137,-0.010060496432624832,"lane, rural, lanes, freeway, safety, capacity, highways, rou",-0.011307130263559586,0.0012466338309347527,True
+all,2000-2011 -> 2012-2019,top_change,5,22,0.00981222356883778,"data, travel, card, gps, trip, patterns, destination, smart,",0.0017404085102637004,0.008071815058574081,True
+all,2000-2011 -> 2012-2019,top_change,6,84,-0.009725083516570835,"bridge, steel, bridges, concrete, girder, reinforced, load, ",-0.004272117317142023,-0.005452966199428812,True
+all,2000-2011 -> 2012-2019,top_change,7,106,-0.008937586393602485,"asphalt, mix, hot, mixtures, warm, superpave, laboratory, mo",-0.005697184522321103,-0.0032404018712813816,True
+all,2000-2011 -> 2012-2019,top_change,8,24,-0.008810044787089829,"management, information, maintenance, geographic, highway, i",-0.002349508780113042,-0.006460536006976787,True
+all,2000-2011 -> 2012-2019,top_change,9,143,-0.008625115632500343,"household, travel, trip, demand, forecasting, activity, tran",-0.0053044521516239646,-0.003320663480876377,True
+all,2000-2011 -> 2012-2019,top_change,10,26,-0.008571077942643458,"concrete, pavement, pavements, overlay, overlays, asphalt, p",-0.003909747821218499,-0.004661330121424958,True
+all,2012-2019 -> 2020-2025,top_change,1,88,0.014573993118216123,"permanent, magnet, motor, flux, machines, machine, synchrono",0.012133512555729385,0.002440480562486742,True
+all,2012-2019 -> 2020-2025,top_change,2,71,0.014088589728433592,"covid, 19, pandemic, travel, post, mobility, public, spread,",-0.0007023551838147078,0.014790944912248298,True
+all,2012-2019 -> 2020-2025,top_change,3,69,0.013885082730016766,"prediction, graph, traffic, temporal, forecasting, flow, con",0.00278759719900096,0.011097485531015801,True
+all,2012-2019 -> 2020-2025,top_change,4,45,0.012311093719787492,"phase, current, control, drives, fault, pmsm, torque, predic",0.008592656762969244,0.003718436956818247,True
+all,2012-2019 -> 2020-2025,top_change,5,133,0.012217893285334833,"prediction, trajectory, intention, autonomous, driving, lear",0.003985928438968269,0.008231964846366562,True
+all,2012-2019 -> 2020-2025,top_change,6,131,0.011935505877544397,"reinforcement, learning, deep, autonomous, control, signal, ",0.0026310769472071187,0.009304428930337276,True
+all,2012-2019 -> 2020-2025,top_change,7,137,-0.010059530732027842,"lane, rural, lanes, freeway, safety, capacity, highways, rou",-0.004619227101619415,-0.005440303630408426,True
+all,2012-2019 -> 2020-2025,top_change,8,29,0.009493939394751905,"3d, object, point, lidar, detection, semantic, depth, monocu",0.003356102222205458,0.006137837172546444,True
+all,2012-2019 -> 2020-2025,top_change,9,123,0.009486403120188034,"mobility, shared, maas, service, public, scooter, micromobil",-0.00032075416067187904,0.009807157280859914,True
+all,2012-2019 -> 2020-2025,top_change,10,50,0.009151779288659963,"charging, electric, stations, battery, scheduling, station, ",0.005873201752835229,0.0032785775358247296,True
+fixed14,2000-2007,top_share,1,72,0.029687323625691386,"transportation, projects, project, highway, construction, as",,,
+fixed14,2000-2007,top_share,2,137,0.026639575572863755,"lane, rural, lanes, freeway, safety, capacity, highways, rou",,,
+fixed14,2000-2007,top_share,3,10,0.02133423636979343,"simulation, microsimulation, microscopic, traffic, calibrati",,,
+fixed14,2000-2007,top_share,4,87,0.019189524777062875,"choice, activity, travel, mode, route, modeling, choices, di",,,
+fixed14,2000-2007,top_share,5,107,0.018963765662038605,"signal, intersections, signalized, priority, intersection, t",,,
+fixed14,2000-2007,top_share,6,30,0.01885088610452647,"injury, crashes, crash, injuries, risk, accidents, severity,",,,
+fixed14,2000-2007,top_share,7,147,0.01839936787447793,"transit, transportation, paratransit, california, north, tra",,,
+fixed14,2000-2007,top_share,8,40,0.018286488316965797,"signs, zones, work, flashing, message, red, yellow, evaluati",,,
+fixed14,2000-2007,top_share,9,143,0.017044813184332316,"household, travel, trip, demand, forecasting, activity, tran",,,
+fixed14,2000-2007,top_share,10,84,0.016931933626820182,"bridge, steel, bridges, concrete, girder, reinforced, load, ",,,
+fixed14,2008-2014,top_share,1,137,0.020442282848240748,"lane, rural, lanes, freeway, safety, capacity, highways, rou",,,
+fixed14,2008-2014,top_share,2,72,0.01892241051751653,"transportation, projects, project, highway, construction, as",,,
+fixed14,2008-2014,top_share,3,138,0.018162474352154418,"driving, drivers, young, risky, self, anger, older, reported",,,
+fixed14,2008-2014,top_share,4,83,0.017022570104111255,"safety, road, surrogate, crash, risk, intersections, functio",,,
+fixed14,2008-2014,top_share,5,30,0.01671859563796641,"injury, crashes, crash, injuries, risk, accidents, severity,",,,
+fixed14,2008-2014,top_share,6,75,0.016414621171821568,"travel, satisfaction, behaviour, mode, behavior, social, com",,,
+fixed14,2008-2014,top_share,7,104,0.016034653089140514,"equilibrium, assignment, user, dynamic, stochastic, network,",,,
+fixed14,2008-2014,top_share,8,3,0.015730678622995667,"pricing, congestion, toll, road, tradable, schemes, tolls, w",,,
+fixed14,2008-2014,top_share,9,87,0.015502697773387036,"choice, activity, travel, mode, route, modeling, choices, di",,,
+fixed14,2008-2014,top_share,10,92,0.014438787141880082,"transit, bus, rapid, ridership, service, rail, dwell, york, ",,,
+fixed14,2015-2019,top_share,1,22,0.01790769635920732,"data, travel, card, gps, trip, patterns, destination, smart,",,,
+fixed14,2015-2019,top_share,2,138,0.017051813812627558,"driving, drivers, young, risky, self, anger, older, reported",,,
+fixed14,2015-2019,top_share,3,145,0.0161959312660478,"pedestrian, crossing, pedestrians, crosswalks, street, cross",,,
+fixed14,2015-2019,top_share,4,52,0.0159325827901771,"crashes, crash, severity, injury, safety, factors, rural, pe",,,
+fixed14,2015-2019,top_share,5,75,0.015603397195338733,"travel, satisfaction, behaviour, mode, behavior, social, com",,,
+fixed14,2015-2019,top_share,6,78,0.014615840410823623,"driving, driver, drivers, naturalistic, simulator, training,",,,
+fixed14,2015-2019,top_share,7,61,0.01422081769701758,"lane, driving, behavior, changing, driver, drivers, speed, i",,,
+fixed14,2015-2019,top_share,8,67,0.014154980578049904,"driving, driver, cognitive, drivers, distraction, fatigue, w",,,
+fixed14,2015-2019,top_share,9,104,0.013035749555599448,"equilibrium, assignment, user, dynamic, stochastic, network,",,,
+fixed14,2015-2019,top_share,10,8,0.012969912436631773,"accessibility, transit, equity, spatial, access, oriented, p",,,
+fixed14,2020-2025,top_share,1,69,0.023075453677172876,"prediction, graph, traffic, temporal, forecasting, flow, con",,,
+fixed14,2020-2025,top_share,2,66,0.018299904489016236,"connected, vehicles, mixed, automated, traffic, autonomous, ",,,
+fixed14,2020-2025,top_share,3,50,0.017268385864374403,"charging, electric, stations, battery, scheduling, station, ",,,
+fixed14,2020-2025,top_share,4,33,0.017191977077363897,"ride, sharing, demand, ridesharing, services, matching, bike",,,
+fixed14,2020-2025,top_share,5,8,0.01562559694364852,"accessibility, transit, equity, spatial, access, oriented, p",,,
+fixed14,2020-2025,top_share,6,22,0.015319961795606496,"data, travel, card, gps, trip, patterns, destination, smart,",,,
+fixed14,2020-2025,top_share,7,4,0.013677172874880612,"mobility, walking, older, adults, commuting, people, home, w",,,
+fixed14,2020-2025,top_share,8,133,0.013600764087870105,"prediction, trajectory, intention, autonomous, driving, lear",,,
+fixed14,2020-2025,top_share,9,131,0.013486150907354345,"reinforcement, learning, deep, autonomous, control, signal, ",,,
+fixed14,2020-2025,top_share,10,71,0.013486150907354345,"covid, 19, pandemic, travel, post, mobility, public, spread,",,,
+fixed14,2000-2007 -> 2008-2014,top_change,1,147,-0.013155808333479378,"transit, transportation, paratransit, california, north, tra",-0.004112173824732713,-0.009043634508746665,False
+fixed14,2000-2007 -> 2008-2014,top_change,2,10,-0.011835034302767063,"simulation, microsimulation, microscopic, traffic, calibrati",-0.0030573427689367014,-0.00877769153383036,True
+fixed14,2000-2007 -> 2008-2014,top_change,3,84,-0.01123241238660436,"bridge, steel, bridges, concrete, girder, reinforced, load, ",-0.004140458188092931,-0.00709195419851143,True
+fixed14,2000-2007 -> 2008-2014,top_change,4,24,-0.010885770322688762,"management, information, maintenance, geographic, highway, i",-0.0023861446973998273,-0.008499625625288935,True
+fixed14,2000-2007 -> 2008-2014,top_change,5,72,-0.010764913108174855,"transportation, projects, project, highway, construction, as",-0.008847677197009352,-0.0019172359111655048,True
+fixed14,2000-2007 -> 2008-2014,top_change,6,96,-0.009780530281037158,"soil, soils, pile, piles, earth, stabilized, reinforced, pen",-0.0031801216575740015,-0.006600408623463157,False
+fixed14,2000-2007 -> 2008-2014,top_change,7,93,-0.008901049354409822,"pavement, quality, assurance, specifications, construction, ",-0.0037253006124527512,-0.00517574874195707,True
+fixed14,2000-2007 -> 2008-2014,top_change,8,143,-0.008761508981885326,"household, travel, trip, demand, forecasting, activity, tran",-0.004675678976701881,-0.004085830005183443,True
+fixed14,2000-2007 -> 2008-2014,top_change,9,106,-0.008383762633788632,"asphalt, mix, hot, mixtures, warm, superpave, laboratory, mo",-0.004908592777347384,-0.0034751698564412475,True
+fixed14,2000-2007 -> 2008-2014,top_change,10,146,-0.008265101419481665,"concrete, reinforced, fiber, polymer, bridge, strength, ceme",-0.0034967393930532224,-0.0047683620264284445,True
+fixed14,2008-2014 -> 2015-2019,top_change,1,22,0.010688302788267278,"data, travel, card, gps, trip, patterns, destination, smart,",0.0016180271805860385,0.009070275607681241,True
+fixed14,2008-2014 -> 2015-2019,top_change,2,72,-0.00904684267236543,"transportation, projects, project, highway, construction, as",-0.005421875534383794,-0.003624967137981639,True
+fixed14,2008-2014 -> 2015-2019,top_change,3,50,0.008249232405185056,"charging, electric, stations, battery, scheduling, station, ",0.0017673418787875642,0.00648189052639749,True
+fixed14,2008-2014 -> 2015-2019,top_change,4,137,-0.00793323024438269,"lane, rural, lanes, freeway, safety, capacity, highways, rou",-0.006545337111482213,-0.001387893132900481,True
+fixed14,2008-2014 -> 2015-2019,top_change,5,33,0.007666494601588894,"ride, sharing, demand, ridesharing, services, matching, bike",0.0010537657862900473,0.006612728815298847,True
+fixed14,2008-2014 -> 2015-2019,top_change,6,66,0.0074332553879681755,"connected, vehicles, mixed, automated, traffic, autonomous, ",0.0009245952583385195,0.006508660129629655,True
+fixed14,2008-2014 -> 2015-2019,top_change,7,3,-0.0067768304433920065,"pricing, congestion, toll, road, tradable, schemes, tolls, w",0.0021882198074259927,-0.008965050250818,True
+fixed14,2008-2014 -> 2015-2019,top_change,8,30,-0.006711353554879961,"injury, crashes, crash, injuries, risk, accidents, severity,",-0.002247857170869371,-0.004463496384010595,True
+fixed14,2008-2014 -> 2015-2019,top_change,9,10,-0.005614812047933605,"simulation, microsimulation, microscopic, traffic, calibrati",-0.0011967381821288237,-0.004418073865804782,True
+fixed14,2008-2014 -> 2015-2019,top_change,10,132,-0.0053322312682927316,"child, injury, sleep, fatigue, restraint, belt, children, sa",-0.0007354904798156228,-0.004596740788477109,False
+fixed14,2015-2019 -> 2020-2025,top_change,1,69,0.01695260161317919,"prediction, graph, traffic, temporal, forecasting, flow, con",0.005532350968952887,0.011420250644226308,True
+fixed14,2015-2019 -> 2020-2025,top_change,2,71,0.012696105479742257,"covid, 19, pandemic, travel, post, mobility, public, spread,",-0.0013160575004957898,0.014012162980238045,True
+fixed14,2015-2019 -> 2020-2025,top_change,3,131,0.012630268360774584,"reinforcement, learning, deep, autonomous, control, signal, ",0.002214559718802688,0.010415708641971895,True
+fixed14,2015-2019 -> 2020-2025,top_change,4,133,0.01136230204296919,"prediction, trajectory, intention, autonomous, driving, lear",0.003263100453882224,0.008099201589086967,True
+fixed14,2015-2019 -> 2020-2025,top_change,5,113,0.009523676933295679,"crack, detection, pavement, segmentation, images, deep, defe",0.0025917407242782645,0.006931936209017414,True
+fixed14,2015-2019 -> 2020-2025,top_change,6,29,0.009230077338807059,"3d, object, point, lidar, detection, semantic, depth, monocu",0.003104393160804097,0.0061256841780029615,True
+fixed14,2015-2019 -> 2020-2025,top_change,7,20,0.009050570264523732,"privacy, secure, security, authentication, preserving, schem",0.003927012774529327,0.00512355748999441,True
+fixed14,2015-2019 -> 2020-2025,top_change,8,99,0.008438568025684396,"vehicular, edge, computing, offloading, internet, resource, ",0.004741695123596524,0.003696872902087874,True
+fixed14,2015-2019 -> 2020-2025,top_change,9,112,0.008438356743239573,"reinforcement, learning, deep, agent, multi, scheduling, del",0.001084611096788676,0.007353745646450899,True
+fixed14,2015-2019 -> 2020-2025,top_change,10,137,-0.00777170780920667,"lane, rural, lanes, freeway, safety, capacity, highways, rou",-0.0031828548051085355,-0.0045888530040981345,True
+within,2000-2008,top_share,1,105,0.02352700843941829,"lidar, detection, tracking, roadside, map, point, camera, vi",,,
+within,2000-2008,top_share,2,3,0.019589178736127227,"pricing, congestion, toll, road, tradable, schemes, tolls, w",,,
+within,2000-2008,top_share,3,30,0.019368810419430133,"injury, crashes, crash, injuries, risk, accidents, severity,",,,
+within,2000-2008,top_share,4,140,0.01841981780984423,"transport, projects, infrastructure, cost, public, benefit, ",,,
+within,2000-2008,top_share,5,56,0.01717351160122226,"loop, detection, vehicle, detector, sensors, video, data, de",,,
+within,2000-2008,top_share,6,51,0.016299185192771154,"driving, driver, following, human, steering, assistance, col",,,
+within,2000-2008,top_share,7,104,0.016191667981623158,"equilibrium, assignment, user, dynamic, stochastic, network,",,,
+within,2000-2008,top_share,8,128,0.015602467757322876,"scheduling, problem, aircraft, airline, crew, assignment, ma",,,
+within,2000-2008,top_share,9,10,0.015547933986581929,"simulation, microsimulation, microscopic, traffic, calibrati",,,
+within,2000-2008,top_share,10,107,0.015531843620576637,"signal, intersections, signalized, priority, intersection, t",,,
+within,2009-2014,top_share,1,75,0.019156808819632245,"travel, satisfaction, behaviour, mode, behavior, social, com",,,
+within,2009-2014,top_share,2,138,0.016182391492357933,"driving, drivers, young, risky, self, anger, older, reported",,,
+within,2009-2014,top_share,3,104,0.015619778081786195,"equilibrium, assignment, user, dynamic, stochastic, network,",,,
+within,2009-2014,top_share,4,137,0.015279995769496579,"lane, rural, lanes, freeway, safety, capacity, highways, rou",,,
+within,2009-2014,top_share,5,3,0.01493450436447659,"pricing, congestion, toll, road, tradable, schemes, tolls, w",,,
+within,2009-2014,top_share,6,67,0.014240551988505015,"driving, driver, cognitive, drivers, distraction, fatigue, w",,,
+within,2009-2014,top_share,7,83,0.014153596247189875,"safety, road, surrogate, crash, risk, intersections, functio",,,
+within,2009-2014,top_share,8,74,0.01397633890827354,"airport, airline, airports, air, airlines, competition, mark",,,
+within,2009-2014,top_share,9,92,0.013927943852738996,"transit, bus, rapid, ridership, service, rail, dwell, york, ",,,
+within,2009-2014,top_share,10,72,0.013657134708922337,"transportation, projects, project, highway, construction, as",,,
+within,2015-2019,top_share,1,22,0.0165186857476996,"data, travel, card, gps, trip, patterns, destination, smart,",,,
+within,2015-2019,top_share,2,52,0.016496939779358455,"crashes, crash, severity, injury, safety, factors, rural, pe",,,
+within,2015-2019,top_share,3,75,0.015646325039526808,"travel, satisfaction, behaviour, mode, behavior, social, com",,,
+within,2015-2019,top_share,4,145,0.014472189689811845,"pedestrian, crossing, pedestrians, crosswalks, street, cross",,,
+within,2015-2019,top_share,5,92,0.013751378261988604,"transit, bus, rapid, ridership, service, rail, dwell, york, ",,,
+within,2015-2019,top_share,6,8,0.012943357680079471,"accessibility, transit, equity, spatial, access, oriented, p",,,
+within,2015-2019,top_share,7,61,0.012926803202472099,"lane, driving, behavior, changing, driver, drivers, speed, i",,,
+within,2015-2019,top_share,8,50,0.012846489933564359,"charging, electric, stations, battery, scheduling, station, ",,,
+within,2015-2019,top_share,9,137,0.012802481486755326,"lane, rural, lanes, freeway, safety, capacity, highways, rou",,,
+within,2015-2019,top_share,10,67,0.012600939934550791,"driving, driver, cognitive, drivers, distraction, fatigue, w",,,
+within,2020-2025,top_share,1,52,0.018405431962739686,"crashes, crash, severity, injury, safety, factors, rural, pe",,,
+within,2020-2025,top_share,2,66,0.01737603969083792,"connected, vehicles, mixed, automated, traffic, autonomous, ",,,
+within,2020-2025,top_share,3,71,0.01665806962517003,"covid, 19, pandemic, travel, post, mobility, public, spread,",,,
+within,2020-2025,top_share,4,123,0.01633943804789001,"mobility, shared, maas, service, public, scooter, micromobil",,,
+within,2020-2025,top_share,5,69,0.015736394450432515,"prediction, graph, traffic, temporal, forecasting, flow, con",,,
+within,2020-2025,top_share,6,8,0.015561100690688983,"accessibility, transit, equity, spatial, access, oriented, p",,,
+within,2020-2025,top_share,7,42,0.014982229438466058,"crash, risk, severity, prediction, crashes, machine, acciden",,,
+within,2020-2025,top_share,8,50,0.014770540504788094,"charging, electric, stations, battery, scheduling, station, ",,,
+within,2020-2025,top_share,9,61,0.01475799846656587,"lane, driving, behavior, changing, driver, drivers, speed, i",,,
+within,2020-2025,top_share,10,33,0.014546433022400097,"ride, sharing, demand, ridesharing, services, matching, bike",,,
