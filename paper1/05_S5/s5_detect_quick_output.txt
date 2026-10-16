@@ -1,0 +1,129 @@
+동결 검증 통과 ab53d43796f4
+
+[관측 변화점]
+  sample   c  k                         breaks      R   jump
+    all 0.5  5       [2008, 2015, 2020, 2023] 0.8432 0.2138
+    all 1.0  3                   [2012, 2020] 0.7595 0.2927
+    all 2.0  3                   [2012, 2020] 0.7595 0.2927
+fixed14 0.5  5       [2008, 2014, 2019, 2022] 0.8063 0.1900
+fixed14 1.0  4             [2008, 2015, 2020] 0.7755 0.2335
+fixed14 2.0  3                   [2012, 2020] 0.7242 0.2611
+ within 0.5  6 [2006, 2010, 2015, 2020, 2023] 0.7593 0.1895
+ within 1.0  4             [2009, 2015, 2020] 0.7033 0.1929
+ within 2.0  3                   [2015, 2020] 0.6536 0.2324
+
+[단변량 교차 확인]
+  sample     series                   breaks       matches_multivariate
+    all eff_topics       [2006, 2009, 2015]      [False, False, False]
+    all        hhi             [2007, 2013]              [False, True]
+    all   d3_share [2012, 2016, 2019, 2022] [True, False, True, False]
+fixed14 eff_topics       [2006, 2010, 2014]       [False, False, True]
+fixed14        hhi             [2006, 2010]             [False, False]
+fixed14   d3_share [2012, 2016, 2019, 2022] [False, True, True, False]
+ within eff_topics [2003, 2006, 2010, 2015] [False, False, True, True]
+ within        hhi       [2004, 2009, 2015]        [False, True, True]
+ within   d3_share       [2015, 2018, 2021]        [True, False, True]
+
+[부트스트랩]
+  sample  break_year  hit_pm1   lo90   hi90             k_dist
+    all        2012    0.624 2012.0 2014.0 {"3": 495, "4": 5}
+    all        2020    1.000 2020.0 2020.0 {"3": 495, "4": 5}
+fixed14        2008    0.982 2007.0 2009.0 {"3": 4, "4": 496}
+fixed14        2015    0.986 2014.0 2016.0 {"3": 4, "4": 496}
+fixed14        2020    0.998 2020.0 2020.0 {"3": 4, "4": 496}
+ within        2009    0.396 2006.0 2009.0 {"4": 498, "5": 2}
+ within        2015    1.000 2015.0 2015.0 {"4": 498, "5": 2}
+ within        2020    1.000 2020.0 2020.0 {"4": 498, "5": 2}
+N0 완료
+N1 완료
+N2 완료
+
+[귀무 대비]
+ null  sample  obs_k  obs_R  obs_jump  null_med_k    p_k  null_med_R    p_R  null_med_jump  p_jump
+  N0     all      3 0.7595    0.2927         1.0 0.0020      0.0000 0.0020         0.0000  0.0020
+  N0 fixed14      4 0.7755    0.2335         1.0 0.0020      0.0000 0.0020         0.0000  0.0020
+  N0  within      4 0.7033    0.1929         1.0 0.0020      0.0000 0.0020         0.0000  0.0020
+  N1     all      3 0.7595    0.2927         2.0 0.4750      0.5479 0.0020         0.2302  0.0020
+  N1 fixed14      4 0.7755    0.2335         2.0 0.0020      0.4261 0.0020         0.1920  0.0020
+  N1  within      4 0.7033    0.1929         2.0 0.0020      0.2873 0.0020         0.1409  0.0020
+  N2     all      3 0.7595    0.2927         3.0 1.0000      0.7657 0.9441         0.2763  0.0040
+  N2 fixed14      4 0.7755    0.2335         3.0 0.3992      0.7428 0.3992         0.2643  0.6028
+  N2  within      4 0.7033    0.1929         4.0 0.9980      0.7073 0.6966         0.1963  0.6866
+귀무 통과(N1·N2 모두 R p<0.05): {'all': False, 'fixed14': False, 'within': False}
+
+[반분 재현]
+ sample  repro_mean  n_reps_with_breaks  pass_ge_0_50                               per_break_joint  crossfit_R_B_median
+   all       0.612                 200          True                {"2012": 0.185, "2020": 0.995}               0.7566
+within       0.756                 200          True {"2009": 0.015, "2015": 0.985, "2020": 0.995}               0.6900
+
+[강건성 재탐지]
+      variant  sample  k             breaks         obs_breaks         obs_recovered new_breaks      R  jump_ratio_vs_obs
+   detrended     all  3       [2008, 2021]       [2012, 2020]         [False, True]     [2008] 0.3727              0.731
+   drop_2007     all  3       [2012, 2020]       [2012, 2020]          [True, True]         [] 0.7569              1.000
+   drop_2020     all  3       [2012, 2021]       [2012, 2020]          [True, True]         [] 0.7759              1.052
+   drop_2025     all  3       [2012, 2020]       [2012, 2020]          [True, True]         [] 0.7480              0.971
+  drop_cells     all  3       [2012, 2020]       [2012, 2020]          [True, True]         [] 0.7596              1.000
+A_grade_only     all  3       [2014, 2020]       [2012, 2020]         [False, True]     [2014] 0.7700              0.973
+   detrended fixed14  3       [2008, 2021] [2008, 2015, 2020]   [True, False, True]         [] 0.3400              0.791
+   drop_2007 fixed14  4 [2008, 2015, 2020] [2008, 2015, 2020]    [True, True, True]         [] 0.7783              1.000
+   drop_2020 fixed14  4 [2008, 2015, 2021] [2008, 2015, 2020]    [True, True, True]         [] 0.7897              1.062
+   drop_2025 fixed14  4 [2008, 2015, 2020] [2008, 2015, 2020]    [True, True, True]         [] 0.7669              0.951
+  drop_cells fixed14  4 [2008, 2014, 2020] [2008, 2015, 2020]    [True, True, True]         [] 0.7746              1.040
+A_grade_only fixed14  3       [2012, 2020] [2008, 2015, 2020]  [False, False, True]     [2012] 0.7365              1.166
+   detrended  within  1                 [] [2009, 2015, 2020] [False, False, False]         [] 0.0000              0.000
+   drop_2007  within  4 [2009, 2015, 2020] [2009, 2015, 2020]    [True, True, True]         [] 0.7063              1.000
+   drop_2020  within  4 [2009, 2015, 2021] [2009, 2015, 2020]    [True, True, True]         [] 0.7147              1.051
+   drop_2025  within  4 [2009, 2015, 2020] [2009, 2015, 2020]    [True, True, True]         [] 0.6961              1.000
+  drop_cells  within  4 [2009, 2015, 2020] [2009, 2015, 2020]    [True, True, True]         [] 0.7023              1.000
+A_grade_only  within  4 [2009, 2015, 2020] [2009, 2015, 2020]    [True, True, True]         [] 0.7237              1.045
+
+pending 제외 2개 | 변화점이 놓일 수 있는 연도 2003~2023
+[big] 창 안 사건 6개 | 변화점 가능 범위 밖 0개 | 우연 일치 기준 커버리지 0.67(높을수록 검정력 낮음)
+[entry] 창 안 사건 19개 | 변화점 가능 범위 밖 1개 | 우연 일치 기준 커버리지 0.90(높을수록 검정력 낮음)
+[size] 창 안 사건 3개 | 변화점 가능 범위 밖 0개 | 우연 일치 기준 커버리지 0.33(높을수록 검정력 낮음)
+
+[사건 대조: 순환이동 귀무]
+   set  sample                         test  n_events  coverage    obs  null_mean      p
+  big     all         breaks_near_event(i)         6    0.6667 1.0000     0.5682 0.2504
+  big     all events_followed_by_break(ii)         6    0.6667 0.5000     0.2235 0.0465
+  big fixed14         breaks_near_event(i)         6    0.6667 0.6667     0.5713 0.5937
+  big fixed14 events_followed_by_break(ii)         6    0.6667 0.3333     0.3445 0.6772
+  big  within         breaks_near_event(i)         6    0.6667 0.6667     0.5703 0.5592
+  big  within events_followed_by_break(ii)         6    0.6667 0.3333     0.3435 0.6357
+entry     all         breaks_near_event(i)        19    0.9048 1.0000     0.8392 0.6787
+entry     all events_followed_by_break(ii)        19    0.9048 0.4211     0.2205 0.0400
+entry fixed14         breaks_near_event(i)        19    0.9048 1.0000     0.8393 0.5627
+entry fixed14 events_followed_by_break(ii)        19    0.9048 0.6842     0.3324 0.0005
+entry  within         breaks_near_event(i)        19    0.9048 1.0000     0.8438 0.6062
+entry  within events_followed_by_break(ii)        19    0.9048 0.6316     0.3365 0.0005
+ size     all         breaks_near_event(i)         3    0.3333 0.5000     0.3008 0.5252
+ size     all events_followed_by_break(ii)         3    0.3333 0.3333     0.2297 0.5252
+ size fixed14         breaks_near_event(i)         3    0.3333 0.6667     0.2898 0.1949
+ size fixed14 events_followed_by_break(ii)         3    0.3333 0.6667     0.3277 0.2334
+ size  within         breaks_near_event(i)         3    0.3333 0.6667     0.2982 0.2069
+ size  within events_followed_by_break(ii)         3    0.3333 0.6667     0.3415 0.2479
+
+[저널 간 성분 비중(all 변화점)] {2012: 0.46, 2020: 0.44}
+[사건 저널 코사인]
+   set  break_year   venue  event_year  cosine  null_pct  n_null
+  big        2012    TR-C        2013   0.511     0.957      23
+  big        2012   T-ITS        2011   0.427     0.950      20
+entry        2012    RTBM        2011   0.278     0.450      20
+entry        2012   IJTST        2012   0.027     0.048      21
+  big        2020    T-TE        2021   0.515     0.909      33
+entry        2020    TRIP        2019   0.302     0.786      28
+entry        2020 eTransp        2019   0.277     0.750      28
+entry        2020  OJ-ITS        2020   0.468     0.909      33
+entry        2020 RailEng        2020   0.143     0.394      33
+entry        2020  CommTR        2021   0.392     0.788      33
+entry        2020     JUM        2021   0.134     0.273      33
+ size        2020    T-TE        2021   0.515     0.909      33
+
+[유형 분류]
+  break_year  in_fixed14  in_within  event_match  entry_match  between_share  n1_hit_rate  artifact_candidate  boot_hit                     type
+       2012       False      False         True         True          0.459        0.158               False     0.624 탐지 없음(귀무 미통과): 연속 변화로 서술
+       2020        True       True         True         True          0.437        0.994                True     1.000 탐지 없음(귀무 미통과): 연속 변화로 서술
+       2009        True       True        False         True            NaN        0.000               False       NaN            탐지 없음(귀무 미통과)
+       2015        True       True         True         True            NaN        1.000               False       NaN            탐지 없음(귀무 미통과)
+
+저장 완료( 본 실행 )

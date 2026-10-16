@@ -1,0 +1,5 @@
+﻿break_year,in_fixed14,in_within,event_match,entry_match,between_share,n1_hit_rate,artifact_candidate,boot_hit,type
+2012,False,False,True,True,0.459,0.158,False,0.624,탐지 없음(귀무 미통과): 연속 변화로 서술
+2020,True,True,True,True,0.437,0.994,True,1.0,탐지 없음(귀무 미통과): 연속 변화로 서술
+2009,True,True,False,True,,0.0,False,,탐지 없음(귀무 미통과)
+2015,True,True,True,True,,1.0,False,,탐지 없음(귀무 미통과)

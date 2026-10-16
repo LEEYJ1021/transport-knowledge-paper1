@@ -1,0 +1,32 @@
+{
+ "spec_sha256": "ab53d43796f40995bb8b7e04f22073acb0fa7e4f660572467512a047c72bc178",
+ "at": "2026-10-16T12:04:52",
+ "quick": false,
+ "B": {
+  "boot": 500,
+  "null": 500,
+  "split": 200,
+  "circ": 2000
+ },
+ "null_pass": {
+  "all": false,
+  "fixed14": false,
+  "within": false
+ },
+ "obs_breaks": {
+  "all": [
+   2012,
+   2020
+  ],
+  "fixed14": [
+   2008,
+   2015,
+   2020
+  ],
+  "within": [
+   2009,
+   2015,
+   2020
+  ]
+ }
+}
