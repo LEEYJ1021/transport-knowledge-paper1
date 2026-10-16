@@ -1,0 +1,25 @@
+{
+ "spec_sha256": "c8cbfffc8194babf23e37743acf49b831726364e4ef5e38381e70d1eef23fde1",
+ "at": "2026-10-16T10:50:58",
+ "n_valid": 149,
+ "n_held": 0,
+ "denominator": 149,
+ "grade_counts": {
+  "A": 112,
+  "B": 33,
+  "C": 4
+ },
+ "A_share": 0.752,
+ "A_wilson": [
+  0.677,
+  0.814
+ ],
+ "passed": true,
+ "fail_counts": {
+  "F1": 2,
+  "F2": 37,
+  "F3": 2,
+  "F4": 0
+ },
+ "output_sha256": "d0fb3c9b855db88ad8d928297d09dc007ab9f04ff8b995568d0cad6c6559da1a"
+}

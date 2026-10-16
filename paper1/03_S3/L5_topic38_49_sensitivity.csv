@@ -1,0 +1,7 @@
+﻿topic,mapping,n,k,simple,weighted,simple_ge_cut,weighted_ge_cut
+38,N만(주),60,7,0.117,0.122,False,False
+38,N+O,60,14,0.233,0.233,False,False
+38,N+O+V,60,23,0.383,0.423,False,False
+49,N만(주),60,11,0.183,0.213,False,False
+49,N+O,60,21,0.35,0.34,False,False
+49,N+O+V,60,24,0.4,0.36,False,False

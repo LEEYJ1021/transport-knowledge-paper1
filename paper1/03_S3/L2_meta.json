@@ -1,0 +1,9 @@
+{
+ "spec_sha256": "c8cbfffc8194babf23e37743acf49b831726364e4ef5e38381e70d1eef23fde1",
+ "at": "2026-10-16T10:46:48",
+ "n_docs": 76984,
+ "pool": 50,
+ "final_n": 10,
+ "cutoff": 2023,
+ "output_sha256": "bd425dec97aca1f499855a2f1517c0e4c1d2604e29cfb01e47683ae9822c740e"
+}

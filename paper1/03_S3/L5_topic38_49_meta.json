@@ -1,0 +1,25 @@
+{
+ "label_file": "s2_open_topic38_49_manual.csv",
+ "label_sha256": "377ffc102b7adfb28eb55214756edce0bc86ea05e6ea04fd8344f14ccd275a51",
+ "spec_sha256": "c8cbfffc8194babf23e37743acf49b831726364e4ef5e38381e70d1eef23fde1",
+ "coders": "연구자 직접",
+ "scheme": "R연구/N비연구/V리뷰·튜토리얼/O기타·판단불가, 제목·저널·연도만 보고 판정",
+ "main_mapping": "비연구=N",
+ "variants": {
+  "N만(주)": [
+   "N"
+  ],
+  "N+O": [
+   "N",
+   "O"
+  ],
+  "N+O+V": [
+   "N",
+   "O",
+   "V"
+  ]
+ },
+ "composite": "미측정",
+ "decision_flips": false,
+ "at": "2026-10-16T10:42:00"
+}

@@ -1,0 +1,150 @@
+﻿topic,n_papers,top_title,top_title_share,unique_ratio,flag_small_n,flag_repeated_title,graph_nodes,graph_edges,communities,modularity,flag_composite_auto,manual_decision,flag_manual_nonresearch,F3_fail
+0,411,"feasibility of truck-only toll lane network in atlanta, geor",0.005,0.995,False,False,30,134,3,0.436,True,,False,True
+1,586,grid integration of electric vehicles within electricity and,0.002,1.0,False,False,30,311,4,0.07,False,,False,False
+2,406,improving the computational efficiency of highway alignment ,0.005,0.998,False,False,30,153,4,0.19,False,,False,False
+3,677,transport geography research group,0.003,0.997,False,False,30,224,4,0.163,False,,False,False
+4,965,when proximity is not enough. a sociodemographic analysis of,0.001,1.0,False,False,30,316,5,0.173,False,,False,False
+5,380,high-fidelity ultrasonic radar in-the-loop accelerated test ,0.003,1.0,False,False,30,293,3,0.148,False,,False,False
+6,251,effect of tire configuration on the performance of a low-vol,0.008,0.984,False,False,30,238,4,0.216,False,,False,False
+7,435,exploring the relationship between data aggregation and pred,0.005,0.998,False,False,30,289,3,0.13,False,,False,False
+8,917,perceived accessibility: a literature review,0.001,1.0,False,False,30,280,3,0.137,False,,False,False
+9,475,clustering of freeway cut-in scenarios for automated vehicle,0.002,1.0,False,False,30,206,4,0.079,False,,False,False
+10,448,four-dimensional interactive visualization system for transp,0.004,0.993,False,False,30,225,4,0.095,False,,False,False
+11,664,temporal heterogeneity in traffic crash delays: causal infer,0.002,1.0,False,False,30,365,3,0.139,False,,False,False
+12,326,deep learning-driven cyber attack detection framework in dc ,0.003,1.0,False,False,30,298,4,0.119,False,,False,False
+13,573,prediction of arrival profiles and queue lengths along signa,0.003,0.998,False,False,30,255,3,0.149,False,,False,False
+14,292,unbound aggregate rutting models for stress rotations and ef,0.007,0.99,False,False,30,315,3,0.227,False,,False,False
+15,435,few-shot learning for novel object detection in autonomous d,0.002,1.0,False,False,30,278,3,0.116,False,,False,False
+16,629,optimization of passenger flow control and parallel bus brid,0.002,1.0,False,False,30,293,3,0.083,False,,False,False
+17,447,uncertainty quantification for safe and reliable autonomous ,0.002,1.0,False,False,30,263,3,0.082,False,,False,False
+19,563,do carbon emissions trading pilot policies contribute to urb,0.002,1.0,False,False,30,284,4,0.143,False,,False,False
+20,422,advancing intrusion detection in v2x networks: a comprehensi,0.002,1.0,False,False,30,310,3,0.174,False,,False,False
+21,523,the central role of trust and perceived risk in the acceptan,0.002,1.0,False,False,30,330,3,0.108,False,,False,False
+22,951,measuring dynamic accessibility by metro system under travel,0.001,1.0,False,False,30,336,4,0.099,False,,False,False
+23,662,high-speed rail network and regional carbon emissions: carbo,0.002,1.0,False,False,30,300,3,0.1,False,,False,False
+24,166,integrated field and office tools for bridge management,0.012,0.988,False,False,30,171,3,0.176,False,,False,False
+25,275,energy dissipation in culverts by forced hydraulic jump with,0.007,0.996,False,False,30,225,4,0.199,False,,False,False
+26,273,early-age performance evaluation of jointed plain concrete p,0.004,1.0,False,False,30,264,3,0.12,False,,False,False
+27,362,modeling the proximate covariance property of air travel iti,0.006,0.997,False,False,30,150,4,0.224,False,,False,False
+28,185,complete‐coverage path planning for surface inspection of ca,0.005,1.0,False,False,30,133,5,0.245,False,,False,False
+29,392,mssf: a 4d radar and camera fusion framework with multi-stag,0.003,1.0,False,False,30,340,4,0.162,False,,False,False
+30,693,assessment of vehicle age as a contributor to temporal shift,0.001,1.0,False,False,30,367,3,0.089,False,,False,False
+31,534,dissipated energy approach to study hot-mix asphalt healing ,0.004,0.991,False,False,30,353,3,0.078,False,,False,False
+32,260,assessing the economic and environmental sustainability of u,0.004,1.0,False,False,30,163,3,0.23,False,,False,False
+33,719,urban food delivery service optimisation with coordinated de,0.001,1.0,False,False,30,304,4,0.191,False,,False,False
+34,568,ais data-driven assessment of shore side electricity's emiss,0.002,1.0,False,False,30,321,4,0.143,False,,False,False
+35,631,is there an emotional dimension to road safety? a spatial an,0.002,1.0,False,False,30,275,4,0.165,False,,False,False
+36,422,threat or opportunity? e-commerce platform’s store brand int,0.002,1.0,False,False,30,245,3,0.262,False,,False,False
+37,553,a multi-vehicle self-organized cooperative control strategy ,0.002,1.0,False,False,30,363,4,0.08,False,,False,False
+38,392,"the itu vision and framework for 6g: scenarios, capabilities",0.003,1.0,False,False,30,234,3,0.194,False,비연구 아님(복합 여부는 L5 자동 플래그로 판정),False,False
+39,402,a data-driven vehicle speed prediction transfer learning met,0.002,1.0,False,False,30,360,3,0.042,False,,False,False
+40,506,measuring neighborhood traffic safety benefits by using real,0.004,0.996,False,False,30,264,3,0.263,False,,False,False
+41,548,"cargo selection, route planning, and speed optimization in t",0.002,1.0,False,False,30,236,3,0.123,False,,False,False
+42,689,split models for predicting multivehicle crashes during high,0.003,0.999,False,False,30,305,3,0.105,False,,False,False
+43,324,interpretation of transverse profiles to determine the sourc,0.006,0.991,False,False,30,251,4,0.2,False,,False,False
+44,478,e-taxi drivers' charging behavior: effects of the built envi,0.002,1.0,False,False,30,246,4,0.038,False,,False,False
+45,521,robust model predictive control of position sensorless-drive,0.002,1.0,False,False,30,400,4,0.139,False,,False,False
+46,482,understanding bus delay patterns under different temporal an,0.002,1.0,False,False,30,269,3,0.11,False,,False,False
+47,805,urban air mobility demand forecasting: modeling evidence fro,0.001,1.0,False,False,30,368,4,0.124,False,,False,False
+48,620,relationship between shared micromobility and public transit,0.002,1.0,False,False,30,287,3,0.12,False,,False,False
+49,389,tgrg page,0.033,0.967,False,False,24,28,7,0.759,True,비연구 아님(복합 여부는 L5 자동 플래그로 판정),False,True
+50,882,resilience-oriented asynchronous decentralized restoration c,0.001,1.0,False,False,30,378,3,0.029,False,,False,False
+51,598,toward human-vehicle collaboration for automated vehicles: a,0.002,1.0,False,False,30,275,4,0.173,False,,False,False
+52,948,understanding e-scooter rider crash severity using a built e,0.001,1.0,False,False,30,314,4,0.101,False,,False,False
+53,415,optical communication based v2v for vehicle platooning,0.002,1.0,False,False,30,230,3,0.183,False,,False,False
+54,232,advances and perspectives in fire safety of lithium-ion batt,0.004,1.0,False,False,30,227,3,0.225,False,,False,False
+55,346,generalized koopman neural operator for data-driven modeling,0.003,1.0,False,False,30,235,4,0.232,False,,False,False
+56,535,comprehensive analysis of the relationship between real-time,0.004,0.996,False,False,30,232,3,0.138,False,,False,False
+57,386,deployment of interurban att test scenarios (diats): implica,0.005,0.997,False,False,30,147,5,0.134,False,,False,False
+58,221,eliminating information asymmetry in supply chains: blockcha,0.005,1.0,False,False,30,259,3,0.091,False,,False,False
+59,608,transportation geography specialty group,0.005,0.992,False,False,30,255,4,0.103,False,,False,False
+60,290,a critical review of heavy metal characteristics and risk as,0.003,1.0,False,False,30,158,4,0.328,False,,False,False
+61,924,evaluation of safety effects of driver assistance systems th,0.002,0.999,False,False,30,284,3,0.168,False,,False,False
+62,595,an artificial potential field approach for virtual coupling ,0.002,1.0,False,False,30,368,3,0.103,False,,False,False
+63,266,evaluation of the causal impact of recreational marijuana le,0.004,1.0,False,False,30,246,4,0.115,False,,False,False
+64,330,understanding motorcycle crash involvement: insights from re,0.003,1.0,False,False,30,275,4,0.117,False,,False,False
+65,258,research on ship anomaly detection algorithm based on transf,0.004,1.0,False,False,30,210,3,0.148,False,,False,False
+66,891,driving safety risk analysis and assessment in a mixed drivi,0.001,1.0,False,False,30,359,3,0.059,False,,False,False
+67,834,towards a driver fatigue test based on the saccadic main seq,0.002,0.998,False,False,30,308,4,0.104,False,,False,False
+68,336,event-triggered-based distributed formation cooperative trac,0.003,1.0,False,False,30,328,4,0.084,False,,False,False
+69,783,an attention-driven spatio-temporal deep hybrid neural netwo,0.001,1.0,False,False,30,372,3,0.076,False,,False,False
+70,633,innovative framework for modeling freight transportation in ,0.003,0.998,False,False,30,319,3,0.089,False,,False,False
+71,581,non-linear built environment effects on travel behavior resi,0.002,1.0,False,False,30,253,4,0.038,False,,False,False
+72,788,pavement management system based on financial consequence,0.003,0.997,False,False,30,273,4,0.183,False,,False,False
+73,658,effects of land use characteristics on residence and employm,0.003,0.998,False,False,30,337,4,0.163,False,,False,False
+74,620,evolution of u.s. domestic airline route networks since 1990,0.003,0.997,False,False,30,278,3,0.18,False,,False,False
+75,989,examining the nonlinear and interactive effects of built env,0.001,1.0,False,False,30,320,3,0.077,False,,False,False
+76,452,developing the value of legal judgments of supply chain fina,0.002,1.0,False,False,30,192,5,0.228,False,,False,False
+77,559,a new framework for traffic conflict identification by incor,0.002,1.0,False,False,30,348,4,0.067,False,,False,False
+78,825,implications of risk perception under assumption of rational,0.002,0.999,False,False,30,291,3,0.131,False,,False,False
+79,594,the two-echelon truck-unmanned ground vehicle routing proble,0.002,1.0,False,False,30,293,4,0.129,False,,False,False
+80,674,strategies for online inventory routing problem under real-t,0.003,0.999,False,False,30,368,5,0.091,False,,False,False
+81,438,enhancing resilience in supply chains through resource orche,0.002,1.0,False,False,30,227,3,0.203,False,,False,False
+82,501,cell-based network optimization model for staged evacuation ,0.004,0.996,False,False,30,194,3,0.195,False,,False,False
+83,833,role and application of accident modification factors within,0.002,0.999,False,False,30,282,5,0.109,False,,False,False
+84,309,alternate approach to approximating deteriorated steel beam ,0.006,0.99,False,False,30,254,3,0.139,False,,False,False
+85,333,few-shot cross-domain fault diagnosis of transportation moto,0.003,1.0,False,False,30,259,3,0.131,False,,False,False
+86,388,segment length optimization for crash frequency modelling: e,0.003,1.0,False,False,30,251,4,0.15,False,,False,False
+87,809,relationship between specific (dis)utility and the frequency,0.002,0.998,False,False,30,370,2,0.067,False,,False,False
+88,653,numerical and experimental investigation of fluid flow and h,0.002,1.0,False,False,30,400,4,0.099,False,,False,False
+89,371,factors contributing to differences between profiler and the,0.005,0.995,False,False,30,180,4,0.128,False,,False,False
+90,418,frameworks to represent uncertainty when level of service is,0.005,0.998,False,False,30,198,4,0.263,False,,False,False
+91,168,extrinsic-and-intrinsic reward-based multi-agent reinforceme,0.006,1.0,False,False,30,249,3,0.086,False,,False,False
+92,801,simulation model for estimating bus dwell time by simultaneo,0.002,0.996,False,False,30,278,3,0.114,False,,False,False
+93,269,estimating percent within limits for skewed populations,0.007,0.985,False,False,30,178,3,0.167,False,,False,False
+94,728,"how does bike-sharing enable (or not) resilient cities, comm",0.001,1.0,False,False,30,248,3,0.126,False,,False,False
+95,448,"generative ai: opportunities, challenges, and research direc",0.002,1.0,False,False,30,224,4,0.09,False,,False,False
+96,333,comparison of the bidirectional load test with the top-down ,0.006,0.997,False,False,30,197,4,0.262,False,,False,False
+97,562,structural equation modeling to determine passenger loyalty ,0.004,0.998,False,False,30,297,4,0.101,False,,False,False
+98,644,an intelligent hyperheuristic algorithm for the berth alloca,0.002,1.0,False,False,30,272,4,0.204,False,,False,False
+99,498,reinforcement learning based edge-end collaboration for mult,0.002,1.0,False,False,30,347,4,0.086,False,,False,False
+100,495,generational differences in the preferences for maas bundles,0.002,1.0,False,False,30,251,5,0.145,False,,False,False
+101,578,simulating land use development through a stochastic allocat,0.003,0.993,False,False,30,279,3,0.113,False,,False,False
+102,620,backcalculation of permanent deformation parameters using ti,0.003,0.998,False,False,30,317,3,0.163,False,,False,False
+103,403,environmental implications of recycled materials in pavement,0.002,1.0,False,False,30,344,3,0.073,False,,False,False
+104,720,activity-based user equilibrium considering aggregated traff,0.001,1.0,False,False,30,347,4,0.086,False,,False,False
+105,517,exploring radar data representations in autonomous driving: ,0.002,1.0,False,False,30,325,3,0.094,False,,False,False
+106,399,rut initiation mechanisms in asphalt mixtures as generated u,0.005,0.99,False,False,30,347,3,0.058,False,,False,False
+107,735,transformation between uninterrupted and interrupted speeds ,0.003,0.995,False,False,30,308,2,0.187,False,,False,False
+108,334,eye glance behavior of van and passenger car drivers during ,0.006,0.988,False,False,30,222,3,0.2,False,,False,False
+109,419,emission characteristics and mechanisms of vocs in recycled ,0.002,1.0,False,False,30,303,3,0.199,False,,False,False
+110,613,a systematic review of machine learning-based microscopic tr,0.002,1.0,False,False,30,275,5,0.087,False,,False,False
+111,598,framework for analysis of security measures within on-airpor,0.003,0.998,False,False,30,243,4,0.157,False,,False,False
+112,297,passenger-aware reinforcement learning for efficient and rob,0.003,1.0,False,False,30,235,3,0.039,False,,False,False
+113,418,csrm-mim: a self-supervised pretraining method for detecting,0.002,1.0,False,False,30,351,3,0.094,False,,False,False
+114,566,variability of personal exposure to fine particulates for ur,0.004,0.996,False,False,30,235,3,0.154,False,,False,False
+115,276,multi-level passive-active thermal control for battery therm,0.004,1.0,False,False,30,225,4,0.138,False,,False,False
+116,420,algorithm for optimal bid packaging for competitive contract,0.005,0.995,False,False,30,292,3,0.053,False,,False,False
+117,318,motorcycle helmet use and trends before and after florida's ,0.006,0.994,False,False,30,144,3,0.278,False,,False,False
+118,452,analysis of joint household decisions about car and motorbik,0.004,0.998,False,False,30,245,3,0.123,False,,False,False
+119,422,microsimulation assignment model for multidirectional pedest,0.005,0.998,False,False,30,259,3,0.139,False,,False,False
+120,349,state estimation of lithium-ion batteries via physics-machin,0.003,1.0,False,False,30,329,3,0.078,False,,False,False
+121,581,the trans-caspian corridor – geopolitical implications and t,0.002,1.0,False,False,30,261,4,0.097,False,,False,False
+122,806,systematic review and meta-analysis of take-over time from a,0.001,1.0,False,False,30,308,4,0.103,False,,False,False
+123,835,who is attracted to carsharing?,0.002,0.999,False,False,30,297,5,0.133,False,,False,False
+124,478,transition to near-zero emission shipping fleet powered by a,0.002,1.0,False,False,30,283,3,0.098,False,,False,False
+125,544,a novel nonisolated dual-input high step-up dc-dc converter ,0.002,1.0,False,False,30,379,3,0.16,False,,False,False
+126,394,crack segmentation-guided measurement with lightweight disti,0.003,1.0,False,False,30,189,4,0.289,False,,False,False
+127,347,lightweight semantic feature extraction model with direction,0.003,1.0,False,False,30,293,3,0.222,False,,False,False
+128,505,lagrangian relaxation heuristic for selecting interdependent,0.004,0.998,False,False,30,301,4,0.091,False,,False,False
+129,415,smart parking systems: a comprehensive review of digitalizat,0.002,1.0,False,False,30,182,3,0.084,False,,False,False
+130,288,a survey on autonomous and intelligent swarms of uncrewed ae,0.003,1.0,False,False,30,297,3,0.155,False,,False,False
+131,494,robust lane change decision for autonomous vehicles in mixed,0.002,1.0,False,False,30,340,2,0.082,False,,False,False
+132,464,safety of children in school zones − a systematic review,0.002,1.0,False,False,30,155,3,0.336,False,,False,False
+133,570,lc-llm: explainable lane-change intention and trajectory pre,0.002,1.0,False,False,30,327,3,0.12,False,,False,False
+134,479,a systematic review of resilience assessment and enhancement,0.002,1.0,False,False,30,266,5,0.058,False,,False,False
+135,169,wet night visibility of pavement markings,0.012,0.994,False,False,30,125,4,0.324,False,,False,False
+136,303,field monitoring of moisture variations under flexible pavem,0.007,0.993,False,False,30,193,3,0.148,False,,False,False
+137,860,"variation in freeway lane use patterns with volume, time of ",0.002,0.995,False,False,30,265,4,0.206,False,,False,False
+138,862,exploring the cognitive and behavioral factors impacting nov,0.001,1.0,False,False,30,322,3,0.072,False,,False,False
+139,560,hierarchical and networked vehicle surveillance in its: a su,0.004,0.998,False,False,30,320,3,0.072,False,,False,False
+140,636,traffic flooding the low countries: how the dutch cope with ,0.003,0.997,False,False,30,266,4,0.113,False,,False,False
+141,619,optimal coordination of variable speed limits to suppress sh,0.003,0.998,False,False,30,329,2,0.145,False,,False,False
+142,500,air quality measurements inside diesel truck cabs during lon,0.004,0.996,False,False,30,314,3,0.083,False,,False,False
+143,331,direct demand forecasting model for small urban communities ,0.006,0.994,False,False,30,169,4,0.155,False,,False,False
+144,597,deciphering urban cycling: analyzing the nonlinear impact of,0.002,1.0,False,False,30,202,5,0.118,False,,False,False
+145,900,development of an intersection prioritization tool for acces,0.002,0.998,False,False,30,305,3,0.103,False,,False,False
+146,281,a review of high-performance fiber concrete for airport pave,0.004,1.0,False,False,30,245,3,0.131,False,,False,False
+147,305,framework for the development of a diverse transportation wo,0.003,1.0,False,False,30,128,4,0.228,False,,False,False
+148,488,hybrid of neural network and physics-based estimator for veh,0.002,1.0,False,False,30,350,3,0.099,False,,False,False
+149,242,light-slam: a robust deep-learning visual slam system based ,0.004,1.0,False,False,30,288,5,0.169,False,,False,False

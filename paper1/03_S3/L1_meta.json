@@ -1,0 +1,19 @@
+{
+ "spec_sha256": "c8cbfffc8194babf23e37743acf49b831726364e4ef5e38381e70d1eef23fde1",
+ "at": "2026-10-16T10:39:53",
+ "n_docs": 76984,
+ "vocab": 25890,
+ "counts_chain": [
+  111685,
+  111416,
+  111416,
+  88091,
+  76984
+ ],
+ "outputs": {
+  "L1_distinct_words.csv": "c14322175b1cffb22d5b3c2293305ed2a654216171479e43ce7972b2c793b7dd",
+  "L1_topic_period_summary.csv": "4190ccde96ed268b97d33340243b1b65cf941cafca1afc10b98c89a0409c277f",
+  "L1_F4_inputs.csv": "36416c62dc1564850f63cf8113648c30df243c68acb3ef4c8600cb9d4a6f7036",
+  "L1_legacy_overlap.csv": "11a3d99a21b7ae4530a26df101a457216c5d1469bcfa7449511d81ca4c028eac"
+ }
+}

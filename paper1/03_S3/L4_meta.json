@@ -1,0 +1,10 @@
+{
+ "spec_sha256": "c8cbfffc8194babf23e37743acf49b831726364e4ef5e38381e70d1eef23fde1",
+ "at": "2026-10-16T10:48:53",
+ "n_docs": 76984,
+ "output_sha256": "ef907947a82996f0d72d855a4d8757e9c32724b67e7f986749318bbddd7cf304",
+ "provisional_columns": [
+  "team_*_provisional",
+  "new_author_share_*_provisional"
+ ]
+}
