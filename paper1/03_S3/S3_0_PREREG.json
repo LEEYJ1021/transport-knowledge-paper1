@@ -1,0 +1,129 @@
+{
+ "version": 1,
+ "scope": "S3 토픽 증거 카드 L1~L5, L7. L6은 보류. 토픽 18번(1편 빈 군집)은 분모에서 제외(유효 149개).",
+ "decision_status": "모든 수치는 임의 출발값. S3 결과 열람 전에 동결.",
+ "seed": 2026,
+ "periods": [
+  [
+   2000,
+   2004
+  ],
+  [
+   2005,
+   2009
+  ],
+  [
+   2010,
+   2014
+  ],
+  [
+   2015,
+   2019
+  ],
+  [
+   2020,
+   2025
+  ]
+ ],
+ "text": {
+  "unit": "논문 제목",
+  "lowercase": true,
+  "ngram": [
+   1,
+   2
+  ],
+  "stopwords": "sklearn english",
+  "min_df_corpus": 5,
+  "stemming": false
+ },
+ "L1": {
+  "comparison": "기간 r 안에서 토픽 k 논문 대 같은 기간의 토픽 k 외 논문(해석 선택, 계획서 수식의 y_rw 정의가 모호해 이렇게 고정)",
+  "prior": "a_w = alpha0 * (코퍼스 전체 빈도 비율), alpha0=500",
+  "alpha0": 500,
+  "z": "delta / sqrt(분산), 분산은 1/(y_kw+a_w) + 1/(y_rw+a_w)",
+  "min_topic_papers_in_period": 20,
+  "min_word_count_in_topic_period": 3,
+  "top_n": 10,
+  "z_distinct": 1.96,
+  "legacy_overlap": "기존 lift(2005 이후 합산) top-6와 Jaccard를 병기(통과 기준 아님)"
+ },
+ "L2": {
+  "candidate_pool": 50,
+  "final_n": 10,
+  "rule": "구별 점수(L1, 전체 기간 합산) 상위 50편 중 연도x저널 내 인용 백분위(중간 순위) 상위 10편",
+  "recent_cutoff_year": 2023,
+  "recent_rule": "2023년 이후 논문은 인용 백분위 순위에서 제외(대표 논문 후보에서 뺌)"
+ },
+ "L3": {
+  "npmi_unit": "토픽 논문 제목 문서 단위 동시출현",
+  "npmi_top_words": 10,
+  "bootstrap_B": 200,
+  "bootstrap_stat": "논문 복원추출 후 top-10 단어 Jaccard(원 표본 대비)의 중앙값"
+ },
+ "L4": {
+  "fields": [
+   "저널 엔트로피",
+   "1위 저널 비율",
+   "정점 연도",
+   "성장 기울기(연 비중 OLS)",
+   "비고정 저널 비율",
+   "DOI 결측 비율",
+   "평균 팀 규모(BASE 정의 확인 후)",
+   "신규 저자 비율(BASE 정의 확인 후)"
+  ],
+  "note": "L4는 등급 계산에 쓰지 않는 기술 정보"
+ },
+ "L5": {
+  "auto_flags": {
+   "small_n": 30,
+   "repeated_title_top_share": 0.2,
+   "repeated_title_min_n": 30,
+   "unique_title_ratio_min": 0.5,
+   "composite_graph": "상위 30단어 동시출현 그래프, greedy modularity",
+   "modularity_composite": 0.35
+  },
+  "manual_conditional_rule": {
+   "applies_to_topics": [
+    38,
+    49
+   ],
+   "min_judged_per_topic": 30,
+   "nonresearch_share_ge": 0.5,
+   "composite_share_ge": 0.3,
+   "outcome": {
+    "nonresearch_share>=0.50": "비연구: L7 F3 실패, 핵심 결과에서 제외 후보",
+    "composite_share>=0.30 and nonresearch_share<0.50": "복합 표시: L7 F3 실패",
+    "otherwise": "단일 연구 토픽: F3 통과",
+    "judged<30": "미결: 해당 토픽은 등급 보류(등급 비율 분모에서 제외하고 별도 보고)"
+   },
+   "report": "비율과 Wilson 95% 구간을 함께 보고. 라벨 열 이름·값 대응은 집계 스크립트에서 지정(규칙 자체는 여기서 고정)"
+  }
+ },
+ "L7": {
+  "fail_items": {
+   "F1_stability": "L3 부트스트랩 Jaccard 중앙값 < 0.50",
+   "F2_coherence": "L3 NPMI 평균이 유효 토픽 분포의 하위 25% 미만(상대 기준)",
+   "F3_nonresearch_or_composite": "L5 자동 플래그 또는 38/49 조건부 규칙에서 비연구·복합·반복제목·n<30",
+   "F4_distinctiveness": "평가 가능한 기간 중 z>=1.96 단어가 3개 이상인 기간 비율 < 0.50, 또는 평가 가능 기간 0개"
+  },
+  "npmi_quantile": 0.25,
+  "stability_min": 0.5,
+  "distinct_words_min": 3,
+  "distinct_period_share_min": 0.5,
+  "grade": "실패 0개 A, 1개 B, 2개 이상 C",
+  "pass_rule": "A등급 비율 >= 0.50 (분모: 유효 149개 중 등급 보류 제외)",
+  "later": "핵심 결과의 A등급 재추정(부호 유지, 크기 +-30%)은 S5~S7 뒤에 닫음"
+ },
+ "caveats": [
+  "단어 재료는 제목뿐",
+  "고정 저널은 PREREG의 14개",
+  "Scimago 변수는 등급에 쓰지 않음",
+  "38/49 라벨은 연구자가 이 동결 이전에 채웠음(규칙은 라벨 비율에 대한 일반 임계값이라 라벨을 보고 조정하지 않았다고 해도 '완전 비열람'은 아님)"
+ ],
+ "created": "2026-10-16T10:22:15",
+ "sha256": "c8cbfffc8194babf23e37743acf49b831726364e4ef5e38381e70d1eef23fde1",
+ "reference_hashes_at_freeze": {
+  "s2_open_topic38_49_manual.csv": "377ffc102b7adfb28eb55214756edce0bc86ea05e6ea04fd8344f14ccd275a51",
+  "S2_PREREG_ADDENDUM.json": "b65017a234905b4fa07e4b9d56ef6bea95bf76359dede5ab2f090f2556515460"
+ }
+}
