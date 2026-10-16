@@ -1,0 +1,166 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "decision_status": "모든 수치는 임의 출발값. 탐지 결과 열람 전에 동결. 4.6·4.6b 산출물은 동결 전에 열람했음(완전 비열람 아님).",
+ "principle": "탐지는 사건 정보 없이 데이터만으로. 사건은 탐지 뒤 대조에만. 주 시나리오 NONE이므로 사건 대조는 민감도. 인과 해석 금지.",
+ "window": [
+  2000,
+  2025
+ ],
+ "samples": [
+  "all",
+  "fixed14",
+  "within"
+ ],
+ "fixed_venues": "PREREG.json의 fixed_venues 14개(F1 fixed_venue 열 사용 금지)",
+ "detection": {
+  "transform": "x=sqrt(연도별 토픽 비중)",
+  "weight": "w_t=4*n_t (within 표본은 n_t=전체 논문 수)",
+  "method": "인접 연도 제약 군집화(동적계획)",
+  "min_len": 3,
+  "k_max": 6,
+  "penalty": "pen_per_segment = c*phi_s*(K-1)*log(T), 선택 k = argmin(cost_k + pen*k)",
+  "c_primary": 1.0,
+  "c_grid": [
+   0.5,
+   1.0,
+   2.0
+  ],
+  "phi": {
+   "all": {
+    "N0": 1.0589,
+    "N1": 4.186,
+    "phi": 4.186
+   },
+   "fixed14": {
+    "N0": 1.0593,
+    "N1": 2.5313,
+    "phi": 2.5313
+   },
+   "within": {
+    "N0": 1.5902,
+    "N1": 2.413,
+    "phi": 2.413
+   }
+  },
+  "phi_rule": "max(1, N1 k=1 비용 중앙값/((T-1)(K-1))), s5_phi.py B=300",
+  "univariate": "주제 유효수, HHI, D3 점유율 각각 BIC 분할(교차 확인용, 판정 아님)"
+ },
+ "bootstrap": {
+  "B": 500,
+  "unit": "연도x저널 셀 내 다항 재표집, 매번 선택 절차 전체 반복",
+  "report": "변화점별 +-1년 재현율, 가까운 변화점의 5~95% 구간"
+ },
+ "nulls": {
+  "B": 500,
+  "N0": "셀 크기만 유지하고 모든 논문을 무작위 배분(구조 전무)",
+  "N1": "저널 안에서 연도 라벨 섞기(저널 규모 유지, 저널 내 시간 구조 제거)",
+  "N2": "저널x토픽별 선형 추세(가중 OLS, 0 절단) + 관측 셀 크기 다항 표집(저널 구성은 관측 그대로)",
+  "stats": [
+   "k_sel",
+   "R_ksel=1-cost_k/cost_1",
+   "jump=선택 변화점 최대 Hellinger 점프"
+  ],
+  "primary_stat": "R_ksel",
+  "alpha": 0.05,
+  "p": "(1+#{null>=obs})/(1+B)",
+  "pass_rule": "N1과 N2 모두에서 R_ksel p<0.05 (N0는 참고)",
+  "deviation_from_plan": "계획서의 '주제 라벨을 저널x연도 셀 안에서 섞기'는 셀 내 개수가 불변이라 무의미해 N1로 대체"
+ },
+ "split_half": {
+  "B": 200,
+  "tol": 1,
+  "pass_min": 0.5,
+  "samples": [
+   "all",
+   "within"
+  ],
+  "cross_fit": "한쪽 분할로 구간을 정하고 다른 쪽 비용 감소율 보고"
+ },
+ "robust": {
+  "detrended": true,
+  "exclude_years": [
+   2007,
+   2020,
+   2025
+  ],
+  "exclude_cells": [
+   [
+    "T-IV",
+    2025
+   ],
+   [
+    "T-ITS",
+    2008
+   ],
+   [
+    "JPT",
+    2019
+   ]
+  ],
+  "A_grade_only": {
+   "tol": 1,
+   "jump_tol": 0.3
+  },
+  "ipw_hook": "yearly_venue_topic_counts_ipw.npy가 있으면 관측 탐지만 재실행",
+  "artifact_rule": "변화점이 [2007,2020,2025] +-1년이면 '측정 아티팩트 후보' 표기(제거 아님)"
+ },
+ "events": {
+  "file": "EVENTS_FROZEN.csv",
+  "sha256": "cf91c021410a053c606d7d49cb69873a19d1756b2df8863b83f0c830a2ea19d7",
+  "venue_col": "venue_short",
+  "pending_col": "pending",
+  "sets": {
+   "big": {
+    "year_col": "E_share5",
+    "flag_col": "is_large_event"
+   },
+   "entry": {
+    "year_col": "E1_effective_entry",
+    "flag_col": "is_entry_event"
+   },
+   "size": {
+    "year_col": "E_share5",
+    "flag_col": null,
+    "elig_col": "is_event_eligible",
+    "size_col": "event_size",
+    "top_frac": 0.5
+   }
+  },
+  "set_note": "big=파일의 is_large_event(기준은 n_papers_at_large 유무로 추정, 생성 코드 미확인, TR-C는 event_size<0) / size=계획서 원 규칙(eligible 중 event_size 상위 50%) / entry=진입 사건. pending(TR-E, AMAR)은 제외",
+  "tol": 1,
+  "circ_B": 2000,
+  "tests": "(i) 변화점 중 큰 사건 +-1년 비율 (ii) 큰 사건 중 +-1년 내 변화점 비율, 귀무=사건 연도 공통 순환이동",
+  "content": "일치 변화점의 저널 간 성분 비중, 신규 저널 초기 3년 벡터와 변화 벡터의 코사인(다른 저널 귀무)"
+ },
+ "typology": {
+  "rule": "탐지 없음(N1,N2 미통과) / 내재(within 표본에서도 +-1년 탐지; 사건 일치면 '내재(사건일치)', 불일치면 '미설명 전환') / 구성(all에서만 탐지, 저널 간 성분>=0.5) / 그 외 '혼합·미분류'",
+  "note": "유형 규칙의 세부(저널 간 성분 0.5, within 탐지 +-1년)는 구현 선택"
+ },
+ "geography_renewal": "S5에서는 주제 구조만 탐지. 지리(2007~)와 갱신 방식(저자 층)은 S7·S6 직전 별도 동결",
+ "caveats": [
+  "분석 집합은 임베딩 보유 논문 83.9%",
+  "부트스트랩·귀무는 논문 독립을 가정해 낙관적일 수 있음",
+  "N2는 저널 구성을 관측 그대로 유지",
+  "phi는 N1 기반이라 구성 신호를 일부 포함(보수적)",
+  "S4 안정성은 경계 통과(0.700)"
+ ],
+ "fallback": "귀무와 구분되지 않으면 '연속 변화' 서술로 전환(체제 서사 철회). S6·S7은 유지",
+ "created": "2026-10-16T12:03:13",
+ "sha256": "ab53d43796f40995bb8b7e04f22073acb0fa7e4f660572467512a047c72bc178",
+ "reference_hashes_at_freeze": {
+  "paper1/s5_lib.py": "9143b0048532e49ff681a41a400b140e29656456d0dbaaaed27339567ebee9fa",
+  "paper1/05_S5/S5_phi.json": "6876fcc2a088beb50f536e68850f7930df15c7823b9125b19574aa451fdb3366",
+  "paper1/00_S0/EVENTS_FROZEN.csv": "cf91c021410a053c606d7d49cb69873a19d1756b2df8863b83f0c830a2ea19d7",
+  "paper1/00_S0/PREREG.json": "f16e76b43fe3f08453486aa785337d79cf58288821e9fe9dc57cc909558e208d",
+  "paper1/04_S4/yearly_venue_topic_counts.npy": "9a18ba8ab9003cbdb750cb5940aa90c7844dfe3bb19c738270088826d9fdc4d0",
+  "paper1/04_S4/venues_order.csv": "253b7b63bc169ff99cddefd0c77841bfe52634577e1b2b2495eac8b8559767d4",
+  "paper1/04_S4/topics_order.csv": "80787f1ad2f8ce4897930c0c0bfec91f800a4f6ec738ee6241f2203069570ac1",
+  "paper1/04_S4/yearly_series_for_S5.csv": "b11306ec3f520c6dd00253fb0d659c1f53d71650e374e2d0f9d686be7641bd1f",
+  "paper1/04_S4/yearly_topic_shares_all.npy": "d6b17373536e9692a9b290e404582b465025ae1334c489f3c463963e987566d5",
+  "paper1/04_S4/yearly_topic_shares_fixed.npy": "aba6184a4f3d3133e2987cf3bbdaafb077c544f1db955f05f0dab2410668540a",
+  "paper1/04_S4/yearly_topic_shares_within.npy": "6fde22e28363287fceb273c794cdbdb95be5c7bb2507a04d86cf3b95e071ef43",
+  "paper1/04_S4/yearly_js_poolfloor_check.csv": "c48ccb01b76bc145ec893882e8713a4587810ff0c6c5f5fa39efb123dd255f03",
+  "paper1/04_S4/rotation_index_periods.csv": "92bee903b5511e5f11617b569cf39b6077508a5cf9c2ca848062c8f1b76359ad"
+ }
+}
