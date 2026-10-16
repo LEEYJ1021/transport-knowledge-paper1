@@ -1,0 +1,91 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "decision_status": "모든 수치는 임의 출발값. S4 결과 열람 전에 동결.",
+ "valid_topics": "S3 L7 기준 유효 149개(토픽 18 제외). 등급은 L7_topic_grade.csv",
+ "sample": "L1·L2·L3과 같은 분석 집합(76,984편, has_topic 논문). 창 내 in_sample 91,794편 중 83.9%",
+ "periods": {
+  "P0509": [
+   2005,
+   2009
+  ],
+  "P1519": [
+   2015,
+   2019
+  ],
+  "P2024": [
+   2020,
+   2024
+  ],
+  "P2025": [
+   2020,
+   2025
+  ]
+ },
+ "main_contrast": [
+  "P0509",
+  "P2025"
+ ],
+ "sens_contrast": [
+  "P1519",
+  "P2024"
+ ],
+ "quantity": {
+  "delta": "기간 간 토픽 비중 차이 Delta_s(비율 아님)",
+  "log_ratio": "log((s1+0.5/N1)/(s0+0.5/N0)), N=기간 분석 집합 논문 수",
+  "big_change_rule": "|Delta_s|가 유효 토픽 분포의 상위 3분위(상위 1/3)"
+ },
+ "quality": {
+  "percentile": "연도x저널 셀 내 평균 순위 (rank-0.5)/n, L2와 같은 정의",
+  "max_year": 2022,
+  "excluded": "2023년 이후 논문은 질 계산에서 제외",
+  "high_rule": "토픽 평균 백분위 > 0.50 이고 논문 부트스트랩 95% 구간 하한 > 0.50",
+  "bootstrap_B": 1000,
+  "top_decile_cut": 0.9,
+  "note": "출판 후 3년 고정 창(OpenAlex counts_by_year)은 제공 연도 범위 확인 후 별도 민감도로 이월"
+ },
+ "quadrants": "big_change x sign(Delta) x quality_high -> growth_highQ, growth_notHighQ, decline_highQ, decline_notHighQ, small_change",
+ "decomposition": {
+  "main": "Griliches-Regev 중점 가중 정확 분해: dS_k = sum_j wbar_j*ds_jk(저널 내) + sum_j sbar_jk*dw_j(저널 간)",
+  "invariants": "내+간 = 총변화 (허용오차 1e-9), 저널 비중 합 1",
+  "sensitivity_later": "FHK, Price는 S6에서"
+ },
+ "emerging_defs": {
+  "D1": "F6 원본 emerging 열",
+  "D2": "주 대비 평활 로그 비율 상위 14개",
+  "D3": "주 대비 Delta_s 상위 14개",
+  "D4": "민감도 대비(2015-19 대 2020-24) Delta_s 상위 14개"
+ },
+ "stability": {
+  "quadrant_within_component_min": 0.7,
+  "rule": "저널 내 성분만으로 같은 규칙을 적용했을 때 big_change 토픽의 라벨 유지 비율 >= 0.70 (S4 통과 기준)"
+ },
+ "grade_split": "모든 요약을 전체 149개와 A등급 112개로 병행 보고",
+ "deferred": [
+  "4.1 기간별 키워드 Jaccard(L1 결과 재사용)",
+  "4.6 히트맵·회전 지수",
+  "4.7 지속 저자 따라감 비율(저자 층, S6 직전)"
+ ],
+ "caveats": [
+  "제목 기반 임베딩 토픽이라 비중 변화에는 SPECTER2 순환 가능성: 인용으로 토픽을 예측하는 모형은 쓰지 않음",
+  "인용은 단일 스냅샷",
+  "분석 집합은 임베딩 보유 논문(창 내 83.9%). 토픽 결측 14,810편은 전부 F2 저자 0명(F2는 임베딩 보유 논문 위에서 구축된 것으로 추정). 보유율은 연도(2000년 0.70, 2019년 0.88, 2007년 꺾임), 저널(VT Mag 낮음), 팀 규모(토픽 없는 논문의 단독 저자 22.6% 대 4.4%)에 따라 다름. 임베딩 입력 텍스트(제목 기반 추정)와 생성 조건은 미확인",
+  "2007년 하락, T-IV 2025, T-ITS 2008은 측정 아티팩트 후보로 S5에서 표시"
+ ],
+ "missingness_sensitivity": {
+  "population": "F1 창 내(2000~2025) in_sample, 오염 269편 제외 (91,794편 예상)",
+  "model": "로지스틱 회귀 P(has_topic=1 | 연도 범주, 저널 범주, 기간(5개)x저널 상호작용, log(n_authors), is_solo), L2 정규화 C=1.0",
+  "covariate_exclusion": "F2 파생 변수는 공변량으로 쓰지 않음(F2는 임베딩 보유 논문만으로 구축되어 결측의 직접 원인과 얽힘, 순환)",
+  "weights": "안정화 역확률 w = P(has_topic=1)/p_hat, 1·99 백분위 절단, 유효 표본 수 보고",
+  "positivity": "p_hat < 0.05 인 논문 비중 보고. 위반 시 분리 보고",
+  "outputs": "가중 Delta_s로 big_change 상위 3분위를 다시 정하고, 원 big_change 토픽의 라벨 유지 비율을 전체와 A등급으로 보고",
+  "pass_note": "통과 기준 아님. 유지 비율이 0.70 미만이면 4분면 결과를 결측 민감 결과로 표기",
+  "limitation": "저널x연도 안에서도 결측이 선택적이면 보정은 불완전. 임베딩 입력 텍스트와 생성 조건은 미확인"
+ },
+ "created": "2026-10-16T11:06:54",
+ "sha256": "44a9e523c5652c5224dea04f6b71cd880a6fb50817f1104562ff837f889c211a",
+ "reference_hashes_at_freeze": {
+  "L7_topic_grade.csv": "d0fb3c9b855db88ad8d928297d09dc007ab9f04ff8b995568d0cad6c6559da1a",
+  "S3_0_PREREG.json": "751383e593b772f32dfc41fbf210b4f23e10d95608e7f65998637e0b5c549ebc"
+ }
+}
