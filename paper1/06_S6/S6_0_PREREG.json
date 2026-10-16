@@ -1,0 +1,130 @@
+{
+ "stage": "S6-0",
+ "note": "S5 산출물(변화점, 귀무 결과) 열람 후 동결. 결과를 보고 설정을 바꾸지 않는다. 구간은 S4 동결 기간(체제 아님).",
+ "seed": 2026,
+ "data_end": 2025,
+ "n_analysis": 76984,
+ "periods": {
+  "P0004": [
+   2000,
+   2004
+  ],
+  "P0509": [
+   2005,
+   2009
+  ],
+  "P1014": [
+   2010,
+   2014
+  ],
+  "P1519": [
+   2015,
+   2019
+  ],
+  "P2025": [
+   2020,
+   2025
+  ]
+ },
+ "files": {
+  "papers": "F1_papers.csv",
+  "author_paper": "F2_author_paper.csv",
+  "authors": "F4_authors.csv",
+  "ipw": "paper_ipw.csv.gz",
+  "alpha": "alpha_flags.csv"
+ },
+ "cols": {
+  "pid": [
+   "pid"
+  ],
+  "aid": [
+   "name_norm"
+  ],
+  "n_authors": [
+   "n_authors"
+  ],
+  "position": [
+   "author_pos"
+  ]
+ },
+ "ipw_model": "A",
+ "schemes": [
+  "equal",
+  "inv_n_authors",
+  "first_last",
+  "full_count"
+ ],
+ "venue_sets": [
+  "all",
+  "fixed14"
+ ],
+ "topic_sets": [
+  "all",
+  "A"
+ ],
+ "defs": [
+  "D1",
+  "D2",
+  "D3",
+  "D4"
+ ],
+ "main": {
+  "scheme": "equal",
+  "venue": "all",
+  "topic": "all",
+  "hom": "baseline",
+  "defn": "D4"
+ },
+ "circular": {
+  "D1": [
+   "P0509",
+   "P2025"
+  ],
+  "D2": [
+   "P0509",
+   "P2025"
+  ],
+  "D3": [
+   "P0509",
+   "P2025"
+  ],
+  "D4": [
+   "P1519",
+   "P2025"
+  ]
+ },
+ "B_boot": 2000,
+ "B_perm": 1000,
+ "ci": [
+  2.5,
+  97.5
+ ],
+ "follow_min_papers": 3,
+ "follow_splits": 20,
+ "homonym": "F2는 위험군(ambiguous/heavy) 이름을 이미 제외한 자료라 위험군 변형은 baseline뿐. 변형 7종 범위는 제외 전 자료가 없어 이 코드로는 산출 불가",
+ "key_vars": {
+  "K1": "초과 진입분(정의 D 토픽 합)의 부호",
+  "K2": "신규-지속 gap의 저널 내 절대합 > 저널 간 절대합",
+  "K3": "적응 항 절대기여 > 진입 항 절대기여"
+ },
+ "pass_criteria": {
+  "direction_split_max": 0.25,
+  "invariant_tol": 1e-09,
+  "perm_excess_near_zero": "관측 초과분이 순열 분포 안(백분위 5~95)이 아니면 보고"
+ },
+ "decomposition": "Griliches-Regev 중점(적응·재배분·진입(신규+복귀)·퇴출(최종+공백))",
+ "bootstrap": "저자×논문 Exp(1) 곱셈 가중(공저 연결성분 부트스트랩 미사용)",
+ "permutation": "저널×연도 셀 안에서 저자-논문 행 단위로 지속/진입 라벨 섞기",
+ "fdr": "검정 묶음: 기간 쌍 4 × 항 4 = 16 (BH q=0.05, 사용 시)",
+ "ref_hashes": {
+  "F1": "9340e0369cb9",
+  "F2": "ff6920dcdcfb",
+  "F4": "17713949cd87",
+  "S2_ipw": "17d6bad85a4f",
+  "S2_alpha": "4002a150851b",
+  "S5_PREREG": "4c67abd88403",
+  "S4_PREREG": "c3233dc287fb",
+  "S4_definition": "4147f471ce60"
+ },
+ "hash": "df08e07566ca"
+}
