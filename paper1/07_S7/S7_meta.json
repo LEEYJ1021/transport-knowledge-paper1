@@ -1,0 +1,30 @@
+{
+ "spec_sha256": "2a7a1091d7b4260e83eb539e811e6f540c4f496a04f2707dc35251c7a0f67243",
+ "at": "2026-10-19T15:49:28",
+ "quick": false,
+ "B": 500,
+ "outputs": {
+  "s7_author_group_decomp.csv": "978216aec579cf257c20021379380bedc00b1a14cad38eb181eeb9c881c6cefa",
+  "s7_author_group_decomp_QUICK.csv": "978216aec579cf257c20021379380bedc00b1a14cad38eb181eeb9c881c6cefa",
+  "s7_bootstrap.csv": "bd40f50a21c64ad76c4e626c1909b7e772ab09116adf0919f20dc16627bec2a8",
+  "s7_bootstrap_QUICK.csv": "70769d0b6f56e80589acb11f4f9d2a5efa651c7b318c6b9d3f1123dc778f7dae",
+  "s7_country_entry.csv": "413279a5a0e3b35631fb2344363663faa397b6e64d285de2392f63cd8ade0a3a",
+  "s7_country_entry_QUICK.csv": "413279a5a0e3b35631fb2344363663faa397b6e64d285de2392f63cd8ade0a3a",
+  "s7_direction_split.csv": "28e53522eb2a61a4ac90c09de1353e1d5908f194a864a3cb7b75c9644d51a8ef",
+  "s7_direction_split_QUICK.csv": "28e53522eb2a61a4ac90c09de1353e1d5908f194a864a3cb7b75c9644d51a8ef",
+  "s7_entrant_composition.csv": "5d9ed4cdce97fbeed33e28ae5016ef58ca01393da5571e45fdcf71c06205835e",
+  "s7_entrant_composition_QUICK.csv": "5d9ed4cdce97fbeed33e28ae5016ef58ca01393da5571e45fdcf71c06205835e",
+  "s7_entrant_topic_path.csv": "1900373aba9bc0dfac6a7b1bb46e5fd3d3fd91ca370199393cda406ce17e095c",
+  "s7_entrant_topic_path_QUICK.csv": "1900373aba9bc0dfac6a7b1bb46e5fd3d3fd91ca370199393cda406ce17e095c",
+  "s7_journal_control.csv": "a7da6aede75d6855ffc0d2650df74c2975063c6daddda14693654ff508c29661",
+  "s7_journal_control_QUICK.csv": "a7da6aede75d6855ffc0d2650df74c2975063c6daddda14693654ff508c29661",
+  "s7_period_stats.csv": "840bd1c8d0d7e0d2683bbc68e4d4c3c2290675ccbc547e0a2fbb48f7c9fd60cf",
+  "s7_period_stats_QUICK.csv": "840bd1c8d0d7e0d2683bbc68e4d4c3c2290675ccbc547e0a2fbb48f7c9fd60cf",
+  "s7_topic_region_decomp.csv": "59f651b23e546035240b5740c7124602f3e02c52fadd1016438e971146383d8c",
+  "s7_topic_region_decomp_QUICK.csv": "59f651b23e546035240b5740c7124602f3e02c52fadd1016438e971146383d8c",
+  "s7_trend_signs.csv": "a47086ad92984a61e8921ac03bf61afcefc2b13b131e437ae8871a14d13bfea4",
+  "s7_trend_signs_QUICK.csv": "a47086ad92984a61e8921ac03bf61afcefc2b13b131e437ae8871a14d13bfea4",
+  "s7_yearly_stats.csv": "39caa25a2f7c918455b42310c5e1a30f627ae21ec9e31c038628ab5f86b97587",
+  "s7_yearly_stats_QUICK.csv": "39caa25a2f7c918455b42310c5e1a30f627ae21ec9e31c038628ab5f86b97587"
+ }
+}
