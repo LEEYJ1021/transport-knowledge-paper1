@@ -1,0 +1,13 @@
+{
+ "passed": [
+  "safety",
+  "transit"
+ ],
+ "failed": [
+  "electrification_env",
+  "freight",
+  "active_urban",
+  "infrastructure"
+ ],
+ "at": "2026-10-19T16:46:48"
+}
