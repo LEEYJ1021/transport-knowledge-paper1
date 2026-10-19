@@ -1,0 +1,142 @@
+{
+ "seed": 2026,
+ "domains": {
+  "safety": "\\b(safety|crash(es)?|accidents?|fatal\\w*|injur\\w*|collisions?|casualt\\w*|speeding|red[- ]light|vulnerable road user\\w*)\\b",
+  "transit": "\\b(transit|buses|bus|metro|subway|rail|railway|tram|light rail|paratransit|ridership|public transport\\w*|brt)\\b",
+  "electrification_env": "\\b(electric vehicles?|evs?|charging|batter(y|ies)|hybrid|electrif\\w*|emissions?|carbon|co2|greenhouse|fuel consumption|energy consumption|air quality|pollut\\w*|decarboni\\w*|hydrogen|fuel cell)\\b",
+  "freight": "\\b(freight|logistics?|trucks?|trucking|cargo|goods movement|supply chain|ports?|container\\w*|last[- ]mile|warehouse\\w*|shipping|intermodal)\\b",
+  "active_urban": "\\b(walk\\w*|pedestrians?|cycl\\w*|bicycl\\w*|bikes?|micromobility|scooters?|land use|accessibility|urban form|transit[- ]oriented|parking|sidewalks?)\\b",
+  "infrastructure": "\\b(pavements?|bridges?|asphalt|concrete|road maintenance|highway design|geometric design|structural health|tunnels?|rutting|infrastructure (maintenance|management|asset))\\b"
+ },
+ "domain_indicators": {
+  "safety": [
+   "road_deaths",
+   "vehicles"
+  ],
+  "transit": [
+   "urban_pop",
+   "transport_co2"
+  ],
+  "electrification_env": [
+   "transport_co2",
+   "vehicles"
+  ],
+  "freight": [
+   "vehicles",
+   "transport_co2"
+  ],
+  "active_urban": [
+   "urban_pop",
+   "road_deaths"
+  ],
+  "infrastructure": [
+   "vehicles",
+   "urban_pop"
+  ]
+ },
+ "burden_years": [
+  2014,
+  2018
+ ],
+ "periods": {
+  "P0709": [
+   2007,
+   2009
+  ],
+  "P1014": [
+   2010,
+   2014
+  ],
+  "P1519": [
+   2015,
+   2019
+  ],
+  "P2025": [
+   2020,
+   2025
+  ]
+ },
+ "supply": {
+  "scheme": "inv_n_authors",
+  "variant": "main",
+  "sample": "all",
+  "groups": "소득군(wb_income_current 고정): HIC, UMC, LMC, LIC. 소득군 없음·미상은 제외",
+  "lens_capability": "소속 국가 질량(country_mass_long)",
+  "lens_target": "제목 지명(S1 title_places.target_countries), 대상 국가 균등 분할, 지명이 있는 논문만",
+  "domain_unit": "논문 단위(복수 도메인 허용, 질량은 도메인마다 전량)"
+ },
+ "sbr": "SBR(d,g,t)=도메인 d 공급 몫(그룹 g) / 지표 i 부담 몫(그룹 g), 지표 i 공통 지지 국가(부담 자료가 있는 국가)로 공급·부담 모두 제한. 지표마다 계산",
+ "country_level": {
+  "supply_intensity": "국가의 도메인 d 질량 / 국가 총 질량",
+  "burden_intensity": "지표별 강도",
+  "control": "rank(gdp_pc) 통제 편 순위상관(순위 변환 후 OLS 잔차 상관)",
+  "min_country_mass": 10.0,
+  "bootstrap_B": 1000
+ },
+ "manual": {
+  "n_random": 150,
+  "n_per_domain": 25,
+  "coders": 2,
+  "kappa_min": 0.6,
+  "precision_min": 0.85,
+  "ci": "Wilson 95%",
+  "rule": "도메인별 precision 점추정 >= 0.85인 도메인만 정렬 분석에 사용, 미달 도메인은 부록",
+  "recall": "무작위 150편의 최종 판정 양성 중 규칙 양성 비율(재현율), 통과 기준 아님"
+ },
+ "direction": {
+  "rule": "셀(도메인, 소득군, 기간)에서 두 지표의 SBR가 1의 같은 쪽(>1 또는 <1)인 비율 >= 0.75이면 '지표 일관'",
+  "min_share": 0.75
+ },
+ "interpretation": "정렬 간극 지도로만 표현. 소속≠연구 대상, 집계 수준 상관은 생태학적 오류 가능. 두 렌즈가 갈리면 그 자체를 결과로 보고.",
+ "fallback": "precision 미달·지표 불일치 시 RQ5 부록으로 내리고 과학학 계열 저널 전환",
+ "version": 2,
+ "decision_status": "v1 동결 후 SBR·precision·kappa 미계산 상태에서, 입력 자료 가용성만 근거로 지표 코드 교체(결과 열람 없음). 나머지 사양은 v1과 동일.",
+ "change_reason": "IS.VEH.NVEH.P3는 구 소스(Africa Development Indicators, 2013 갱신), EN.CO2.TRAN.ZS·EN.ATM.CO2E.KT는 WDI Archives로 이동해 2014~2018 자료 없음.",
+ "wb_codes": {
+  "pop": "SP.POP.TOTL",
+  "gdp_pc": "NY.GDP.PCAP.KD",
+  "death_rate": "SH.STA.TRAF.P5",
+  "urban_share": "SP.URB.TOTL.IN.ZS",
+  "co2_tr_mt": "EN.GHG.CO2.TR.MT.CE.AR5"
+ },
+ "gho_codes": {
+  "vehicles_reg": "RS_194"
+ },
+ "burden_rule": "WB 지표: 2014~2018 국가별 가용 연도 평균. 차량(GHO RS_194): 구간 내 가용 값(국가당 대부분 1개 연도, 2016 중심)이며 기간 평균이 아님. 결측 국가는 해당 지표에서 제외",
+ "indicator_defs": {
+  "road_deaths": "death_rate*pop/1e5 (총량)",
+  "vehicles": "GHO RS_194 등록 차량 수 (총량, 이륜차 포함 여부는 국가별로 다를 수 있음)",
+  "urban_pop": "urban_share/100*pop (총량)",
+  "transport_co2": "EN.GHG.CO2.TR.MT.CE.AR5 (Mt CO2e, WDI 정의 교통 부문 총량, 민간항공·수운 포함)"
+ },
+ "intensity_defs": {
+  "road_deaths": "death_rate",
+  "vehicles": "vehicles/pop*1e3",
+  "urban_pop": "urban_share",
+  "transport_co2": "co2_tr_mt*1e6/pop (t/인)"
+ },
+ "sensitivity": {
+  "exclude_country_sets": [
+   [
+    "CN"
+   ],
+   [
+    "IN"
+   ],
+   [
+    "CN",
+    "IN"
+   ]
+  ],
+  "applies_to": "소득군 SBR(공급·부담 양쪽에서 해당 국가 제거)과 국가 수준 편 순위상관(국가 제거)",
+  "rule": "주 결과는 바꾸지 않고, 주 결과와 SBR이 1의 같은 쪽인 셀의 비율을 보고. 사전 명시 분석"
+ },
+ "created": "2026-10-19T16:28:25",
+ "sha256": "9f59a75d7c63f58d916021228a122df5f3523f2aa8b64dc08b5875794869c0e1",
+ "refs": {
+  "S8_0_PREREG_v1.json": "cdfa819396f9e6ad3675de0f1fd3637538ed7960e811839ef43552a117a7f7fc",
+  "S7_0_PREREG.json": "87cda08fc79ddbb19406b0f58c432f0849ee4784a62857e024b79b4c824ef48d",
+  "wb_income_current.csv": "800b08873844ea99675204eea69d2d6f6b11b39ef725e1759de518ae358840dd",
+  "title_places.csv": "63e7da9b95a79d5f98973c8b5ea1913645286fa711212abf0fa7b2161dd40268"
+ }
+}
