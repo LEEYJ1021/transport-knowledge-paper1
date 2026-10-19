@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np, pandas as pd
 warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 40); pd.set_option("display.max_rows", 200)
 
-MODE = "a1"      # "freeze2" | "tag2" | "a1" | "explore"
+MODE = "explore"      # "freeze2" | "tag2" | "a1" | "explore"
 QUICK = False          # True: 검정력 B=40, 오류 점검 전용(곡선 해석 금지)
 
 ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; PA = P1/"09_PA"; S5 = P1/"05_S5"; S4 = P1/"04_S4"
@@ -187,16 +187,16 @@ def explore():
     """동결 밖 탐색적 확장. 모든 산출물·표 제목에 [Post-hoc][Exploratory]. 본 판독 규칙에 쓰지 않음."""
     c = make_ctx(); Bp = 40 if QUICK else c["cfg"]["B_power"]; sfx = "_QUICK" if QUICK else ""; rows = []
     print("[Post-hoc][Exploratory] 작은 점프(0.25x) 검정력")
-    power_grid(c, [0.25], Bp, rows); PW = pd.DataFrame(rows)
+    power_grid(c, [0.25, 0.35, 0.45], Bp, rows); PW = pd.DataFrame(rows)
     print(PW[PW.kind == "power"].pivot_table(index=["sample", "t_star"], columns="delta_x", values="power").round(2).to_string())
     bic = []
     for s in c["SAM"]:
         Y = pcs(c, s); bic += [dict(sample=s, **r) for r in bic_continuous(c, Y)]
     BC = pd.DataFrame(bic); print("\n[Post-hoc][Exploratory] 연속 꺾은선 BIC(꺾임 수 0~4)\n", BC.drop(columns="rss").round(1).to_string(index=False))
-    PW.to_csv(PA/f"PA_A1_v2_run2_EXPLORATORY_power025{sfx}.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/f"PA_A1_v2_run2_EXPLORATORY_bic_continuous{sfx}.csv", index=False, encoding="utf-8-sig")
+    PW.to_csv(PA/f"PA_A1_v2_run2_EXPLORATORY_power_small{sfx}.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/f"PA_A1_v2_run2_EXPLORATORY_bic_continuous{sfx}.csv", index=False, encoding="utf-8-sig")
     if not QUICK:
         with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f:
-            f.write(f"- {now()} | PA-A1(v2) 탐색적 확장 | 정의: 동결 밖(delta=0.25, 연속 꺾은선 BIC), 판독 규칙에 미사용 | 결과: PA_A1_v2_run2_EXPLORATORY_*.csv | 본 결과 변경 여부: 없음\n")
+            f.write(f"- {now()} | PA-A1(v2) 탐색적 확장 | 정의: 동결 밖(delta=0.25/0.35/0.45, 연속 꺾은선 BIC), 판독 규칙에 미사용 | 결과: PA_A1_v2_run2_EXPLORATORY_*.csv | 본 결과 변경 여부: 없음\n")
 
 try: {"freeze2": freeze2, "tag2": tag2, "a1": a1, "explore": explore}[MODE]()
 except Halt as e: print(f"⛔ 중단: {e}")
