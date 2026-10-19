@@ -1,0 +1,11 @@
+﻿rank,topic,name,delta,within_journal,between_journal,grade_A
+1,71,"covid, 19, pandemic, travel, post, mobility, public, spread,",0.01746931189258617,0.01719793479520986,0.000271377097376307,True
+2,69,"prediction, graph, traffic, temporal, forecasting, flow, con",0.008514506493907252,0.0054947706796053,0.003019735814301952,True
+3,45,"phase, current, control, drives, fault, pmsm, torque, predic",0.00835998788718808,0.0029289814110779362,0.005431006476110143,True
+4,131,"reinforcement, learning, deep, autonomous, control, signal, ",0.007567071191933022,0.006011213140347477,0.001555858051585544,True
+5,88,"permanent, magnet, motor, flux, machines, machine, synchrono",0.007498476007962624,0.0009200335546820189,0.006578442453280607,True
+6,99,"vehicular, edge, computing, offloading, internet, resource, ",0.006908739411886584,0.003995751351755068,0.0029129880601315144,True
+7,138,"driving, drivers, young, risky, self, anger, older, reported",-0.006293140447692512,-0.0027154334225837837,-0.00357770702510873,True
+8,123,"mobility, shared, maas, service, public, scooter, micromobil",0.006009151751627221,0.006872810554249662,-0.0008636588026224405,True
+9,20,"privacy, secure, security, authentication, preserving, schem",0.005817241224569563,0.0038073923703366036,0.0020098488542329624,True
+10,133,"prediction, trajectory, intention, autonomous, driving, lear",0.005798545264400328,0.003981604778582583,0.0018169404858177423,True
