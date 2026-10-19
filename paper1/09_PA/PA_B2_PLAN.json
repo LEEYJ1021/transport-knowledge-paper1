@@ -1,0 +1,41 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세. PA-A1 run 1·2·탐색 결과를 본 뒤 작성. PA-B2 결과는 미열람. S0~S8 판정 불변.",
+ "caps": [
+  3800,
+  3000
+ ],
+ "primary_cap": 3800,
+ "B": 200,
+ "focus_year": 2020,
+ "window_pre": [
+  2017,
+  2019
+ ],
+ "window_post": [
+  2020,
+  2022
+ ],
+ "samples": [
+  "all",
+  "fixed14",
+  "within"
+ ],
+ "downsample": "연도별 (저널x토픽) 셀 카운트에서 총 cap편을 비복원 추출(다변량 초기하). 연도 논문 수가 cap 이하이면 그대로. 저널 구성은 기대값상 유지",
+ "detector": "s5_lib.detect(P, n, pen, kmax, minlen) 그대로. pen = c_primary*phi_s*(K-1)*log(T), S5_0_PREREG.json 값. 추출된 카운트로 s5_lib.sample_P 재계산",
+ "stats": "(a) 2020 점프 J = ||가중평균(sqrt P)[2020,2023) - 가중평균(sqrt P)[2017,2020)||/sqrt(2), 가중치 4n (PA-A1과 동일), (b) 2020±1년 변화점 회수율, (c) R, (d) 변화점 연도 분포",
+ "reading": "primary_cap에서 표본별 '유지' = (회수율>=0.80) AND (J 중앙값 >= 0.80*J_obs). 세 표본 모두 유지: '표본 크기 아티팩트 아님' / 일부: '혼재(표본 의존)' / 없음: '아티팩트 후보 확정'. cap=3000은 민감도로만 보고",
+ "descriptive": "관측 자료 기술 1회: decomp_break(2017-19 대 2020-22)의 토픽 상위 10(저널 내/간), 2019->2020 저널별 논문 수 증가 상위 10",
+ "caveat": "하향 추출은 표집 잡음을 늘려 J를 위로 편향시킬 수 있어 J만으로 판정하지 않음. 벌점은 S5 값 고정이라 추출 후 비용/벌점 비율이 달라짐. 검정은 논문 독립 가정",
+ "forbidden": "결과를 본 뒤 cap·임계값·창 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-19T18:18:48",
+ "sha256": "47c93a7c57395444a5fa4387e6414c282ca465254f5846b3fde0c2e389e93675",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S5_0_PREREG.json": "4c67abd884031748c8e1e0aa0bbb3052bcca3efa1f4be52f56eeafe8f9771d4f",
+  "s5_lib.py": "9143b0048532e49ff681a41a400b140e29656456d0dbaaaed27339567ebee9fa",
+  "PA_A1_v2_run2_power_curve.csv": "e9575a3e4e7d9b9fe4e958e14647be2b427869872e2be0cb4ff0e2cba0f7dff4"
+ }
+}
