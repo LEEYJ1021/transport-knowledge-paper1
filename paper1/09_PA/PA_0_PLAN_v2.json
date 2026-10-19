@@ -1,0 +1,81 @@
+{
+ "version": 2,
+ "seed": 2026,
+ "status": "사후분석. S0~S8 결과 열람 후 설계. 탐색적, 다중성 보정 없음. 사전 명시 판정(통과/실패)은 변경하지 않음.",
+ "n_pa": 14,
+ "core_claim_pa": [
+  "PA-A1",
+  "PA-A2",
+  "PA-B2"
+ ],
+ "core_note": "지침서 0절은 A1·A2·B1(문구 작업)을, 우선순위 절은 A1·A2·B2를 권장해 불일치. 분석 3개는 A1·A2·B2로 둠(B1은 A1 결과로 정하는 문구).",
+ "items": {
+  "PA-A1": "N2 검정력 곡선 + 구간별 상수 대 선형 BIC",
+  "PA-A2": "S6 진입 우세의 구성 방어(ID 대조, 진입 정의 2종, 부트스트랩 교정)",
+  "PA-A3": "S7 국가 미상 교정, 균등 4구간, 중국 제외 HHI",
+  "PA-B1": "체제 서사 철회 문구 확정(PA-A1 연동, 분석 아님)",
+  "PA-B2": "2020 변화점 아티팩트 분리(하향 추출, 구성 토픽)",
+  "PA-B3": "신생 핵심 집합(n_defs>=3)과 D1'",
+  "PA-B4": "F1+F3 이분 등급 재추정",
+  "PA-B5": "S4 안정성 Wilson 구간, 분위 컷 곡선, 방향 축만",
+  "PA-B6": "위험군 독립 정답(ORCID, 수작업 50쌍)",
+  "PA-B7": "결측 경계 분석, 분류기 대입, 저널x연도 IPW",
+  "PA-B8": "미달 4도메인 부록 정렬, 사전 v2(새 25편)",
+  "PA-B9": "소득군 내 상관, 더미 통제, 공급 정의 민감도",
+  "PA-C1": "S6x S7 교차(중국 소속 신규 제외 분해)",
+  "PA-C2": "S7 국가 몫을 임베딩 보유 논문만으로 재계산"
+ },
+ "pa_a1": {
+  "window": [
+   2000,
+   2025
+  ],
+  "samples": [
+   "all",
+   "fixed14",
+   "within"
+  ],
+  "delta_x": [
+   0.5,
+   1,
+   2,
+   3
+  ],
+  "size_check_delta": 0,
+  "t_star": [
+   2008,
+   2012,
+   2015,
+   2020
+  ],
+  "B_power": 200,
+  "alpha": 0.05,
+  "detector": "s5_lib.detect(P, n, pen, kmax=6, minlen=3) 그대로. pen = c*phi_s*(K-1)*log(T), c=1.0, phi_s는 S5_0_PREREG.json의 detection.phi. 표본은 s5_lib.sample_P(all, fixed14, within)",
+  "null": "S5 N2 반복 분포(regime_nulls_reps.csv, null=N2, 표본별 B=500)를 그대로 사용. 판정은 S5와 같은 p=(1+#{null_R>=R})/(1+500) < 0.05 (재시뮬레이션 없음)",
+  "baseline": "s5_lib.trend_probs(cnt)의 N2 추세 확률(저널x토픽 선형 추세)에 점프를 삽입. 관측 셀 크기, gen_N2로 다항 표집",
+  "injection": "t* 이후(t>=t*) 모든 저널의 토픽 확률에 a*d를 더하고 0 절단 후 재정규화. d = 'all' 표본 관측 비중의 (2020 이후 평균 - 이전 평균). a는 'all' 표본에서 이등분법으로 정해 세 표본에 같은 계수를 씀",
+  "jump_def": "J(t)=||가중평균(sqrt P)[t,t+3) - 가중평균(sqrt P)[t-3,t)||/sqrt(2) (가중치 4n, Hellinger 거리). 목표: J(주입)-J(N2 추세 기저)=delta*J_obs(2020, 'all', 관측). 표본별 실현 비율을 함께 보고",
+  "size_check": "delta=0(점프 없음)에서 N2 반복 R의 기각률이 약 0.05인지 확인(검정 크기 점검)",
+  "secondary": "변화점 위치 회수: 선택 변화점 중 t*±1년 이내가 있는 비율",
+  "reading": "delta=1에서 t*별 검정력의 최솟값>=0.8: '이 크기의 점프가 있었다면 탐지했을 것이므로 N2 비통과는 연속 변화 증거'로 강화 / 중앙값<0.5: '체제 전환 여부 판정 불가(검정력 부족)'로 리프레이밍 / 그 사이: 어느 쪽도 쓰지 않고 곡선만 보고",
+  "reproduce_check": "관측 R이 regime_nulls.csv의 obs_R(0.7595, 0.7755, 0.7033)과 0.001 이내로 재현되지 않으면 중단",
+  "bic_compare": "관측 비중의 Hellinger 좌표 상위 5 PC에서 구간별 상수 대 구간별 선형, min_len 3, k<=6, BIC"
+ },
+ "forbidden": "PA 결과로 S0~S8 판정 변경, PA에서 유리한 정의만 본문 게재",
+ "report_marker": "[Post-hoc]",
+ "changelog": "PA_CHANGELOG.md",
+ "supersedes_sha256": "4178cadadec9d124879eadbd137b6a43ff23af9a026096fcc55e812c6ef7413c",
+ "decision_status": "v1 동결 후 PA-A1 실행 전에, S5 원본 탐지기·구간(2000~2025)·N2 반복분포로 교체. PA-A1 검정력·BIC 결과는 미열람. 단, S5의 N2 반복 분포(요약 통계)와 s5_lib 소스는 열람한 상태. 나머지 PA 항목·규칙은 v1과 동일.",
+ "change_reason": "v1의 PA-A1은 자체 대체 탐지기(2007~2025)였고 S5와 통계가 달라 '같은 CCTV로 시험'이 되지 않음.",
+ "created": "2026-10-19T17:24:07",
+ "sha256": "a98f9697fa6766a1b84ac7bb1a0cc907efee96a3eb62c50dc731065057a2698f",
+ "refs": {
+  "PA_0_PLAN.json": "cb883e9a774a74008fa63f628279ca7a55846fce5b4b58c56af079ba1bec1a56",
+  "S5_0_PREREG.json": "4c67abd884031748c8e1e0aa0bbb3052bcca3efa1f4be52f56eeafe8f9771d4f",
+  "regime_nulls_reps.csv": "0ab9a06fab4deed665ee1fcebe0f5015b8c04a1733fd3b1770fda322d5e55d9c",
+  "regime_nulls.csv": "21700f7736f76989b57bbae60461ab9f75ec0fbc276cd1aa626149591f0e7bed",
+  "s5_lib.py": "9143b0048532e49ff681a41a400b140e29656456d0dbaaaed27339567ebee9fa",
+  "s5_detect.py": "11a84fb00bb7463502975cb3ad592fe6c563a9f3c0745a68ce995d72f2b52f55",
+  "yearly_venue_topic_counts.npy": "9a18ba8ab9003cbdb750cb5940aa90c7844dfe3bb19c738270088826d9fdc4d0"
+ }
+}
