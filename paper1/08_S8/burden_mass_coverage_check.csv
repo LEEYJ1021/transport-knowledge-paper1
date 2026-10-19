@@ -1,0 +1,5 @@
+﻿indicator,n_countries,supply_mass_covered,n_HIC,n_UMC,n_LMC,n_LIC
+road_deaths,186,0.9766960687138144,58/86,56/59,47/47,25/25
+vehicles,0,0.0,0/86,0/59,0/47,0/25
+urban_pop,217,1.0,86/86,59/59,47/47,25/25
+transport_co2,0,0.0,0/86,0/59,0/47,0/25

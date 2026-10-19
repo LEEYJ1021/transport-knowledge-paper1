@@ -1,0 +1,301 @@
+﻿pid,year,venue_short,title,stratum,rule_safety,rule_transit,rule_electrification_env,rule_freight,rule_active_urban,rule_infrastructure
+40311,2021,TR-A,Is carbon regulation better than cash subsidy? The case of new energy vehicles,prec_electrification_env,False,False,True,False,False,False
+14657,2025,T-TE,"Degradation-Aware Charger Deployment, Battery Sizing, and Charge Scheduling for Electric Bus Fleets",prec_electrification_env,False,True,True,False,False,False
+12496,2025,RTBM,Does risk management orientation matter for supply chain resilience? Exploring the role of triple-A supply chain capabilities,prec_freight,False,False,False,True,False,False
+73333,2014,TR-A,The generators of paratransit trips by persons with disabilities,random,False,True,False,False,False,False
+67857,2015,TR-E,Design of limited-stop bus service with capacity constraint and stochastic travel time,random,False,True,False,False,False,False
+23324,2024,TranspPol,A national survey and roadmap on complete streets infrastructure asset management policy,prec_infrastructure,False,False,False,False,False,True
+16016,2025,TRR,Tolerance Level of Bricks in Recycled Concrete Aggregates,prec_infrastructure,False,False,False,False,False,True
+33714,2022,TR-E,The supply chain of blood products in the wake of the COVID-19 pandemic: Appointment scheduling and other restrictions,prec_freight,False,False,False,True,False,False
+8396,2025,ETRR,A combined comfort and safety-based approach to assess the performance of advanced driver assistance functions,random,True,False,False,False,False,False
+87321,2008,TR-A,The impact of governance development models on urban rail efficiency,prec_transit,False,True,False,False,False,False
+16580,2024,AAP,How does distraction affect cyclists’ severe crashes? A hybrid CatBoost-SHAP and random parameters binary logit approach,prec_safety,True,False,True,False,True,False
+26059,2023,TR-F,Improving drivers’ merging performance in work zone using an in-vehicle audio warning,random,False,False,False,False,False,False
+61488,2017,TRR,Viscoelasticplastic–Fracture Modeling of Asphalt Mixtures Under Monotonic and Repeated Loads,random,False,False,False,False,False,True
+58669,2018,TR-D,Assessing energy consumption impacts of traffic shifts based on real-world driving data,random,False,False,True,False,False,False
+73347,2014,T-ITS,Overcoming Drowsiness by Inducing Cardiorespiratory Phase Synchronization,random,False,False,False,False,False,False
+53062,2019,AAP,Comparison of empirical Bayes and propensity score methods for road safety evaluation: A simulation study,prec_safety,True,False,False,False,False,False
+38058,2022,TRR,Guidance Surface to Help Vision-Disabled Pedestrians Locate Crosswalks and Align to Cross,prec_active_urban,False,False,False,False,True,False
+77542,2012,TR-B,Synchronization of bus timetabling,prec_transit,False,True,False,False,False,False
+84766,2010,TRR,Intra-Industry Trade Analysis of U.S. State–Canadian Province Pairs,random,False,False,False,False,False,False
+86587,2009,TRR,Impact Factors of Curved Steel Multibox Girder Bridges,random,False,False,False,False,False,True
+59426,2018,TRR,Understanding Human Perception of Bus Fullness: An Empirical Study of Crowdsourced Fullness Ratings and Automatic Passenger Count Data,prec_transit,False,True,False,False,False,False
+41959,2021,IJTST,Mixed logit model based diagnostic analysis of bicycle-vehicle crashes at daytime and nighttime,prec_active_urban,True,False,False,False,True,False
+30431,2023,TRR,Assessing the Risks Associated with the Canadian Railway System Using a Safety Risk Model Approach,prec_transit,True,True,False,False,False,False
+62942,2017,TRR,Risk of Thermal Cracking from Use of Lightweight Aggregate in Mass Concrete,prec_infrastructure,False,False,False,False,False,True
+68490,2015,JPT,Measuring Passenger Loyalty to Public Transport Modes,prec_transit,False,True,False,False,False,False
+78228,2012,AAP,Evidence that changes in social cognitions predict changes in self-reported driver behavior: Causal analyses of two-wave panel data,random,False,False,False,False,False,False
+78008,2012,TRR,High-Speed Rail versus Air Transportation,random,False,True,False,False,False,False
+72689,2014,TR-E,Supply chain network competition in time-sensitive markets,prec_freight,False,False,False,True,False,False
+7496,2025,TR-D,Quantifying carbon emissions in cold chain transport: A real-world data-driven approach,random,False,False,True,False,False,False
+36948,2022,TR-F,Development and validation of the traffic displaced aggression questionnaire,random,False,False,False,False,False,False
+16118,2025,TRR,Evaluation of Hollow-Core-FRP-Concrete-Steel Column and Footing Connection,prec_infrastructure,False,False,False,False,False,True
+57458,2018,TransSci,Simultaneous Optimization of Container Ship Sailing Speed and Container Routing with Transit Time Restrictions,prec_freight,False,True,False,True,False,False
+69695,2015,TR-D,Exploring transport carbon futures using population microsimulation and travel diaries: Beijing to 2030,random,False,False,True,False,False,False
+57136,2018,TR-D,"Effects of new urban greenways on transportation energy use and greenhouse gas emissions: A longitudinal study from Vancouver, Canada",prec_electrification_env,False,False,True,False,False,False
+52805,2019,TR-D,The use of low-cost sensors for air quality analysis in road intersections,prec_electrification_env,False,False,True,False,False,False
+30635,2023,T-TE,Weight-Constrained Reliability Allocation for All-Electric Aircraft Powertrains,random,False,False,False,False,False,False
+89400,2007,TRR,Total Approach Capacity at Signalized Intersections with Shared and Short Lanes,random,False,False,False,False,False,False
+7768,2025,JTG,Understanding inequalities in geographic accessibility to emergency cyclone shelters in Bangladesh under climate change,prec_active_urban,False,False,False,False,True,False
+44274,2021,TRR,Novel Approach for Design of Merging and Diverging Length at Toll Plazas: A Case Study,random,False,False,False,False,False,False
+29133,2023,TR-F,Bicycling comfort at roundabouts: Effects of design and situational factors,prec_active_urban,False,False,False,False,True,False
+49834,2020,VT Mag,"Interference Control for Railway Wireless Communication Systems: Techniques, Challenges, and Trends",random,False,True,False,False,False,False
+41330,2021,TR-C,The association between crashes and safety-critical events: Synthesized evidence from crash reports and naturalistic driving data among commercial truck drivers,prec_safety,True,False,False,True,False,False
+59085,2018,TranspPol,Mobility in cities: Distributional impact analysis of transportation improvements in São Paulo Metropolitan Region,random,False,False,False,False,False,False
+58805,2018,TR-A,The cost structure of transit in small urban and rural U.S. communities,prec_transit,False,True,False,False,False,False
+13868,2025,TranspPol,"The evolution of determinants influencing the large-scale promotion of battery electric vehicle: Empirical study of Tianjin, China",prec_electrification_env,False,False,True,False,False,False
+42903,2021,TRR,Predicting International Roughness Index Based on Surface Distresses in Various Climate and Traffic Conditions Using Laser Crack Measurement System,random,False,False,False,False,False,False
+53381,2019,TRR,Pattern Identification from Older Bicyclist Fatal Crashes,prec_active_urban,True,False,False,False,True,False
+90251,2007,TransSci,TSL Dissertation Abstracts—2006 Transportation Science and Logistics Society Dissertation Prize Competition,prec_freight,False,False,False,True,False,False
+73308,2014,TRR,Probabilistic Life-Cycle Assessment as Network-Level Evaluation Tool for Use and Maintenance Phases of Pavements,prec_infrastructure,False,False,False,False,True,True
+52885,2019,TRR,Expansion Level of Steel Slag Aggregate Effects on Both Material Properties and Asphalt Mixture Performance,prec_infrastructure,False,False,False,False,False,True
+51544,2019,TR-E,Revenue management for container liner shipping services: Critical review and future research directions,prec_freight,False,False,False,True,False,False
+37902,2022,TRR,Analysis of Indoor Guided Pedestrian Evacuation Dynamics in Single- and Multiple-Exit Scenarios: Toward a Unified Scheme for Guide Assignment,random,False,False,False,False,True,False
+79284,2012,TRR,Reliability-Based Mechanistic–Empirical Pavement Design with Statistical Methods,prec_infrastructure,False,False,False,False,False,True
+86771,2009,TRR,Use of Stay-in-Place Forms for Concrete Bridge Decks in Tennessee,prec_infrastructure,False,False,False,False,False,True
+27837,2023,TR-A,A novel modelling approach of integrated taxi and transit mode and route choice using city-scale emerging mobility data,prec_transit,False,True,False,False,False,False
+59246,2018,TR-D,Analyzing the effects of Gas-to-Liquid (GTL) diesel blending on the efficiency and emissions of petroleum refineries and transport fuels in the U.S. and Europe,prec_electrification_env,False,False,True,False,False,False
+84140,2010,TRR,Development of a Microsimulation Analysis Tool for Paratransit Patron Accessibility in Small and Medium Communities,prec_active_urban,False,True,False,False,True,False
+33306,2022,JTG,"Who benefits from sustainable mobility transitions? Social inclusion, populist resistance and elite capture in Bergen, Norway",random,False,False,False,False,False,False
+31886,2023,AAP,A case-control study of the impact of automated speed enforcement on motorist speeds and speeding violations in Rwanda,prec_safety,True,False,False,False,False,False
+46438,2020,JTG,Potential for reducing carbon emissions from urban traffic based on the carbon emission satisfaction: Case study in Shanghai,prec_electrification_env,False,False,True,False,False,False
+44759,2021,TRR,Geosynthetic Reinforced Fill Material for Tennessee Bridge Approach Slab Support,prec_infrastructure,False,False,False,False,False,True
+45570,2020,AMAR,Analysis of injury severity of rear-end crashes in work zones: A random parameters approach with heterogeneity in means and variances,prec_safety,True,False,False,False,False,False
+59834,2017,TR-C,A novel passenger flow prediction model using deep learning methods,random,False,False,False,False,False,False
+19669,2024,TR-F,"Matching vs. Mismatching Signals of External Human-Machine Interface and Vehicle Kinematics: An Examination of Pedestrian Crossing Behavior and Trust, Safety, and Affective Ratings in Interactions with Differently Sized Automated Vehicles",prec_active_urban,True,False,False,False,True,False
+13683,2025,JTG,Determinants of violence on public transportation from the perspective of a small city in the global south,prec_transit,False,True,False,False,False,False
+29408,2023,T-ITS,A Rolling-Horizon Strategy for Dynamic Rebalancing of Free-Floating Bike-Sharing Systems,prec_active_urban,False,False,False,False,True,False
+45612,2020,TranspRev,Does transport help people to gain employment? A systematic review and meta-analysis of the empirical evidence,random,False,False,False,False,False,False
+28943,2023,T-ITS,A Demand Truncation and Migration Poisson Model for Real Demand Inference in Free-Floating Bike-Sharing System,random,False,False,False,False,True,False
+33357,2022,T-TE,Electric Vehicle-to-Vehicle Energy Transfer Using On-Board Converters,random,False,False,True,False,False,False
+56494,2018,TR-B,Conditional value-at-risk (CVaR) methodology to optimal train configuration and routing of rail hazmat shipments,random,False,True,False,False,False,False
+28836,2023,IJTST,Comparing the vibrational behavior of e-kick scooters and e-bikes: Evidence from Italy,prec_active_urban,False,False,False,False,True,False
+16907,2024,JTG,Evaluating the impacts of supply-demand dynamics and distance decay effects on public transit project assessment: A study of healthcare accessibility and inequalities,prec_transit,False,True,False,False,True,False
+13856,2025,TranspPol,Blind tickets to solve the inefficiencies of subsidies for residents in air transport markets,random,False,False,False,False,False,False
+73516,2014,TRR,Demonstrating a Bottom-Up Framework for Evaluating Energy and Emissions Performance of Electric Rail Transit Options,prec_transit,False,True,True,False,False,False
+83967,2010,TRR,Air Pollution Impacts of Shifting Freight from Truck to Rail at California's San Pedro Bay Ports,prec_electrification_env,False,True,True,True,False,False
+52645,2019,T-ITS,sEnDec: An Improved Image to Image CNN for Foreground Localization,random,False,False,False,False,False,False
+88543,2008,TRR,Cost-Comparison Methodology for Selecting Appropriate Asphalt Concrete Mixes,prec_infrastructure,False,False,False,False,False,True
+61129,2017,CACIE,The Stretching Method for Vibration‐Based Structural Health Monitoring of Civil Structures,prec_infrastructure,False,False,False,False,False,True
+9232,2025,T-ITS,Which Cycling Environment Appears Safer? Learning Cycling Safety Perceptions From Pairwise Image Comparisons,prec_active_urban,True,False,False,False,True,False
+83472,2010,TRR,Response Sensitivity for Probabilistic Damage Assessment of Coastal Bridges under Surge and Wave Loading,random,False,False,False,False,False,True
+56467,2018,AAP,Likelihood estimation of secondary crashes using Bayesian complementary log-log model,random,True,False,False,False,False,False
+57209,2018,IJTST,Traffic lights synchronization for Bus Rapid Transit using a parallel evolutionary algorithm,random,False,True,False,False,False,False
+44323,2021,TR-F,Evaluating driver comprehension of the roadway environment to retain accountability of safety during driving automation,random,True,False,False,False,False,False
+35328,2022,T-ITS,Fast-HBNet: Hybrid Branch Network for Fast Lane Detection,random,False,False,True,False,False,False
+37492,2022,ITS Mag,A New Cellular Vehicle-to-Everything Application: Daytime Visibility Detection and Prewarning on Expressways,random,False,False,False,False,False,False
+60771,2017,TR-A,What drives CO2 emissions from China’s civil aviation? An exploration using a new generalized PDA method,prec_electrification_env,False,False,True,False,False,False
+20304,2024,TR-F,Changes in glance and hands-on-wheel behaviors when engaging with non-driving-related tasks while using Tesla Autopilot,random,False,False,False,False,False,False
+10530,2025,T-ITS,Semantic-Aware Low-Light Image Enhancement Network for Recognizing Semantics in Intelligent Transportation Systems,random,False,False,False,False,False,False
+67219,2016,TRR,Conducting Efficient Transit Surveys of Households Surrounding Transit-Oriented Developments,prec_active_urban,False,True,False,False,True,False
+50227,2020,TRR,Operational and Safety Impact Analysis of Implementing Emergency Shoulder Use (ESU) for Hurricane Evacuation,random,True,False,False,False,False,False
+35321,2022,TRIP,Pedestrian movement simulation for an airport considering social distancing strategy,prec_active_urban,False,False,False,False,True,False
+24566,2024,TR-A,Critical perspectives on bicycle sharing and equity,random,False,False,False,False,True,False
+47913,2020,RTBM,Social media usage in container shipping companies: Analysis of Facebook messages,prec_freight,False,False,False,True,False,False
+57441,2018,T-ITS,Efficient Real-Time Control Design for Automatic Train Regulation of Metro Loop Lines,random,False,True,False,False,False,False
+74400,2014,TRR,Understanding Pedestrian and Bicyclist Compliance and Safety Impacts of Walk Modes at Signalized Intersections for a Livable Community,prec_safety,True,False,False,False,True,False
+87259,2008,TranspRev,Vehicle Restrictions in Four Latin American Cities: Is Congestion Pricing Possible?,random,False,False,False,False,False,False
+36980,2022,T-ITS,Pavement Marking Incorporated With Binary Code for Accurate Localization of Autonomous Vehicles,random,False,False,False,False,False,True
+20101,2024,T-TE,Meta-Heuristic Adaptive Equivalent Consumption Minimization of a Fuel Cell Vehicle Incorporating Fuzzy Inference and Particle Swarm Optimization,prec_electrification_env,False,False,True,False,False,False
+45449,2020,TR-B,Green technology adoption for fleet deployment in a shipping network,prec_freight,False,False,False,True,False,False
+16507,2024,GEIT,Thermal heat flux distribution prediction in an electrical vehicle battery cell using finite element analysis and neural network,prec_electrification_env,False,False,True,False,False,False
+81889,2011,TRR,Challenges of Skew in Bridges with Steel Girders,random,False,False,False,False,False,True
+44501,2021,TRR,Prioritizing Pedestrian and Bicyclist Count Locations for Volume Estimation,prec_active_urban,False,False,False,False,True,False
+54998,2019,TranspRev,Uniformity of transport law through international regimes,random,False,False,False,False,False,False
+71498,2014,TR-B,Competitive transit network design in cities with radial street patterns,random,False,True,False,False,False,False
+61892,2017,TR-E,The equilibria of port investment in a multi-port region in China,prec_freight,False,False,False,True,False,False
+50765,2019,TR-C,Understanding consumers’ willingness to use ride-sharing services: The roles of perceived value and perceived risk,random,False,False,False,False,False,False
+35973,2022,T-TE,Multi-Level Transient Modeling of the Aeronautic Asymmetric 18-Pulse Phase-Shifting Auto-Transformer Rectifier in Full-Cycle Design,prec_active_urban,False,False,False,False,True,False
+52252,2019,T-ITS,Cooperative Control of Metro Trains to Minimize Net Energy Consumption,prec_transit,False,True,True,False,False,False
+54877,2019,TRR,Reliability Assessment of Steel Bridges for Specialized Hauling Vehicles,prec_infrastructure,False,False,False,False,False,True
+10115,2025,TRR,Development of a Driver Safety Reward System Incorporating You Only Look Once (YOLO)-Based Traffic Violation Detection at Roundabouts under Highly Heterogeneous Traffic,prec_safety,True,False,False,False,False,False
+16500,2024,TR-D,Is electric truck a viable alternative to diesel truck in long-haul operation?,prec_freight,False,False,False,True,False,False
+23260,2024,JTG,Inter-regional rail travel and housing markets connectedness between London and other regions,prec_transit,False,True,False,False,False,False
+27523,2023,TRR,Spatial Inequity of Transit and Automobile Access Gap across America for Underserved Population,prec_transit,False,True,False,False,False,False
+40496,2021,TR-B,Integrated train dwell time regulation and train speed profile generation for automatic train operations on high-density metro lines: A distributed optimal control method,prec_transit,False,True,False,False,False,False
+53024,2019,TR-B,Impact of ride-pooling on the nature of transit network design,prec_transit,False,True,False,False,False,False
+21740,2024,TransSci,Pricing and Demand Management for Integrated Same-Day and Next-Day Delivery Systems,random,False,False,False,False,False,False
+89511,2007,TRR,"Characteristics of Drayage Operations at the Port of Houston, Texas",prec_freight,False,False,False,True,False,False
+22925,2024,IJST,Life cycle thinking-based analysis of diesel and electric-powered buses for Canadian transit systems,prec_transit,False,True,False,False,True,False
+87943,2008,TR-D,Evaluation of exposure factors applied in marginal external cost analysis of transportation related air pollution,random,False,False,True,False,False,False
+78367,2012,AAP,Hybrid III anthropomorphic test device (ATD) response to head impacts and potential implications for athletic headgear testing,random,False,False,True,False,False,False
+77809,2012,TRR,Effects of Oxidative Aging on Asphalt Mixture Properties,prec_infrastructure,False,False,False,False,False,True
+82284,2011,TRR,"Repair of Storm-Damaged Slopes, Lower Mount Wilson Road, Los Angeles County, California",random,False,False,False,False,False,False
+79728,2012,RTBM,A further look at the Staggers Rail Act: Mining the available data,random,False,True,False,False,False,False
+68969,2015,AAP,"The relation between speed environment, age and injury outcome for bicyclists struck by a motorized vehicle – a comparison with pedestrians",random,True,False,False,False,True,False
+26346,2023,T-ITS,Real-Time Detection of Voids in Asphalt Pavement Based on Swin-Transformer-Improved YOLOv5,prec_infrastructure,False,False,False,False,False,True
+48643,2020,TRIP,"Interprofessional collaboration to promote transportation equity for environmental justice populations: A mixed methods study of civil engineers, transportation planners, and social workers' perspectives",random,False,False,False,False,False,False
+12466,2025,RTBM,Forecasting daily freight flow in cold regions of China using the hybrid Prophet model considering the importance of festivals and epidemic prevention policy,prec_electrification_env,False,False,True,True,False,False
+53846,2019,JTG,The magnitude of detours faced by commercial flights: A global assessment,random,False,False,False,False,False,False
+23012,2024,T-ITS,Improved Crowd Dynamics Analysis Considering Physical Contact Force and Panic Emotional Propagation,random,False,False,False,False,False,False
+69523,2015,JTTE,Noise emission of concrete pavement surfaces produced by diamond grinding,prec_electrification_env,False,False,True,False,False,True
+72724,2014,T-ITS,Two-Half-Barrier Level Crossings Versus Four-Half-Barrier Level Crossings: A Comparative Risk Analysis Study,random,False,False,False,False,False,False
+85191,2009,TR-E,The integrated yard truck and yard crane scheduling problem: Benders’ decomposition-based methods,prec_freight,False,False,False,True,False,False
+79674,2012,JPT,Use of Alternative Fuels and Hybrids by Small Urban and Rural Transit,random,False,True,False,False,False,False
+50582,2020,TRR,Recommended Test Vehicle Update for Manual for Assessing Safety Hardware,prec_safety,True,False,False,False,False,False
+64947,2016,TR-F,Multiple facets of overconfidence: Implications for driving safety,random,True,False,False,False,False,False
+65740,2016,TRR,Effect of Overweight Trucks on Bridge Deck Deterioration Based on Weigh-in-Motion Data,prec_freight,False,False,False,True,False,True
+50234,2020,TRR,Measuring Compliance of Driver Yielding at Enhanced Pedestrian Crossings in Utah,prec_active_urban,False,False,False,False,True,False
+74478,2014,TRR,Spreadsheet Method of Forecasting the Cost of Sustaining a Set of Bridge Connections,prec_infrastructure,False,False,False,False,False,True
+51024,2019,TR-A,The impact of road advertising signs on driver behaviour and implications for road safety: A critical systematic review,prec_safety,True,False,False,False,False,False
+66069,2016,TR-A,"The effect of contract renewal and competitive tendering on public transport costs, subsidies and ridership",prec_transit,False,True,False,False,False,False
+74328,2014,TRR,"Impact of Design and Construction on Quality, Consistency, and Safety of Traffic Control Plans",prec_safety,True,False,False,False,False,False
+19398,2024,ITS Mag,Cognitive Traffic Accident Anticipation,random,True,False,False,False,False,False
+24344,2024,T-IV,Method for evaluating controllability for hands-off highway pilot function: Field test,random,False,False,False,False,False,False
+79715,2012,TRR,"Impacts of Transit Priority on Signal Coordination: Case Study of Toronto, Ontario, Canada",prec_transit,False,True,False,False,False,False
+73120,2014,TR-D,Stochastic frontier analysis of excess access to mid-trip battery electric vehicle fast charging,random,False,False,True,False,False,False
+34485,2022,AMAR,Grouped Random Parameters Negative Binomial-Lindley for accounting unobserved heterogeneity in crash data with preponderant zero observations,prec_safety,True,False,False,False,False,False
+20957,2024,TR-A,Promoting the adoption of electric vehicles through private charging infrastructure: Should subsidies be for the builder or non-builder?,random,False,False,True,False,False,False
+53040,2019,TRIP,Comparison of Waze crash and disabled vehicle records with video ground truth,prec_safety,True,False,False,False,False,False
+20133,2024,TransSci,CARMA: Fair and Efficient Bottleneck Congestion Management via Nontradable Karma Credits,random,False,False,False,False,False,False
+51953,2019,T-ITS,Driver Inattention Detection in the Context of Next-Generation Autonomous Vehicles Design: A Survey,random,False,False,False,False,False,False
+14931,2025,JICV,An Efficient Bidirectional Search Hybrid A* Method for Parking Path Planning in Adjacent Vehicle Deviation Scenarios to Enhance Passenger Comfort,prec_electrification_env,False,False,True,False,True,False
+29685,2023,T-TE,Model Predictive Control of SRMs Based on Modified Multilevel Power Converter,random,False,False,False,False,False,False
+14388,2025,T-ITS,Model-Free Adaptive Event-Triggered Predictive Cooperative Control for Multiple Subway Trains Under Data Dropouts,prec_transit,False,True,False,False,False,False
+11016,2025,TR-D,Modeling traffic-related air and noise pollution: Multi-criteria assessment case study around schools,prec_electrification_env,False,False,True,False,False,False
+48216,2020,TranspPol,Do public-private partnerships perform better? A comparative analysis of costs for additional work and reasons for contract changes in Dutch transport infrastructure projects,random,False,False,False,False,False,False
+42670,2021,TRR,Measuring Instantaneous Resilience of a Highway Bridge Subjected to Earthquake Events,random,False,False,False,False,False,True
+65346,2016,AAP,Modelling the impact of causal and non-causal factors on disruption duration for Toronto’s subway system: An exploratory investigation using hazard modelling,random,False,True,False,False,False,False
+54979,2019,TRR,Modeling the Effect of New Commuter Bus Service on Demand and Impact on Greenhouse Gas Emissions: Application to Greater Boston,prec_transit,False,True,True,False,False,False
+45350,2020,T-ITS,A Review on Swarm Intelligence and Evolutionary Algorithms for Solving the Traffic Signal Control Problem,random,False,False,False,False,False,False
+7659,2025,TR-D,Waste-modified asphalt for climate change mitigation: Carbon and pollution reduction,prec_infrastructure,False,False,True,False,False,True
+40593,2021,TR-D,Relationship between tyre cavity noise and road surface characteristics on low-noise pavements,prec_infrastructure,False,False,False,False,False,True
+78963,2012,TRR,Lowering the Carbon Footprint of Concrete by Reducing Clinker Content of Cement,prec_infrastructure,False,False,True,False,False,True
+46187,2020,TRIP,Are women greener than men? A preference analysis of women and men from major German cities over sustainable urban mobility,random,False,False,False,False,False,False
+10122,2025,TransSci,Data-Driven Policies for the Online Ride-Hailing Problem with Fairness,random,False,False,False,False,False,False
+34357,2022,JICV,Traffic signal coordination control for arterials with dedicated CAV lanes,random,False,False,False,False,False,False
+16105,2025,TRR,Safety Effectiveness of High Friction Surface Treatment at Signalized Intersections in British Columbia,random,True,False,False,False,False,False
+45918,2020,AAP,Roles of infrastructure and land use in bicycle crash exposure and frequency: A case study using Greater London bike sharing data,random,True,False,False,False,True,False
+30285,2023,TR-B,Intermodal hub network design with generalized capacity constraints and non-synchronized train–truck operations,prec_freight,False,False,False,True,False,False
+65341,2016,TRR,Evaluation of AASHTO Suggested Design Values for Reinforced Concrete Bridge Piers Under Vehicle Collisions,prec_infrastructure,True,False,False,False,False,True
+48068,2020,TR-D,Modelling transport emissions in an uncertain future: What actions make a difference?,random,False,False,True,False,False,False
+32483,2022,T-ITS,A Multimodal Fusion Fatigue Driving Detection Method Based on Heart Rate and PERCLOS,random,False,False,False,False,False,False
+60810,2017,AAP,The importance of spatial orientation and knowledge of traffic signs for children's traffic safety,prec_safety,True,False,False,False,False,False
+73864,2014,TRR,Mechanical Responses and Viscoelastic Properties of Asphalt Mixtures under Heavy Static and Dynamic Aircraft Loads,prec_infrastructure,False,False,False,False,False,True
+46754,2020,RailEng,Running safety assessment of a train traversing a three-tower cable-stayed bridge under spatially varying ground motion,prec_safety,True,False,False,False,False,True
+10031,2025,T-ITS,Behavior Trees in Functional Safety Supervisors for Autonomous Vehicles,prec_safety,True,False,False,False,False,False
+41824,2021,TR-D,Impact of public transport strikes on traffic and pollution in the city of Barcelona,prec_electrification_env,False,True,True,False,False,False
+62092,2017,TR-E,Ocean carrier canvassing strategies with uncertain demand and limited capacity,random,False,False,False,False,False,False
+36510,2022,T-ITS,TGAE: Temporal Graph Autoencoder for Travel Forecasting,random,False,False,False,False,False,False
+85910,2009,TRR,Estimation of Truck Traffic Inputs for Mechanistic–Empirical Pavement Design in California,prec_infrastructure,False,False,False,True,False,True
+43268,2021,AAP,Crash involvement among unlicensed 17 year old drivers before and after licensing at 17 was allowed,random,True,False,False,False,False,False
+26150,2023,TR-E,Does green technology innovation contribute to logistics companies’ market value? The effects of stakeholder engagement and public attention,prec_freight,False,False,False,True,False,False
+18828,2024,AAP,Safety assessment for autonomous vehicles: A reference driver model for highway merging scenarios,prec_safety,True,False,False,False,False,False
+32169,2023,TRR,Streamlining Asphalt Mixture Dynamic Modulus Testing for Determination of Cyclic Fatigue Index Parameter (Sapp) Based on the Simplified Viscoelastic Continuum Damage Model,random,False,False,False,False,True,True
+51015,2019,TR-C,Cooperative adaptive cruise control for connected autonomous vehicles by factoring communication-related constraints,random,False,False,False,False,False,False
+85778,2009,TRR,Examination of Highway–Rail Grade Crossing Collisions Nationally from 1998 to 2007,random,True,True,False,False,False,False
+54311,2019,TR-C,Dynamic trucking equilibrium through a freight exchange,prec_freight,False,False,False,True,False,False
+62720,2017,IJTST,Pedestrian safety under permissive left-turn signal control,prec_active_urban,True,False,False,False,True,False
+46215,2020,TranspPol,Analysis of modal shift potential towards intermodal transportation in short-distance inland container transport,prec_freight,False,False,False,True,False,False
+20989,2024,TR-C,Integrated operations strategies for shared and privately-owned autonomous vehicles: A deep reinforcement learning framework,random,False,False,False,False,False,False
+75673,2013,TransSci,Flexible Connections in PESP Models for Cyclic Passenger Railway Timetabling,random,False,True,False,False,True,False
+31930,2023,T-IV,Civilian Autonomous Carriers for Peaceful Services: Intelligent Vehicle Carries Enabled Future Transportation and Logistics,random,False,False,False,True,False,False
+54369,2019,ETRR,Port selection based on customer questionnaire: a case study of German port selection,prec_freight,False,False,False,True,False,False
+35853,2022,T-TE,Error Calibration of Current Reconstruction Considering Noncentral Sampling for OW-PMSM Drive With Single Current Sensor,random,False,False,False,False,False,False
+23418,2024,TRIP,Towards Pay-As-You-Move (PAYM) insurance: The multimodal mobility risk transfer solution,random,False,False,False,False,False,False
+76078,2013,TR-F,Cognitive and psychomotor tests as predictors of on-road driving ability in older primary care patients,random,False,False,False,False,False,False
+41982,2021,TR-C,The adverse impact of electric vehicles on traffic congestion in the morning commute,random,False,False,True,False,False,False
+33755,2022,JTG,"“It's annoying, confusing, and it's irritating”: Lived expertise for epistemic justice and understanding inequitable accessibility",random,False,False,False,False,True,False
+33937,2022,TR-E,Modeling the capacity of multimodal and intermodal urban transportation networks that incorporate emerging travel modes,prec_freight,False,False,False,True,False,False
+14292,2025,T-ITS,Deciding Truck Platooning Operational Rules With Stochastic Approximation for Vehicle Safe Overtaking on Two-Lane Undivided Highways,prec_freight,False,False,False,True,False,False
+24737,2024,T-IV,Influence of the Pedestrian Geometry in Collision Avoidance Systems,prec_safety,True,False,False,False,True,False
+42055,2021,TBS,Quantifying travellers’ evaluation of waiting time uncertainty in public transport networks,random,False,True,False,False,False,False
+36633,2022,VT Mag,Energy Consumption of a Battery Electric Vehicle in Winter Considering Preheating: Tradeoff Between Improved Performance and Total Energy Consumption,random,False,False,True,False,False,False
+73096,2014,TRR,New Generic Multiclass Kinematic Wave Traffic Flow Model,random,False,False,False,False,False,False
+37965,2022,TranspPol,Applying data envelopment analysis to allocate incentive bonuses for container terminal operators,prec_freight,False,False,False,True,False,False
+41739,2021,TR-F,"Investigating sex, masculinity and femininity in relation to impulsive driving and driving anger expression",random,False,False,False,False,False,False
+43067,2021,TR-C,Book-ahead & supply management for ridesourcing platforms,random,False,False,False,False,False,False
+17885,2024,T-ITS,Toward Sustainable Last-Mile Deliveries: A Comparative Study of Energy Consumption and Delivery Time for Drone-Only and Drone-Aided Public Transport Approaches in Urban Areas,prec_transit,False,True,True,True,False,False
+45820,2020,TR-E,The shore power deployment problem for maritime transportation,random,False,False,False,False,False,False
+41079,2021,TR-C,Do personalized economic incentives work in promoting shared mobility? Examining customer churn using a time-varying Cox model,random,False,False,False,False,False,False
+57002,2018,JTG,Empirical models of transit demand with walk access/egress for planning transit oriented developments around commuter rail stations in the Greater Toronto and Hamilton Area,prec_active_urban,False,True,False,False,True,False
+30263,2023,TR-A,Microtransit deployment portfolio management using simulation-based scenario data upscaling,random,False,False,False,False,False,False
+65394,2016,TR-F,Speed-calming measures and their effect on driving speed – Test of a new technique measuring speeds based on GNSS data,random,False,False,False,False,False,False
+65586,2016,TRR,Hybrid Approach for Short-Term Traffic State and Travel Time Prediction on Highways,random,False,False,True,False,False,False
+67559,2016,T-ITS,Apple vs. FBI,random,False,False,False,False,False,False
+57378,2018,ITS Mag,Establishing Heterogeneous Parking Prices for Uniform Parking Availability for Autonomous and Human-Driven Vehicles,prec_active_urban,False,False,False,False,True,False
+76046,2013,TR-C,Differentiated congestion pricing of urban transportation networks with vehicle-tracking technologies,random,False,False,False,False,False,False
+46780,2020,T-TE,Inventory Planning and Real-Time Routing for Network of Electric Vehicle Battery-Swapping Stations,random,False,False,True,False,False,False
+22897,2024,TRIP,Factors influencing wrong way driving behavior of motorcycle riders in Thailand,random,False,False,False,False,False,False
+73421,2014,TRR,New Procedure for Selecting Chemical Treatments for Unpaved Roads,random,False,False,False,False,False,False
+79204,2012,AAP,Safety effects of low-cost engineering measures. An observational study in a Portuguese multilane road,prec_safety,True,False,False,False,False,False
+89398,2007,TRR,Urban Freeway On-Ramps,random,False,False,False,False,False,False
+69624,2015,TRR,Rectangular Rapid Flashing Beacons and Pedestrian Hybrid Beacons: Pedestrian and Driver Behavior before and after Installation,random,False,False,True,False,True,False
+74542,2013,TR-B,The time-dependent pollution-routing problem,prec_electrification_env,False,False,True,False,False,False
+77815,2012,JTG,Shaping port governance: the territorial trajectories of reform,random,False,False,False,True,False,False
+46848,2020,TR-F,Scores on a new hazard prediction test are associated with both driver experience and crash involvement,prec_safety,True,False,False,False,False,False
+21940,2024,TRIP,How do seaports use foresight to face environmental sustainability disruptions?,random,False,False,False,False,False,False
+30880,2023,T-TE,Voxel RCNN-HA: A Point Cloud Multiobject Detection Algorithm With Hybrid Anchors for Autonomous Driving,prec_electrification_env,False,False,True,False,False,False
+34337,2022,TR-B,A branch-and-price approach for airport gate assignment problem with chance constraints,random,False,False,False,False,False,False
+85044,2009,AAP,Accident under-reporting among employees: Testing the moderating influence of psychological safety climate and supervisor enforcement of safety practices,random,True,False,False,False,False,False
+11007,2025,TR-D,Is Title VI enough? A review of bus network redesign equity analyses,prec_transit,False,True,False,False,False,False
+10735,2025,RailEng,Refining arrival headway for high-speed trains approaching a large railway station: a speed profile intervention approach,prec_transit,False,True,False,False,False,False
+47962,2020,T-TE,Mobility-Aware Electric Vehicle Fast Charging Load Models With Geographical Price Variations,prec_electrification_env,False,False,True,False,False,False
+85764,2009,TRR,"Entry-Only Automated Fare-Collection System Data Used to Infer Ridership, Rider Destinations, Unlinked Trips, and Passenger Miles",random,False,True,False,False,False,False
+10176,2025,eTransp,Assessing decarbonization benefits of transport electrification: A provincial perspective in China,random,False,False,True,False,False,False
+61761,2017,TranspPol,Relocation of manufacturing industry from the perspective of transport accessibility – An application of percolation theory,prec_active_urban,False,False,False,False,True,False
+67707,2015,TR-C,An agent-based model of a multimodal near-field tsunami evacuation: Decision-making and life safety,prec_safety,True,False,False,False,False,False
+38788,2021,T-ITS,Key Points Estimation and Point Instance Segmentation Approach for Lane Detection,random,False,False,False,False,False,False
+50352,2020,TRR,Modeling and Control Using Connected and Automated Vehicles with Chained Asymmetric Driver Behavior under Stop-and-Go Oscillations,random,False,False,False,False,False,False
+60545,2017,T-ITS,A Simulation Study of Predicting Real-Time Conflict-Prone Traffic Conditions,random,False,False,False,False,False,False
+41368,2021,TRR,Modeling CO2 Emissions from Trips using Urban Air Mobility and Emerging Automobile Technologies,random,False,False,True,False,False,False
+55279,2018,AMAR,Analysis of accident injury-severities using a correlated random parameters ordered probit approach with time variant covariates,random,True,False,False,False,False,False
+17105,2024,T-IV,"High-Precision Positioning, Perception and Safe Navigation for Automated Heavy-Duty Mining Trucks",random,False,False,False,True,False,False
+59928,2017,TR-D,What determines rail transit passenger volume? Implications for transit oriented development planning,prec_transit,False,True,False,False,True,False
+58398,2018,TRR,Effects of Pier Deformation on Train Operations within High-Speed Railway Ballastless Track–Bridge Systems,prec_infrastructure,False,True,False,False,False,True
+86790,2009,TRR,Rural Preparedness for Traffic Control in Agricultural Emergencies,random,False,False,False,False,False,False
+10240,2025,RTBM,Evaluation of seaport equipment performance using multi-directional efficiency analysis for sustainable logistics operations: A case from Portugal,prec_freight,False,False,False,True,False,False
+47836,2020,AAP,Bayesian networks for imbalance data to investigate the contributing factors to fatal injury crashes on the Ghanaian highways,prec_safety,True,False,False,False,False,False
+53888,2019,T-TE,Analysis and Design of Soft-Switching Active-Clamping Half-Bridge Boost Inverter for Inductive Wireless Charging Applications,prec_electrification_env,False,False,True,False,False,True
+37485,2022,JUM,(In)capacity to implement measures for increased cycling? Experiences and perspectives from cycling planners in Sweden,random,False,False,False,False,True,False
+58748,2018,TR-F,Can a twelve-week intervention reduce barriers to bicycling among overweight adults in low-income Latino and Black communities?,prec_active_urban,False,False,False,False,True,False
+12144,2025,T-IV,Integrated Path Planning and Localization for an Ocean Exploring Team of Autonomous Underwater Vehicles With Consensus Graph Model Predictive Control,random,False,False,False,False,False,False
+60150,2017,TR-B,Optimal parking provision for ride-sourcing services,random,False,False,False,False,True,False
+14981,2025,IJTST,Fuzzy adaptive zoning algorithm: integrating LiDAR and fuzzy logic for enhanced autonomous electric vehicle navigation in controlled spaces,random,False,False,True,False,False,False
+74687,2013,TR-A,"Accelerating the transformation to a low carbon passenger transport system: The role of car purchase taxes, feebates, road taxes and scrappage incentives in the UK",prec_electrification_env,False,False,True,False,False,False
+54185,2019,TRR,Long-Term Aging Performance Analysis of Oil Modified Asphalt Binders,random,False,False,False,False,False,True
+71637,2014,AMAR,Crash frequency modeling for signalized intersections in a high-density urban road network,prec_safety,True,False,False,False,False,False
+25992,2023,GEIT,A cloud-based eco-driving solution for autonomous hybrid electric bus rapid transit in cooperative vehicle-infrastructure systems: A dynamic programming approach,prec_electrification_env,False,True,True,False,False,False
+42463,2021,TRR,Assessing the Effects of Limited Curbside Pickup Capacity in Meal Delivery Operations for Increased Safety during a Pandemic,prec_safety,True,False,False,False,False,False
+80149,2011,JTG,"GIS based destination accessibility via public transit and walking in Auckland, New Zealand",prec_transit,False,True,False,False,True,False
+43994,2021,TRR,Is it Good or Bad to Provide Driver Fatigue Warning During Take-Over in Highly Automated Driving?,random,False,False,False,False,False,False
+20400,2024,T-IV,Make Your Autonomous Mobile Robot on the Sidewalk Using the Open-Source LiDAR SLAM and Autoware,prec_active_urban,False,False,False,False,True,False
+80970,2011,TranspPol,Socioeconomic differences in public acceptability and car use adaptation towards urban road pricing,random,False,False,False,False,False,False
+14822,2025,TRR,Optimizing Demand Responsive Transit: A Study on Fleet Size and Service Performance in Munich’s Northern Suburbs,random,False,True,False,False,False,False
+9501,2025,TR-E,Dynamic pricing for air cargo revenue management,random,False,False,False,True,False,False
+68421,2015,TranspPol,Trends in Thailand CO2 emissions in the transportation sector and Policy Mitigation,random,False,False,True,False,False,False
+41775,2021,TRR,Will We Fly Again? Modeling Air Travel Demand in light of COVID-19 through a London Case Study,random,False,False,False,False,False,False
+7687,2025,TranspPol,"Preparing for an agentic era of human-machine transportation systems: Opportunities, challenges, and policy recommendations",random,False,False,False,False,False,False
+44550,2021,TRR,Assessing the Elastic Moduli of Pavement Marking Tapes using the Tape Drape Test,random,False,False,False,False,False,True
+84826,2010,TRR,Review of Parking Design Practices for Motorcycles,prec_active_urban,False,False,False,False,True,False
+75442,2013,ETRR,Bus accident severity and passenger injury: evidence from Denmark,prec_safety,True,True,False,False,False,False
+18721,2024,TR-D,Integrated strategies for road transportation-related multi-pollutant control: A cross-departmental policy mix,prec_electrification_env,False,False,True,False,False,False
+54535,2019,TRR,Behavioral Analysis of Drivers Following Winter Maintenance Trucks Enabled with Collision Avoidance System,prec_freight,True,False,False,True,False,False
+57453,2018,TRR,Highway Cross-Slope Measurement using Mobile LiDAR,random,False,False,False,False,False,False
+69862,2015,AAP,Older drivers’ risks of at-fault motor vehicle collisions,prec_safety,True,False,False,False,False,False
+66955,2016,TRR,Opportunity Cost for Society Related to U.S. Truck Size and Weight Regulation: Freight Efficiency,random,False,False,False,True,False,False
+61208,2017,TranspPol,Modelling perceived quality for urban public transport systems using weighted variables and random parameters,random,False,True,False,False,False,False
+50398,2020,TRR,Separating Poor Playmates: Untangling Commuter Rail from Freight,prec_freight,False,True,False,True,False,False
+62650,2017,TRR,Coupled Thermo-Hydro-Mechanical Analysis of Freeze–Thaw Behavior of Pavement Structure over a Box Culvert,prec_infrastructure,False,False,False,False,False,True
+46407,2020,TR-A,MaaS bundle design,random,False,False,False,False,False,False
+87403,2008,AAP,"The development of a method to measure speed adaptation to traffic complexity: Identifying novice, unsafe, and overconfident drivers",random,False,False,False,False,False,False
+72890,2014,TRR,Thermal Properties of Thermochromic Asphalt Binders by Modulated Differential Scanning Calorimetry,prec_infrastructure,False,False,False,False,False,True
+68425,2015,TR-D,An aircraft performance model implementation for the estimation of global and regional commercial aviation fuel burn and emissions,prec_electrification_env,False,False,True,False,False,False
+43924,2021,TR-F,The influences of listening and speaking on pedestrians' assessments of approaching vehicles,prec_active_urban,False,False,False,False,True,False
+13742,2025,TBS,Complementary intermodal commuting and resident travel satisfaction: A nonlinear and interaction analysis,random,False,False,False,True,False,False
+26198,2023,TR-C,Distributed model predictive control for heterogeneous vehicle platoon with unknown input of leading vehicle,random,False,False,False,False,False,False
+38072,2022,TRR,Reducing Uncertainties in Nanoindentation Experiments for Cementitious Materials,random,False,False,False,False,False,False
+28520,2023,TR-F,Adaptation and validity of the reckless driving habits scale in young Chinese drivers,random,False,False,False,False,False,False
+60441,2017,TR-A,Port infrastructures and trade: Empirical evidence from Brazil,random,False,False,False,True,False,False
+82214,2011,TRR,Bridge Rail and Approach Railing for Low-Volume Roads in Iowa,random,False,True,False,False,False,True
+52272,2019,TR-D,Development of a driving cycle for Istanbul bus rapid transit based on real-world data using stratified sampling method,prec_active_urban,False,True,False,False,True,False
+64313,2016,IJST,Evaluation of cruise ships emissions in the Mediterranean basin: The case of Greek ports,prec_freight,False,False,True,True,False,False
+63135,2017,TRR,Influence of Remotely Operated Stop–Slow Controls on Driver Behavior in Work Zones,random,False,False,False,False,False,False
+8994,2025,T-TE,SocNet: A Physics-Guided Neural Network for Battery State-of-Charge Estimation Robust to Temperature Variations and Sensor Noises,prec_electrification_env,False,False,True,False,False,False
+22066,2024,T-IV,A Hazardous Lane-Changing Scenario Search Approach Based on Adaptive Random Testing for Automated Vehicles,random,False,False,False,False,False,False
+15380,2025,TRIP,Open-loop payment preferences in public transit: Exploring alternatives to cash for unbanked riders,random,False,True,False,False,False,False
+67580,2016,T-TE,Comparison and Evaluation of Modular Integrated Electric Drives for Automotive Traction Applications,random,False,False,False,False,False,False
+62075,2017,JTG,Greenhouse gas impacts of different modality style classes using latent class travel behavior model,random,False,False,True,False,False,False
+67924,2015,TR-B,A real-time bus dispatching policy to minimize passenger wait on a high frequency route,random,False,True,False,False,False,False
+66974,2016,TRR,Comparison of Pavement Texture Measurements from a Three-Dimensional Profiler and a Circular Track Meter at MnROAD Test Facilities,prec_infrastructure,False,False,False,False,False,True
+20149,2024,AAP,A discrete choice latent class method for capturing unobserved heterogeneity in cyclist crossing behaviour at crosswalks,prec_active_urban,False,False,False,False,True,False

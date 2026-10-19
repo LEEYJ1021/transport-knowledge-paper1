@@ -1,0 +1,8 @@
+﻿indicator,code,n_countries_window,n_countries_any_year,years_present,median_years_per_country
+pop,SP.POP.TOTL,217,217,"[2014, 2015, 2016, 2017, 2018]",5.0
+gdp_pc,NY.GDP.PCAP.KD,212,213,"[2014, 2015, 2016, 2017, 2018]",5.0
+death_rate,SH.STA.TRAF.P5,186,190,"[2014, 2015, 2016, 2017, 2018]",5.0
+veh_per1000,IS.VEH.NVEH.P3,0,0,[],
+urban_share,SP.URB.TOTL.IN.ZS,217,217,"[2014, 2015, 2016, 2017, 2018]",5.0
+tran_co2_share,EN.CO2.TRAN.ZS,0,0,[],
+co2_kt,EN.ATM.CO2E.KT,0,0,[],
