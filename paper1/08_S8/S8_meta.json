@@ -1,0 +1,33 @@
+{
+ "spec_sha256": "9f59a75d7c63f58d916021228a122df5f3523f2aa8b64dc08b5875794869c0e1",
+ "at": "2026-10-19T16:49:57",
+ "quick": false,
+ "outputs": {
+  "adjudication.csv": "bc15eb8526611fd7ec80dbe646b60f4c6f0eb8f27e98d872793aa687fe9bfd2d",
+  "alignment_gap_map.csv": "e73830c4aeb0c0273ec3a1a99bc5ea6e2badb166ea60750c52d78452636968b0",
+  "burden_country_table.csv": "5184ed442075ca6f634304c296fd840908c36a2f701eaacccc4598264661a78e",
+  "burden_coverage_check.csv": "a43fdbb3531c52806de43880e32fcd8541ca0663eb2e01a6616f65a5cced3aa7",
+  "burden_group_dominance_check.csv": "f3a40be0cda0eddb2233f96da2988f2605b62a60339ba756e3b38c2c0c394050",
+  "burden_mass_coverage_check.csv": "ae59be7670da45720b13036d3e6d01ac0a841e9bcc15fb358213f4fbb8855714",
+  "cand_EN.GHG.CO2.MT.CE.AR5.csv": "89208df495a273c49d4fc7a95a5c25e8b7e79eeef70e081e8160304caad2f0f3",
+  "cand_EN.GHG.CO2.TR.MT.CE.AR5.csv": "170815d4b3e313bba6bddf1d4a49c02f385c186673ab9ad1bea7bc019a7c37bd",
+  "cand_gho_RS_194.csv": "57f7ef94c05d64822840acd9ad9fcf1e22d27be0780538b6b37c6495edd42063",
+  "coder1.csv": "5243ce75876520233f7853c23e3b46451f54b53683f1aa2868054316292a7f15",
+  "coder2.csv": "6eae9dddec77f3cdffba18d171005a056a550afcf869fa83420e1ea113728490",
+  "coding_master.csv": "1c14d43fdff8c964e4977affa5cb61437cb147fdbb3ee49c6e47b873d6866a85",
+  "country_partial_spearman.csv": "50b7a7ed607007b5fb3e7a901459007f8a2a29b8d8b69324558519fce2a0fe82",
+  "domain_precision_recall.csv": "ebfc0f1beae9d0e3c357e2eab9d609ee2d5e6a009d2b71c1c8351e9165f730fd",
+  "gho_vehicles_reg.csv": "25f663e952a2a94eb324257a20d86647d6ee15ebcf3b95db0b956af497712c18",
+  "indicator_consistency.csv": "fd4611caf662d680b1dc447d55e319619d370bba702db2f36a3c1178c1106725",
+  "kappa.csv": "17c7d4dd68911543102d40698d4bf2d3e91a09409def3c88dd3243c1c3281b91",
+  "sensitivity_exclusion.csv": "6b2174e7fe02b6ec3a4899dae899bc35b65794c350e4fc6bc0eeb086e0c7e24b",
+  "wb_co2_kt.csv": "128b62b3b7c3d52fe9be5018712ed27fc46b14755c070ce634b21d8520f54256",
+  "wb_co2_tr_mt.csv": "170815d4b3e313bba6bddf1d4a49c02f385c186673ab9ad1bea7bc019a7c37bd",
+  "wb_death_rate.csv": "ccd2939ed7037413dcf64f2a848b946b14d16aa11bb27b69c15beb52a5c60c95",
+  "wb_gdp_pc.csv": "da9592d5e6881a0ac8ffd469be8908210dce2218e9ca1b6ccc58ab6e4a79a43e",
+  "wb_pop.csv": "241b7c3331283fcbd2fe416968e8114bb82848a351cf5b135091b5acdf6bfc17",
+  "wb_tran_co2_share.csv": "128b62b3b7c3d52fe9be5018712ed27fc46b14755c070ce634b21d8520f54256",
+  "wb_urban_share.csv": "c9665702de9d55e17d0056afd7fdb12c5d5175dd501cf09d61d23239b6f4beca",
+  "wb_veh_per1000.csv": "128b62b3b7c3d52fe9be5018712ed27fc46b14755c070ce634b21d8520f54256"
+ }
+}

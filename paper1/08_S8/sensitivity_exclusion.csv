@@ -1,0 +1,16 @@
+﻿excl,lens,domain,n,same_side_as_main
+excl_CN,capability,safety,32,1.0
+excl_CN,capability,transit,32,0.9375
+excl_CN,target,safety,32,1.0
+excl_CN,target,transit,32,0.75
+excl_CN,ALL,ALL,128,0.921875
+excl_IN,capability,safety,32,1.0
+excl_IN,capability,transit,32,1.0
+excl_IN,target,safety,32,0.9375
+excl_IN,target,transit,32,0.96875
+excl_IN,ALL,ALL,128,0.9765625
+excl_CN_IN,capability,safety,32,1.0
+excl_CN_IN,capability,transit,32,0.9375
+excl_CN_IN,target,safety,32,0.96875
+excl_CN_IN,target,transit,32,0.75
+excl_CN_IN,ALL,ALL,128,0.9140625
