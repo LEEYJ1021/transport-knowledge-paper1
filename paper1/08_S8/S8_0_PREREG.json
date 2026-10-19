@@ -1,0 +1,117 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "decision_status": "모든 수치는 임의 출발값. S8 결과 열람 전 동결. S7 산출물은 열람한 상태.",
+ "domains": {
+  "safety": "\\b(safety|crash(es)?|accidents?|fatal\\w*|injur\\w*|collisions?|casualt\\w*|speeding|red[- ]light|vulnerable road user\\w*)\\b",
+  "transit": "\\b(transit|buses|bus|metro|subway|rail|railway|tram|light rail|paratransit|ridership|public transport\\w*|brt)\\b",
+  "electrification_env": "\\b(electric vehicles?|evs?|charging|batter(y|ies)|hybrid|electrif\\w*|emissions?|carbon|co2|greenhouse|fuel consumption|energy consumption|air quality|pollut\\w*|decarboni\\w*|hydrogen|fuel cell)\\b",
+  "freight": "\\b(freight|logistics?|trucks?|trucking|cargo|goods movement|supply chain|ports?|container\\w*|last[- ]mile|warehouse\\w*|shipping|intermodal)\\b",
+  "active_urban": "\\b(walk\\w*|pedestrians?|cycl\\w*|bicycl\\w*|bikes?|micromobility|scooters?|land use|accessibility|urban form|transit[- ]oriented|parking|sidewalks?)\\b",
+  "infrastructure": "\\b(pavements?|bridges?|asphalt|concrete|road maintenance|highway design|geometric design|structural health|tunnels?|rutting|infrastructure (maintenance|management|asset))\\b"
+ },
+ "domain_indicators": {
+  "safety": [
+   "road_deaths",
+   "vehicles"
+  ],
+  "transit": [
+   "urban_pop",
+   "transport_co2"
+  ],
+  "electrification_env": [
+   "transport_co2",
+   "vehicles"
+  ],
+  "freight": [
+   "vehicles",
+   "transport_co2"
+  ],
+  "active_urban": [
+   "urban_pop",
+   "road_deaths"
+  ],
+  "infrastructure": [
+   "vehicles",
+   "urban_pop"
+  ]
+ },
+ "wb_codes": {
+  "pop": "SP.POP.TOTL",
+  "gdp_pc": "NY.GDP.PCAP.KD",
+  "death_rate": "SH.STA.TRAF.P5",
+  "veh_per1000": "IS.VEH.NVEH.P3",
+  "urban_share": "SP.URB.TOTL.IN.ZS",
+  "tran_co2_share": "EN.CO2.TRAN.ZS",
+  "co2_kt": "EN.ATM.CO2E.KT"
+ },
+ "burden_years": [
+  2014,
+  2018
+ ],
+ "burden_rule": "구간 내 국가별 가용 연도 평균(기간 중앙부 2016 고정), 결측 국가는 해당 지표에서 제외",
+ "indicator_defs": {
+  "road_deaths": "death_rate*pop/1e5 (총량), 강도=death_rate",
+  "vehicles": "veh_per1000*pop/1e3, 강도=veh_per1000",
+  "urban_pop": "urban_share/100*pop, 강도=urban_share",
+  "transport_co2": "tran_co2_share/100*co2_kt (근사), 강도=tran_co2_share"
+ },
+ "periods": {
+  "P0709": [
+   2007,
+   2009
+  ],
+  "P1014": [
+   2010,
+   2014
+  ],
+  "P1519": [
+   2015,
+   2019
+  ],
+  "P2025": [
+   2020,
+   2025
+  ]
+ },
+ "supply": {
+  "scheme": "inv_n_authors",
+  "variant": "main",
+  "sample": "all",
+  "groups": "소득군(wb_income_current 고정): HIC, UMC, LMC, LIC. 소득군 없음·미상은 제외",
+  "lens_capability": "소속 국가 질량(country_mass_long)",
+  "lens_target": "제목 지명(S1 title_places.target_countries), 대상 국가 균등 분할, 지명이 있는 논문만",
+  "domain_unit": "논문 단위(복수 도메인 허용, 질량은 도메인마다 전량)"
+ },
+ "sbr": "SBR(d,g,t)=도메인 d 공급 몫(그룹 g) / 지표 i 부담 몫(그룹 g), 지표 i 공통 지지 국가(부담 자료가 있는 국가)로 공급·부담 모두 제한. 지표마다 계산",
+ "country_level": {
+  "supply_intensity": "국가의 도메인 d 질량 / 국가 총 질량",
+  "burden_intensity": "지표별 강도",
+  "control": "rank(gdp_pc) 통제 편 순위상관(순위 변환 후 OLS 잔차 상관)",
+  "min_country_mass": 10.0,
+  "bootstrap_B": 1000
+ },
+ "manual": {
+  "n_random": 150,
+  "n_per_domain": 25,
+  "coders": 2,
+  "kappa_min": 0.6,
+  "precision_min": 0.85,
+  "ci": "Wilson 95%",
+  "rule": "도메인별 precision 점추정 >= 0.85인 도메인만 정렬 분석에 사용, 미달 도메인은 부록",
+  "recall": "무작위 150편의 최종 판정 양성 중 규칙 양성 비율(재현율), 통과 기준 아님"
+ },
+ "direction": {
+  "rule": "셀(도메인, 소득군, 기간)에서 두 지표의 SBR가 1의 같은 쪽(>1 또는 <1)인 비율 >= 0.75이면 '지표 일관'",
+  "min_share": 0.75
+ },
+ "interpretation": "정렬 간극 지도로만 표현. 소속≠연구 대상, 집계 수준 상관은 생태학적 오류 가능. 두 렌즈가 갈리면 그 자체를 결과로 보고.",
+ "fallback": "precision 미달·지표 불일치 시 RQ5 부록으로 내리고 과학학 계열 저널 전환",
+ "created": "2026-10-19T15:40:10",
+ "sha256": "af67252dd25fe46a0428d555a368575601e3e96ff397a5ff4934064cc50f2388",
+ "refs": {
+  "S7_0_PREREG.json": "87cda08fc79ddbb19406b0f58c432f0849ee4784a62857e024b79b4c824ef48d",
+  "wb_income_current.csv": "800b08873844ea99675204eea69d2d6f6b11b39ef725e1759de518ae358840dd",
+  "title_places.csv": "63e7da9b95a79d5f98973c8b5ea1913645286fa711212abf0fa7b2161dd40268"
+ }
+}
