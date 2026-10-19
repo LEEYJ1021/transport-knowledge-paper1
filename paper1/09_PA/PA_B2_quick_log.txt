@@ -1,0 +1,45 @@
+[관측 재현 OK] {'all': (0.1901, [2012, 2020]), 'fixed14': (0.1788, [2008, 2015, 2020]), 'within': (0.1495, [2009, 2015, 2020])}
+
+[Post-hoc] 2017-2019 대 2020-2022 토픽 변화 상위 10
+  rank  topic                                                         name   delta  within_journal  between_journal  grade_A
+    1     71 covid, 19, pandemic, travel, post, mobility, public, spread,  0.0175          0.0172           0.0003     True
+    2     69 prediction, graph, traffic, temporal, forecasting, flow, con  0.0085          0.0055           0.0030     True
+    3     45 phase, current, control, drives, fault, pmsm, torque, predic  0.0084          0.0029           0.0054     True
+    4    131 reinforcement, learning, deep, autonomous, control, signal,   0.0076          0.0060           0.0016     True
+    5     88 permanent, magnet, motor, flux, machines, machine, synchrono  0.0075          0.0009           0.0066     True
+    6     99 vehicular, edge, computing, offloading, internet, resource,   0.0069          0.0040           0.0029     True
+    7    138 driving, drivers, young, risky, self, anger, older, reported -0.0063         -0.0027          -0.0036     True
+    8    123 mobility, shared, maas, service, public, scooter, micromobil  0.0060          0.0069          -0.0009     True
+    9     20 privacy, secure, security, authentication, preserving, schem  0.0058          0.0038           0.0020     True
+   10    133 prediction, trajectory, intention, autonomous, driving, lear  0.0058          0.0040           0.0018     True
+저널 간 성분 비중(전 토픽 절대합): 0.404
+
+[Post-hoc] 2019->2020 저널별 논문 수 증가 상위 10 (전체 증가 928)
+     venue  fixed14  n_prev  n_focus  delta  share_of_total_delta
+    T-ITS     True     425      706    281                 0.303
+     T-TE    False      94      219    125                 0.135
+      AAP     True     272      373    101                 0.109
+     TR-D     True     212      302     90                 0.097
+     TRIP    False      61      145     84                 0.091
+     TR-E     True     162      220     58                 0.062
+  ITS Mag    False      45       92     47                 0.051
+     RTBM    False      44       90     46                 0.050
+TranspPol     True     133      170     37                 0.040
+      TBS    False      55       90     35                 0.038
+  cap=3800 완료
+  cap=3000 완료
+
+[Post-hoc] PA-B2 하향 추출 요약
+  cap  sample  J_med  J_q05  J_q95  R_med  hit_rate  k_mode  J_obs  J_ratio
+3000     all  0.194  0.191  0.199  0.716       1.0       3  0.190    1.021
+3000 fixed14  0.184  0.180  0.191  0.671       1.0       3  0.179    1.028
+3000  within  0.154  0.150  0.161  0.653       1.0       4  0.150    1.030
+3800     all  0.190  0.187  0.192  0.728       1.0       3  0.190    0.997
+3800 fixed14  0.180  0.176  0.183  0.746       1.0       4  0.179    1.004
+3800  within  0.150  0.147  0.154  0.670       1.0       4  0.150    1.006
+
+[QUICK] 오류 점검 전용: 위 수치를 해석하거나 판독 규칙을 적용하지 마세요(B=20, v2 계획 사유 방지).
+
+real	0m1.313s
+user	0m4.155s
+sys	0m0.114s
