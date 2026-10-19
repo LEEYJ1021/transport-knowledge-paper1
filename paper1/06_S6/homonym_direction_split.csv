@@ -1,0 +1,13 @@
+var,pair,base,frac_diff,pass_le_0.25
+K1_sign_D4,P0004->P0509,-1,0.0,True
+K1_sign_D4,P0509->P1014,1,0.0,True
+K1_sign_D4,P1014->P1519,1,0.0,True
+K1_sign_D4,P1519->P2025,1,0.0,True
+K2_within_gt_between,P0004->P0509,1,0.0,True
+K2_within_gt_between,P0509->P1014,1,0.0,True
+K2_within_gt_between,P1014->P1519,1,0.0,True
+K2_within_gt_between,P1519->P2025,0,0.0,True
+K3_adapt_gt_entry,P0004->P0509,0,0.0,True
+K3_adapt_gt_entry,P0509->P1014,0,0.0,True
+K3_adapt_gt_entry,P1014->P1519,0,0.0,True
+K3_adapt_gt_entry,P1519->P2025,0,0.0,True

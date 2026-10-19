@@ -3,7 +3,7 @@
 import sys, json, itertools
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
 from s6_lib import *
-QUICK = True            # 먼저 True로 오류 확인 → False로 본 실행
+QUICK = False            # 먼저 True로 오류 확인 → False로 본 실행
 spec = load_spec(); L = load_all(spec); K = L["K"]; rng = np.random.default_rng(spec["seed"])
 B_perm, B_boot = (30, 30) if QUICK else (spec["B_perm"], spec["B_boot"]); sfx = "_QUICK" if QUICK else ""
 PAIRS = pairs_of(spec); MAIN = spec["main"]; TERMS = ["adapt", "realloc", "entry_new", "entry_ret", "exit_final", "exit_gap"]
@@ -26,7 +26,7 @@ for p0, p1 in PAIRS:
     for sc in spec["schemes"]:
         if "m_" + sc not in L["R"].columns: continue
         P = make_pair(L, p0, p1, sc, "all", "all", "baseline"); d = P.decompose()
-        rows.append(dict(pair=f"{p0}->{p1}", scheme=sc, variant="all_venues", exit_censored=P.exit_censored, n_P=int((P.role == "P").sum()),
+        rows.append(dict(pair=f"{p0}->{p1}", scheme=sc, variant="all_venues", n_P=int((P.role == "P").sum()),
                          n_E=int(np.isin(P.role, ["E_new", "E_ret"]).sum()), n_X=int(np.isin(P.role, ["X_final", "X_gap"]).sum()), **summarize(d)))
         ex, drop = P.excess(); exc_rows.append(dict(pair=f"{p0}->{p1}", scheme=sc, excess_half=half(ex), dropped_entrant_mass=drop,
                                                     **{f"excess_D{d_[1:]}": float(ex[m].sum()) for d_, m in Dsets.items()}))
@@ -40,7 +40,7 @@ for p0, p1 in PAIRS:
         if j not in m0.index or j not in m1.index: continue
         Rj = R[R.vi == j]; Pj = Pair(Rj, p0, p1, L, mc); dj = Pj.decompose(); vb = (m0[j] / m0.sum() + m1[j] / m1.sum()) / 2
         for t in acc: acc[t] += vb * dj[t]
-    rows.append(dict(pair=f"{p0}->{p1}", scheme=MAIN["scheme"], variant="venue_fixed", exit_censored=np.nan, **summarize({**acc})))
+    rows.append(dict(pair=f"{p0}->{p1}", scheme=MAIN["scheme"], variant="venue_fixed", **summarize({**acc})))
 pd.DataFrame(rows).to_csv(S6 / f"renewal_decomposition{sfx}.csv", index=False, encoding="utf-8-sig")
 pd.DataFrame(exc_rows).to_csv(S6 / f"entry_excess{sfx}.csv", index=False, encoding="utf-8-sig")
 pd.DataFrame(path_rows).to_csv(S6 / f"journal_path_decomposition{sfx}.csv", index=False, encoding="utf-8-sig")
@@ -111,7 +111,7 @@ for pr, g in G.groupby("pair"):
     mrow = g[(g.scheme == MAIN["scheme"]) & (g.venue == MAIN["venue"]) & (g.hom == MAIN["hom"]) & (g.topic == MAIN["topic"]) & (g.defn == MAIN["defn"])]
     if mrow.empty: print("※ 주 설정 칸이 없음(QUICK 표본 때문일 수 있음):", pr); continue
     for k in ["K1", "K2", "K3"]:
-        for lab, gg in [("전체", g), ("순환 칸 제외", g[~g.circular])]:
+        for lab, gg in ([("전체", g), ("순환 칸 제외", g[~g.circular])] if k == "K1" else [("전체", g)]):   # K2·K3는 D와 무관하므로 순환 제외는 K1에만
             res.append(dict(pair=pr, var=k, subset=lab, n=len(gg), main=mrow[k].iloc[0], frac_diff=float((gg[k] != mrow[k].iloc[0]).mean())))
 RS = pd.DataFrame(res); RS["pass_le_0.25"] = (RS.frac_diff <= spec["pass_criteria"]["direction_split_max"]).where(RS.n > 0, other=np.nan); print("\n[Multiverse: 주 설정과 방향이 다른 비율]\n", RS.round(3).to_string(index=False))
 RS.to_csv(S6 / f"multiverse_direction_split{sfx}.csv", index=False, encoding="utf-8-sig")

@@ -1,0 +1,7 @@
+﻿,total_half,total_half,share_adapt,share_adapt,share_realloc,share_realloc,share_entry_new,share_entry_new,share_entry_ret,share_entry_ret,share_exit_final,share_exit_final,excess_half,excess_half,path_within_share,path_within_share
+,min,max,min,max,min,max,min,max,min,max,min,max,min,max,min,max
+pair,,,,,,,,,,,,,,,,
+P0004->P0509,0.1522,0.1526,0.2442,0.2588,0.134,0.152,0.2448,0.2569,0.0501,0.0517,0.2117,0.2204,0.0812,0.0829,0.6834,0.6975
+P0509->P1014,0.1678,0.1689,0.2334,0.2419,0.1332,0.1371,0.2761,0.278,0.0333,0.0357,0.2493,0.2533,0.058,0.0627,0.6607,0.6788
+P1014->P1519,0.1807,0.1815,0.265,0.2974,0.124,0.1312,0.2954,0.3297,0.0222,0.0241,0.21,0.213,0.05,0.0571,0.5369,0.553
+P1519->P2025,0.2679,0.2692,0.2613,0.3124,0.1373,0.1609,0.3326,0.3947,0.0139,0.0153,0.1723,0.1841,0.0424,0.0577,0.3575,0.3942
