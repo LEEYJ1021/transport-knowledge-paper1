@@ -1,0 +1,105 @@
+nohup: ignoring input
+[관측 재현 OK: S5와 R 일치]
+  sample  obs_R  obs_k         obs_breaks  N2_B  N2_q95   p_N2
+    all 0.7595      3       [2012, 2020]   500  0.7723 0.9441
+fixed14 0.7755      4 [2008, 2015, 2020]   500  0.7965 0.3992
+ within 0.7033      4 [2009, 2015, 2020]   500  0.7181 0.6966
+
+관측 2020 점프(Hellinger, 3년 창): {'all': 0.1901, 'fixed14': 0.1788, 'within': 0.1495}
+[검정 크기 점검 delta=0: 기각률(약 0.05여야 함)] {'all': 0.035, 'fixed14': 0.075, 'within': 0.065}
+  t*=2008 완료
+  t*=2012 완료
+  t*=2015 완료
+  t*=2020 완료
+
+[Post-hoc] PA-A1 검정력(S5 N2 기준)
+ delta_x          0.5   1.0   2.0   3.0
+sample  t_star                        
+all     2008    0.03  0.07  0.03  0.04
+        2012    0.06  0.05  0.04  0.06
+        2015    0.06  0.05  0.03  0.06
+        2020    0.02  0.06  0.06  0.04
+fixed14 2008    0.07  0.06  0.08  0.06
+        2012    0.06  0.04  0.06  0.06
+        2015    0.04  0.08  0.03  0.08
+        2020    0.06  0.06  0.06  0.06
+within  2008    0.06  0.08  0.08  0.07
+        2012    0.06  0.06  0.07  0.06
+        2015    0.08  0.08  0.07  0.08
+        2020    0.07  0.08  0.08  0.06
+
+[수렴 flag]
+  sample  t_star  delta_x       conv_flag
+    all    2008      0.5 conv_off(6.189)
+fixed14    2008      0.5 conv_off(6.189)
+ within    2008      0.5 conv_off(6.189)
+    all    2008      1.0 conv_off(3.095)
+fixed14    2008      1.0 conv_off(3.095)
+ within    2008      1.0 conv_off(3.095)
+    all    2008      2.0 conv_off(1.547)
+fixed14    2008      2.0 conv_off(1.547)
+ within    2008      2.0 conv_off(1.547)
+    all    2008      3.0 conv_off(1.032)
+fixed14    2008      3.0 conv_off(1.032)
+ within    2008      3.0 conv_off(1.032)
+    all    2012      0.5 conv_off(6.517)
+fixed14    2012      0.5 conv_off(6.517)
+ within    2012      0.5 conv_off(6.517)
+    all    2012      1.0 conv_off(3.258)
+fixed14    2012      1.0 conv_off(3.258)
+ within    2012      1.0 conv_off(3.258)
+    all    2012      2.0 conv_off(1.629)
+fixed14    2012      2.0 conv_off(1.629)
+ within    2012      2.0 conv_off(1.629)
+    all    2012      3.0 conv_off(1.086)
+fixed14    2012      3.0 conv_off(1.086)
+ within    2012      3.0 conv_off(1.086)
+    all    2015      0.5 conv_off(6.318)
+fixed14    2015      0.5 conv_off(6.318)
+ within    2015      0.5 conv_off(6.318)
+    all    2015      1.0 conv_off(3.159)
+fixed14    2015      1.0 conv_off(3.159)
+ within    2015      1.0 conv_off(3.159)
+    all    2015      2.0 conv_off(1.579)
+fixed14    2015      2.0 conv_off(1.579)
+ within    2015      2.0 conv_off(1.579)
+    all    2015      3.0 conv_off(1.053)
+fixed14    2015      3.0 conv_off(1.053)
+ within    2015      3.0 conv_off(1.053)
+    all    2020      0.5 conv_off(6.063)
+fixed14    2020      0.5 conv_off(6.063)
+ within    2020      0.5 conv_off(6.063)
+    all    2020      1.0 conv_off(3.032)
+fixed14    2020      1.0 conv_off(3.032)
+ within    2020      1.0 conv_off(3.032)
+    all    2020      2.0 conv_off(1.516)
+fixed14    2020      2.0 conv_off(1.516)
+ within    2020      2.0 conv_off(1.516)
+
+[표본별 실현 점프 비율(delta=1)]
+ t_star   2008  2012  2015  2020
+sample                         
+all      3.09  3.26  3.16  3.03
+fixed14  0.00  0.00  0.00 -0.00
+within  -0.01  0.01  0.01  0.01
+
+[delta=1 요약]
+           min  median
+sample               
+all      0.05    0.05
+fixed14  0.04    0.06
+within   0.06    0.08
+  all: 사전 판독 → 리프레이밍(판정 불가)
+  fixed14: 사전 판독 → 리프레이밍(판정 불가)
+  within: 사전 판독 → 리프레이밍(판정 불가)
+
+[Post-hoc] BIC 최솟값(상수 대 선형; 자기상관으로 과분할 가능, 보조 지표)
+  sample    model  k  rss    bic
+    all constant  5  0.2 -672.2
+    all   linear  3  0.1 -745.3
+fixed14 constant  5  0.2 -681.0
+fixed14   linear  3  0.1 -748.9
+ within constant  4  0.5 -620.4
+ within   linear  3  0.2 -659.3
+
+※ 검정력은 '관측 2020 점프 방향의 점프'에 한정. S0~S8 판정 불변.
