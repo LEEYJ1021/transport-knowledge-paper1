@@ -1,0 +1,121 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "decision_status": "모든 수치는 임의 출발값. S7 결과 열람 전에 동결. S5에서 체제 서사가 철회되어 '기간'으로만 비교.",
+ "periods": {
+  "P0709": [
+   2007,
+   2009
+  ],
+  "P1014": [
+   2010,
+   2014
+  ],
+  "P1519": [
+   2015,
+   2019
+  ],
+  "P2025": [
+   2020,
+   2025
+  ]
+ },
+ "period_note": "국가 층 창이 2007년부터라 첫 기간이 3년(S4의 5개 기간과 다름). 마지막 기간은 6년(2025 부분연도·보유율 하락 후보).",
+ "main": {
+  "scheme": "inv_n_authors",
+  "variant": "main",
+  "sample": "all",
+  "terr_merge": false,
+  "income": "fixed"
+ },
+ "grid": {
+  "scheme": [
+   "equal",
+   "inv_n_authors",
+   "first_last",
+   "full_count"
+  ],
+  "variant": [
+   "main",
+   "rec"
+  ],
+  "sample": [
+   "all",
+   "fixed14"
+  ],
+  "terr_merge": [
+   false,
+   true
+  ],
+  "income": [
+   "fixed",
+   "tv"
+  ]
+ },
+ "terr_merge_map": {
+  "HK": "CN",
+  "MO": "CN"
+ },
+ "top_k": 5,
+ "active_mass_min": 1.0,
+ "groups": [
+  "US",
+  "CN",
+  "HK_MO",
+  "HIC_other",
+  "UMC_other",
+  "LMIC",
+  "NOINC",
+  "UNK"
+ ],
+ "group_rule": "US, CN, HK+MO 별도, 나머지는 소득군(고정=wb_income_current, 시변=OGHIST 산정연도): HIC_other, UMC_other, LMIC(LMC+LIC), 소득군 없음=NOINC, 미상·구국가=UNK",
+ "stats": [
+  "top5_incl",
+  "top5_known",
+  "hhi_known",
+  "cn_known",
+  "us_known",
+  "unk",
+  "n_active",
+  "theil_total",
+  "theil_between",
+  "theil_within_share"
+ ],
+ "theil": "국가당 동일 가중 벤치마크 T=sum s ln(s N), N=그 구성의 알려진 국가 수(인구 가중 아님). 소득군 간/내 정확 분해, 항등식 점검 1e-9",
+ "direction_rule": "주 구성과 방향이 다른 구성 비율 <= 0.25 (추세 Spearman 부호, 첫~마지막 기간 변화 부호). theil_*는 income 차원 포함, 그 외 통계는 income=fixed만 센다",
+ "bootstrap": {
+  "B": 500,
+  "kind": "논문 단위 Poisson(1) 가중(저널·공저 상관 미반영: 구간은 낙관적일 수 있음)"
+ },
+ "author_layer": {
+  "id": "name_norm(paper_author_long)",
+  "risk_variants": [
+   "base",
+   "none"
+  ],
+  "base_weight": "1/n_authors(F1 저자 수), 소속 국가 균등 분할",
+  "roles": "지속(두 기간 모두), 신규(t1에만, 첫 출판연도 >= t1 시작), 복귀(t1에만, 첫 출판연도 < t1 시작), 퇴출(t0에만)",
+  "decomposition": "Griliches-Regev 중점 분해를 지역군에 적용(적응, 재배분, 신규, 복귀, 퇴출)"
+ },
+ "focus_topics": [
+  88,
+  45,
+  69,
+  50,
+  0,
+  147,
+  38
+ ],
+ "top_change_n": 10,
+ "interpretation": "소속 국가는 국적이 아님. 지역 구성 변화는 함께 움직임의 기술이며 인과 아님. 복구 국가(rec)는 민감도.",
+ "created": "2026-10-19T15:40:10",
+ "sha256": "2a7a1091d7b4260e83eb539e811e6f540c4f496a04f2707dc35251c7a0f67243",
+ "refs": {
+  "S2_PREREG_ADDENDUM.json": "b65017a234905b4fa07e4b9d56ef6bea95bf76359dede5ab2f090f2556515460",
+  "RECOVERY_RULES_PREREG.json": "10c3a9a4ee7f105c7df2d6759d78c2de36be1cb03b0a194846e732a98cfc00f8",
+  "TERRITORY_RULES.md": "0a627746b541ff8d3e96c50abf1b5aaba2e4a9b7fea87266d43354dfe642cd4e",
+  "L7_topic_grade.csv": "d0fb3c9b855db88ad8d928297d09dc007ab9f04ff8b995568d0cad6c6559da1a",
+  "PREREG.json": "f16e76b43fe3f08453486aa785337d79cf58288821e9fe9dc57cc909558e208d",
+  "country_mass_long.parquet": "0516fc9ffaaf22620b6f5392d65698febcea62bf58d8022ef552f681481c06a7"
+ }
+}
