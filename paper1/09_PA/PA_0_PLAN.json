@@ -1,0 +1,71 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "status": "사후분석. S0~S8 결과 열람 후 설계. 탐색적, 다중성 보정 없음. 사전 명시 판정(통과/실패)은 변경하지 않음.",
+ "n_pa": 14,
+ "core_claim_pa": [
+  "PA-A1",
+  "PA-A2",
+  "PA-B2"
+ ],
+ "core_note": "지침서 0절은 A1·A2·B1(문구 작업)을, 우선순위 절은 A1·A2·B2를 권장해 불일치. 분석 3개는 A1·A2·B2로 둠(B1은 A1 결과로 정하는 문구).",
+ "items": {
+  "PA-A1": "N2 검정력 곡선 + 구간별 상수 대 선형 BIC",
+  "PA-A2": "S6 진입 우세의 구성 방어(ID 대조, 진입 정의 2종, 부트스트랩 교정)",
+  "PA-A3": "S7 국가 미상 교정, 균등 4구간, 중국 제외 HHI",
+  "PA-B1": "체제 서사 철회 문구 확정(PA-A1 연동, 분석 아님)",
+  "PA-B2": "2020 변화점 아티팩트 분리(하향 추출, 구성 토픽)",
+  "PA-B3": "신생 핵심 집합(n_defs>=3)과 D1'",
+  "PA-B4": "F1+F3 이분 등급 재추정",
+  "PA-B5": "S4 안정성 Wilson 구간, 분위 컷 곡선, 방향 축만",
+  "PA-B6": "위험군 독립 정답(ORCID, 수작업 50쌍)",
+  "PA-B7": "결측 경계 분석, 분류기 대입, 저널x연도 IPW",
+  "PA-B8": "미달 4도메인 부록 정렬, 사전 v2(새 25편)",
+  "PA-B9": "소득군 내 상관, 더미 통제, 공급 정의 민감도",
+  "PA-C1": "S6x S7 교차(중국 소속 신규 제외 분해)",
+  "PA-C2": "S7 국가 몫을 임베딩 보유 논문만으로 재계산"
+ },
+ "pa_a1": {
+  "window": [
+   2007,
+   2025
+  ],
+  "samples": [
+   "all",
+   "fixed14",
+   "within"
+  ],
+  "delta_x": [
+   0.5,
+   1,
+   2,
+   3
+  ],
+  "t_star": [
+   2008,
+   2012,
+   2015,
+   2020
+  ],
+  "B_null": 1000,
+  "B_power": 200,
+  "null": "N2 = 표본별 선형 추세 적합 + 다항 표본 잡음",
+  "alpha": 0.05,
+  "baseline": "선형 추세 적합 확률(점프 없음)에 점프를 삽입. 점프 크기 = delta x 관측 2020 점프(JS 거리, 전3년 대 후3년 평균 비중), 삽입 방향 = 관측 2020 이후 평균 - 이전 평균",
+  "statistic": "R = 1 - cost(k*)/cost(1). Hellinger 좌표 제약 분할(min_len 3, k<=6), k* = argmin cost_k + lam(k-1), lam = pen_c*cost_1/T, pen_c=0.5(대체 탐지기 값)",
+  "reading": "power(1x)>=0.8: 연속 변화 증거로 강화 / power(1x)<0.5: '체제 전환 여부 판정 불가'로 리프레이밍 / 사이: 둘 다 쓰지 않고 곡선으로만 보고",
+  "within_rule": "저널 내: 전 연도 연도당 5편 이상인 저널만, 고정 저널 비중 고정(wbar)",
+  "bic_compare": "Hellinger 좌표 상위 5 PC에서 구간별 상수 대 구간별 선형, 최소 구간 3, k<=6, BIC"
+ },
+ "forbidden": "PA 결과로 S0~S8 판정 변경, PA에서 유리한 정의만 본문 게재",
+ "report_marker": "[Post-hoc]",
+ "changelog": "PA_CHANGELOG.md",
+ "created": "2026-10-19T17:11:00",
+ "sha256": "4178cadadec9d124879eadbd137b6a43ff23af9a026096fcc55e812c6ef7413c",
+ "refs": {
+  "PREREG.json": "f16e76b43fe3f08453486aa785337d79cf58288821e9fe9dc57cc909558e208d",
+  "L7_topic_grade.csv": "d0fb3c9b855db88ad8d928297d09dc007ab9f04ff8b995568d0cad6c6559da1a",
+  "S7_0_PREREG.json": "87cda08fc79ddbb19406b0f58c432f0849ee4784a62857e024b79b4c824ef48d",
+  "S8_0_PREREG_v2.json": "644d3a2afcc76d2340a7326c50981559b9e02675d4ad9e8fe0635636c0a2c73a"
+ }
+}
