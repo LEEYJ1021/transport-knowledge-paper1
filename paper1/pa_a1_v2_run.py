@@ -96,7 +96,7 @@ def make_ctx():
     Jobs = {s: J(*L.sample_P(cnt, fixed_v, wbar, s), i20) for s in SAM}; d_vec = Pall[i20:].mean(0) - Pall[:i20].mean(0)
     P2 = L.trend_probs(cnt); n_cell = cnt.sum(2).astype(float); print("\n관측 2020 점프(Hellinger, 3년 창):", {k: round(v, 4) for k, v in Jobs.items()})
     def inject(a, it):
-        Q = P2.copy(); Q[it:] = np.clip(Q[it:] + a*d_vec[None, None, :], 1e-9, None); return Q/Q.sum(2, keepdims=True)
+        Q = P2.copy(); Q[it:] = np.clip(Q[it:] + a*d_vec[None, None, :], 1e-9, None); sm = Q.sum(2, keepdims=True); return np.divide(Q, sm, out=np.zeros_like(Q), where=sm > 0)
     jump_exp = lambda Q, s, it: J(*L.sample_P(Q*n_cell[:, :, None], fixed_v, wbar, s), it)
     return dict(p=p, sp=sp, cfg=cfg, rng=rng, L=L, cnt=cnt, fixed_v=fixed_v, wbar=wbar, T=T, YEARS=YEARS, SAM=SAM, detect_s=detect_s, p_of=p_of, info=info,
                 Jobs=Jobs, P2=P2, inject=inject, jump_exp=jump_exp, d_vec=d_vec, MINLEN=MINLEN, KMAX=KMAX)
@@ -178,10 +178,10 @@ def a1():
     for s in c["SAM"]:
         Y = pcs(c, s); bic += [dict(sample=s, **r) for lin in (False, True) for r in bic_step(c, Y, lin)]
     BC = pd.DataFrame(bic); print("\n[Post-hoc] BIC 최솟값(상수 대 선형; 자기상관으로 과분할 가능, 보조 지표)\n", BC.loc[BC.groupby(["sample", "model"]).bic.idxmin()].round(1).to_string(index=False))
-    PW.to_csv(PA/"PA_A1_v2_power_curve.csv", index=False, encoding="utf-8-sig"); pd.DataFrame(c["info"]).to_csv(PA/"PA_A1_v2_observed.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/"PA_A1_v2_bic.csv", index=False, encoding="utf-8-sig")
+    PW.to_csv(PA/"PA_A1_v2_run2_power_curve.csv", index=False, encoding="utf-8-sig"); pd.DataFrame(c["info"]).to_csv(PA/"PA_A1_v2_run2_observed.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/"PA_A1_v2_run2_bic.csv", index=False, encoding="utf-8-sig")
     print("\n※ 검정력은 '관측 2020 점프 방향의 점프'에 한정. S0~S8 판정 불변.")
     with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f:
-        f.write(f"- {now()} | PA-A1(v2) | 정의: PA_0_PLAN_v2 {c['sp']['sha256'][:12]} | 코드 패치(사양 불변): for/else 버그 수정, 수렴 flag, QUICK 해석 금지 | 결과: PA_A1_v2_*.csv | 본 결과 변경 여부: 없음\n")
+        f.write(f"- {now()} | PA-A1(v2) | 정의: PA_0_PLAN_v2 {c['sp']['sha256'][:12]} | run2 코드 패치(사양 불변): inject() NaN 정규화 수정(n=0 셀), 이전: for/else 수정, 수렴 flag, QUICK 해석 금지 | 결과: PA_A1_v2_run2_*.csv | 본 결과 변경 여부: 없음\n")
 
 def explore():
     """동결 밖 탐색적 확장. 모든 산출물·표 제목에 [Post-hoc][Exploratory]. 본 판독 규칙에 쓰지 않음."""
@@ -193,10 +193,10 @@ def explore():
     for s in c["SAM"]:
         Y = pcs(c, s); bic += [dict(sample=s, **r) for r in bic_continuous(c, Y)]
     BC = pd.DataFrame(bic); print("\n[Post-hoc][Exploratory] 연속 꺾은선 BIC(꺾임 수 0~4)\n", BC.drop(columns="rss").round(1).to_string(index=False))
-    PW.to_csv(PA/f"PA_A1_v2_EXPLORATORY_power025{sfx}.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/f"PA_A1_v2_EXPLORATORY_bic_continuous{sfx}.csv", index=False, encoding="utf-8-sig")
+    PW.to_csv(PA/f"PA_A1_v2_run2_EXPLORATORY_power025{sfx}.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/f"PA_A1_v2_run2_EXPLORATORY_bic_continuous{sfx}.csv", index=False, encoding="utf-8-sig")
     if not QUICK:
         with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f:
-            f.write(f"- {now()} | PA-A1(v2) 탐색적 확장 | 정의: 동결 밖(delta=0.25, 연속 꺾은선 BIC), 판독 규칙에 미사용 | 결과: PA_A1_v2_EXPLORATORY_*.csv | 본 결과 변경 여부: 없음\n")
+            f.write(f"- {now()} | PA-A1(v2) 탐색적 확장 | 정의: 동결 밖(delta=0.25, 연속 꺾은선 BIC), 판독 규칙에 미사용 | 결과: PA_A1_v2_run2_EXPLORATORY_*.csv | 본 결과 변경 여부: 없음\n")
 
 try: {"freeze2": freeze2, "tag2": tag2, "a1": a1, "explore": explore}[MODE]()
 except Halt as e: print(f"⛔ 중단: {e}")
