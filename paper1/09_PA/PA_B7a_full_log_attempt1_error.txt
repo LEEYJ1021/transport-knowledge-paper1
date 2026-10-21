@@ -1,0 +1,18 @@
+[규칙 파일] S4_0_PREREG.json | main_contrast P0509->P2025 | (2005, 2009), (2020, 2025)
+[재현 OK] 분석 집합 76,984, 관측 delta | 결측 중 분석 저널 밖으로 제외된 논문 0
+[기간별 결측률(설계 정보)]
+ period  n_obs  n_missing  miss_rate
+ P0509   7182       1906     0.2097
+ P2025  36501       6306     0.1473
+Traceback (most recent call last):
+  File "/home/yjlee/Research/Minnesota_Transport/paper1/pa_b7a.py", line 116, in <module>
+    try: {"freeze": freeze, "tag": tag, "run": run}[MODE]()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjlee/Research/Minnesota_Transport/paper1/pa_b7a.py", line 93, in run
+    f0, f1 = (lambda k0, k1: (A1["a"] + k1*A1["b"])/A1["Nf"] - (A0["a"] + k0*A0["b"])/A0["Nf"])
+    ^^^^^^
+TypeError: cannot unpack non-iterable function object
+
+real	0m1.316s
+user	0m3.938s
+sys	0m0.169s

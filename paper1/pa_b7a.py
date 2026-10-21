@@ -90,7 +90,6 @@ def run():
     miss = pd.DataFrame([dict(period=c, n_obs=int(x["n"]), n_missing=int(x["m"]), miss_rate=x["m"]/x["Nf"]) for c, x in ((c0, A0), (c1, A1))])
     print("[재현 OK] 분석 집합 76,984, 관측 delta | 결측 중 분석 저널 밖으로 제외된 논문", dropped); print("[기간별 결측률(설계 정보)]\n", miss.round(4).to_string(index=False))
     if QUICK: print("\n[QUICK] 재현 점검과 기간별 결측률만 출력. 결과 통계는 계산·출력하지 않음."); return
-    f0, f1 = (lambda k0, k1: (A1["a"] + k1*A1["b"])/A1["Nf"] - (A0["a"] + k0*A0["b"])/A0["Nf"])
     ff = lambda k0, k1: (A1["a"] + k1*A1["b"])/A1["Nf"] - (A0["a"] + k0*A0["b"])/A0["Nf"]
     base = ff(1, 1); big = Q.loc[topics, "big"].values.astype(bool); sgn = np.sign(delta_obs); K = PLAN["grid_k"]
     scen = {"both": lambda k: ff(k, k), "only0": lambda k: ff(k, 1), "only1": lambda k: ff(1, k)}
