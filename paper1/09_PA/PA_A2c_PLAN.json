@@ -1,0 +1,34 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-A2의 3번 교정만). S6 결과는 열람한 상태. PA-A2c 결과는 미열람. ID 대조·진입 정의 민감도는 별도 계획(PA-A2a/b)으로 분리. S0~S8 판정 불변.",
+ "setting": "S6 주 설정: spec['main'] (scheme, venue, topic, hom)과 s6_lib.make_pair 그대로. 쌍은 s6_lib.pairs_of(spec) 전부",
+ "B": "spec['B_boot'] (S6와 같은 값, 실행 시 기록)",
+ "ci": "spec['ci'] (S6와 같은 백분위)",
+ "boot_modes": {
+  "author": "저자 가중 wa~Exp(1)만 적용, 논문 가중 1 (저자 단위 클러스터 복원추출의 연속형 근사)",
+  "mult": "S6 원본: 저자 wa x 논문 wp 곱셈 Exp(1) (민감도로 병기)"
+ },
+ "stats": {
+  "entry_share": "half(entry)/sum(half(adapt,realloc,entry,exit))",
+  "adapt_share": "half(adapt)/같은 분모",
+  "entry_minus_adapt": "entry_share - adapt_share",
+  "excess_half": "half(P.excess(m1)[0])"
+ },
+ "report": "통계별: 관측, 부트스트랩 중앙값, 편향 보정값(2*obs-median), 백분위 구간, basic 구간(2*obs-q_hi, 2*obs-q_lo)",
+ "reading": "저자 모드에서 entry_minus_adapt의 basic 구간 하한>0인 쌍 수를 보고. 4쌍 모두 >0이면 '진입>적응 방향이 저자 단위 재표집에서 유지'. 일부면 쌍별로 표기. mult 모드는 병기만 하며 판독에 쓰지 않음",
+ "reproduce_check": "관측 total_half가 renewal_decomposition.csv(scheme=main, variant=all_venues)와 1e-6 이내 일치하지 않으면 중단",
+ "caveat": "저자 가중만 흔드는 방식은 공저로 묶인 저자들의 상관과 논문 단위 변동을 반영하지 않음. 지속/진입 역할은 재표집에서 고정(S6와 동일). 동명이인·이름 기반 식별 문제는 이 분석이 다루지 않음(PA-A2a)",
+ "forbidden": "결과를 본 뒤 B·모드·판독 기준 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T11:53:45",
+ "sha256": "6e9a0ce5ca3a49ae12e4fdbda40ec36b195969ebaf80c15ac5d62ab081ee2c8c",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S6_0_PREREG.json": "645bb2f0d4e61bd930afe9bc778d027f71887583fa2ff912b0bc1962965f2de7",
+  "s6_lib.py": "8df8416f4112d0ace4cf037f0306e2ef608ce288c00c43682c03203bb53a659f",
+  "s6_run.py": "b190fb70bcf142c28381eb46b7ab8c9ba512f720c240052c10872c89c5ffc36e",
+  "renewal_decomposition.csv": "7f9608b32c034d884f5275929d38e6481caf23d4e8c2397d186cf512658416a1",
+  "renewal_bootstrap.csv": "0c2f5073147bb22daad2ead3766cd1f6681e4ade54800197aa5ce26fe578150c"
+ }
+}
