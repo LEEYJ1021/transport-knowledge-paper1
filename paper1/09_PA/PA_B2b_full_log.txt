@@ -1,0 +1,35 @@
+  base 완료
+  drop_top1_venue 완료
+  drop_top3_venues 완료
+  drop_top5_venues 완료
+  drop_topic71 완료
+  drop_top5_venues_and_topic71 완료
+
+제외 대상 상위 5개 저널: ['T-ITS', 'T-TE', 'AAP', 'TR-D', 'TRIP']
+
+[Post-hoc] PA-B2b 결과
+                      variant  sample  n_venues   K  obs_R         obs_breaks     J  J_ratio_vs_base J_class  boot_hit_2020pm1  break_kept
+                        base     all        34 149  0.759       [2012, 2020] 0.190            1.000   점프 유지             1.000        True
+                        base fixed14        34 149  0.775 [2008, 2015, 2020] 0.179            1.000   점프 유지             0.995        True
+                        base  within        34 149  0.703 [2009, 2015, 2020] 0.150            1.000   점프 유지             1.000        True
+             drop_top1_venue     all        33 149  0.727       [2012, 2020] 0.175            0.920   점프 유지             1.000        True
+             drop_top1_venue fixed14        33 149  0.664       [2012, 2019] 0.144            0.804   점프 유지             0.925        True
+             drop_top1_venue  within        33 149  0.662       [2015, 2020] 0.143            0.958   점프 유지             1.000        True
+            drop_top3_venues     all        31 149  0.690       [2012, 2020] 0.160            0.841   점프 유지             1.000        True
+            drop_top3_venues fixed14        31 149  0.661       [2012, 2019] 0.149            0.832   점프 유지             0.965        True
+            drop_top3_venues  within        31 149  0.609       [2012, 2019] 0.147            0.983   점프 유지             0.960        True
+            drop_top5_venues     all        29 149  0.680       [2012, 2020] 0.157            0.828   점프 유지             1.000        True
+            drop_top5_venues fixed14        29 149  0.649       [2012, 2020] 0.156            0.871   점프 유지             0.940        True
+            drop_top5_venues  within        29 149  0.597       [2012, 2019] 0.146            0.979   점프 유지             0.960        True
+                drop_topic71     all        34 148  0.757       [2012, 2020] 0.177            0.931   점프 유지             0.995        True
+                drop_topic71 fixed14        34 148  0.776 [2008, 2015, 2020] 0.168            0.940   점프 유지             1.000        True
+                drop_topic71  within        34 148  0.696 [2009, 2015, 2020] 0.130            0.870   점프 유지             1.000        True
+drop_top5_venues_and_topic71     all        29 148  0.676       [2012, 2020] 0.141            0.739   부분 감소             0.995        True
+drop_top5_venues_and_topic71 fixed14        29 148  0.647       [2012, 2019] 0.135            0.758   부분 감소             0.635       False
+drop_top5_venues_and_topic71  within        29 148  0.589       [2012, 2019] 0.124            0.828   점프 유지             0.675       False
+
+※ 동결 판독은 변화점 유지와 J 비율을 따로 읽음. 변형 간 R은 직접 비교 불가. S0~S8 판정 불변.
+
+real	0m15.547s
+user	0m18.112s
+sys	0m0.256s
