@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-B7 중 분류기 대입 (b)만). S4 결과, pa_b7a.py, title_classifier_report.md(교차검증 정확도 0.508, tau 격자별 적용률·정확도), title_pred_missing_topic.csv의 기간별 적용률(0.348/0.374/0.369/0.408/0.450)과 pmax 중앙값은 열람한 상태. PA-B7b 결과 미열람. B7a(뒤집힘 배수), S4 IPW와 보완 관계. S0~S8 판정 불변.",
+ "data": "B7a와 같은 분석 집합: F1_papers.csv에서 EXCLUDE_PIDS_FROZEN 제외, in_sample 참, 연도 2000~2025, has_topic 참 and topic150 있음(76,984편). 결측 집합 = 나머지 중 분석 저널 안. 대입 후보 = title_pred_missing_topic.csv(S2 분류기, 14,810편)와 pid가 겹치는 결측 논문. 연도·저널은 F1의 값 사용. 기간·대비는 S4 동결 규칙의 periods, main_contrast",
+ "imputation": "선택된 결측 논문을 (저널, 기간, 예측 토픽) 카운트에 +1. 예측 토픽은 L7_topic_grade의 정렬된 토픽 목록 위치로 변환(배열 축은 149개, 토픽 ID는 0~149에서 18이 빠짐). 대입되지 않은 결측 논문은 분모에서 제외",
+ "share": "share_full(t, 기간) = (관측 카운트 + 대입 카운트) / (관측 논문 수 + 대입 논문 수), 저널 합산. delta_full = share_full(후기) - share_full(전기). 관측 delta는 S4와 같은 저널 합산 몫의 차",
+ "scenarios": {
+  "s1": "title_pred_missing_topic.csv의 use_in_sensitivity 플래그(pmax>=0.5 and 토픽 F1>=0.3, S2 동결 외 사전 명시)",
+  "s2": "pmax>=tau_s2(F1 하한 없음)",
+  "s3": "pmax>=tau_s3(적용률 높음)",
+  "s4": "pmax>=tau_s4(정확도 우선)"
+ },
+ "tau": {
+  "s2": 0.5,
+  "s3": 0.3,
+  "s4": 0.7
+ },
+ "scope": "S4 big 토픽(topic_quadrants.csv의 big 참, 50개). 각 토픽의 delta_full 부호가 관측 delta 부호와 같은지. 대입 후 big 라벨·4분면 변화는 범위 밖(B7a와 동일)",
+ "stats": "시나리오별 기간별 결측 대비 대입률(설계 정보), big 토픽 부호 유지 비율, 유지 실패 토픽 목록, |delta_full|/|delta| 중앙값(감쇠 정도)",
+ "reading": "시나리오별 big 토픽 중 부호 유지 비율 >=0.90 '유지', 0.70~0.90 '부분', <0.70 '민감'. 시나리오를 합치지 않음. B7a와 같은 임계값이며 임의의 동결 사양",
+ "reproduce_check": "(a) 분석 집합 76,984편, (b) 관측 delta가 topic_quadrants.csv와 1e-9 이내, (c) CSV pid의 99% 이상이 결측 집합(분석 저널 안)에 포함, (d) pred_topic이 모두 L7 토픽 목록 안. 하나라도 어긋나면 중단",
+ "caveat": "교차검증 정확도는 결측 논문에 대한 정확도가 아님(분포가 다를 수 있음). 예측확률은 보정되지 않았고 pmax만 있어 부드러운 대입 불가. 확신 높은 예측만 대입하므로 F1 높은 토픽이 더 채워지고, 기간별 대입률이 다름(초기 낮음). 오분류가 몫을 흐리게 해 감쇠 쪽으로 작용할 수 있음. 인과 해석 아님",
+ "forbidden": "결과를 본 뒤 시나리오·tau·판독 임계값 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T14:37:22",
+ "sha256": "4851ecf3acf3a2dbec2450a86213a0f262b6cb8ed05af530aa7a63bdf032a048",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "pa_b7a.py": "d4b4758c52a80aefb37382829ea282aca401b93e754b26e8026d339ecfefcd96",
+  "F1_papers.csv": "9340e0369cb9a1f7b040fe949f57f69058867d459178dd4ea348e0f45283e288",
+  "title_pred_missing_topic.csv": "19400a10084fae797f5f341189cff6a76220ce4e1daaa0207c40c4c6b2a5877c",
+  "title_classifier_report.md": "bcaa2b2a59fe9b481425eea52e77a62ee9c1f835d19cb82f0901f400794e18c8"
+ }
+}
