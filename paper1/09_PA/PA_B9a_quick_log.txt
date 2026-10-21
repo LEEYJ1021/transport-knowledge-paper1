@@ -1,0 +1,16 @@
+[재현 OK] 4쌍의 n, raw rho, 편 rho가 country_partial_spearman.csv(none)와 일치 | 노트북 셀 24 앞부분 해시 일치
+
+[층별 n(설계 정보)]
+ stratum               ALL                           HIC      LIC      LMC      UMC     
+control               gdp gdp_pop income_dummy none gdp none gdp none gdp none gdp none
+domain  indicator                                                                      
+safety  road_deaths    75      75           75   75  45   45   0    0  11   11  19   19
+        vehicles       73      73           73   73  45   45   0    0  11   11  17   17
+transit transport_co2  76      76           76   76  48   48   0    0  10   10  18   18
+        urban_pop      78      78           78   78  48   48   0    0  11   11  19   19
+
+[QUICK] 오류 없이 완료. 결과 통계는 출력하지 않음(_QUICK 파일을 열어 해석하지 마세요).
+
+real	0m2.691s
+user	0m8.138s
+sys	0m0.311s

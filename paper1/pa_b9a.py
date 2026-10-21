@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np, pandas as pd
 from scipy.stats import rankdata
 warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 40); pd.set_option("display.max_rows", 200)
-MODE = "tag"
-QUICK = True
+MODE = "run"
+QUICK = False
 
 ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; PA = P1/"09_PA"; S8D = P1/"08_S8"
 NB = P1/"S7. 지역 집중과 신규 유입, S8. 공급-부담 정렬.ipynb"; MARK = "# ============================== freeze"
