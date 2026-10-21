@@ -1,0 +1,24 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-B8 중 B8-1만: 기존 사전으로 미달 4개 도메인에 정렬을 적용). S8 결과(통과 safety·transit의 정렬·지표 일관·편 순위상관), domain_precision_recall.csv(미달 4개 precision 0.76~0.84), align() 소스 열람한 상태. 미달 4개 도메인의 정렬 결과는 미계산·미열람. 사전 v3 재작성과 새 25편 이중 코딩(B8-2)은 별도(인력 필요). S0~S8 판정 불변.",
+ "scope": "domains_passed.json의 failed 4개(electrification_env, freight, active_urban, infrastructure). S8_0_PREREG_v2.json(해시 9f59a75d7c63)의 domains, domain_indicators, periods, supply, sensitivity, direction, country_level, seed를 그대로 사용. S8 align()의 계산(렌즈 2종, 제외 민감도 3종, 지표 일관, 편 순위상관)을 복제하되 도메인 목록만 바꿈",
+ "outputs": "09_PA/PA_B8a_alignment_gap_map.csv, PA_B8a_indicator_consistency.csv, PA_B8a_sensitivity_exclusion.csv, PA_B8a_country_partial_spearman.csv, PA_B8a_precision_note.csv. S8 폴더의 파일, S8_meta.json, CHANGELOG_S8.md는 수정하지 않음",
+ "reproduce_check": "같은 복제 코드로 safety·transit을 계산해 S8 산출물(alignment_gap_map, indicator_consistency, country_partial_spearman)과 비교. 간극 지도·지표 일관·편 순위상관 점추정이 1e-9 이내로 일치하지 않으면 중단. 부트스트랩 구간(lo, hi)은 본 실행에서 비교하되 불일치 시 경고만(난수 순서 차이 가능)",
+ "reading": "미달 4개 도메인은 사전 precision이 0.85 미만이라 본문 정렬 분석에서 제외한 도메인. 통과/실패 판정을 하지 않음. 보고: (1) 역량 렌즈 지표 일관 비율(도메인별, 참고로 0.75와 비교), (2) 마지막 기간 역량 렌즈에서 지표별 'HIC SBR>1 이면서 LIC·LMC SBR<1' 여부, (3) 편 순위상관(제외 없음)의 부호와 구간이 0을 배제하는지, (4) 제외 민감도 같은 쪽 비율. 통과 도메인(safety·transit)과 같은 방향인지 기술만 하고 본문 판정을 바꾸지 않음",
+ "caveat": "미달 도메인은 사전 precision 0.76~0.84(n=25, Wilson 하한 0.57~0.65)라 공급 질량에 오분류가 섞여 있을 수 있음. 통과 도메인과 같은 선상의 증거가 아님. 모든 표에 precision을 병기. 국가 단위 상관은 생태학적 오류 가능, 인과 아님. 부트스트랩은 국가 단위",
+ "forbidden": "결과를 본 뒤 사전·지표 대응·임계값·판독 문구 변경, 미달 도메인을 본문 통과 도메인으로 승격(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T14:44:26",
+ "sha256": "fa7e2a359061681541b2aab717308f53f0e25e7d054953c9dcc738b8c4d111d6",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S8_0_PREREG_v2.json": "644d3a2afcc76d2340a7326c50981559b9e02675d4ad9e8fe0635636c0a2c73a",
+  "domains_passed.json": "69dc7d1a58ee3ed5c4bbff9923e3167ddaa9aeb7a8a80c07575104d7723ec28a",
+  "domain_precision_recall.csv": "ebfc0f1beae9d0e3c357e2eab9d609ee2d5e6a009d2b71c1c8351e9165f730fd",
+  "alignment_gap_map.csv": "e73830c4aeb0c0273ec3a1a99bc5ea6e2badb166ea60750c52d78452636968b0",
+  "indicator_consistency.csv": "fd4611caf662d680b1dc447d55e319619d370bba702db2f36a3c1178c1106725",
+  "country_partial_spearman.csv": "50b7a7ed607007b5fb3e7a901459007f8a2a29b8d8b69324558519fce2a0fe82",
+  "burden_country_table.csv": "5184ed442075ca6f634304c296fd840908c36a2f701eaacccc4598264661a78e",
+  "pa_b8a.py": "b5e5ba92bfc8141b4250afb279cbb4d0e5445a6d27678aa3557b0418088d70c6"
+ }
+}
