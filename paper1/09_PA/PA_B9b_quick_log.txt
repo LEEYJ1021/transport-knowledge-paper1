@@ -1,0 +1,79 @@
+[재현 OK] 기준행 4쌍이 country_partial_spearman.csv(none)와 일치
+
+[층별 n(설계 정보)]
+ stratum                                            ALL  HIC  UMC  LMC  LIC
+scheme        variant floor domain  indicator                             
+equal         main    5     safety  road_deaths     83   47   22   13    1
+                                    vehicles        81   47   20   13    1
+                            transit transport_co2   84   50   21   12    1
+                                    urban_pop       86   50   22   13    1
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+              rec     5     safety  road_deaths     85   47   23   13    2
+                                    vehicles        83   47   21   13    2
+                            transit transport_co2   86   50   22   12    2
+                                    urban_pop       88   50   23   13    2
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+full_count    main    5     safety  road_deaths     83   47   22   13    1
+                                    vehicles        81   47   20   13    1
+                            transit transport_co2   84   50   21   12    1
+                                    urban_pop       86   50   22   13    1
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+              rec     5     safety  road_deaths     85   47   23   13    2
+                                    vehicles        83   47   21   13    2
+                            transit transport_co2   86   50   22   12    2
+                                    urban_pop       88   50   23   13    2
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+inv_n_authors main    5     safety  road_deaths     83   47   22   13    1
+                                    vehicles        81   47   20   13    1
+                            transit transport_co2   84   50   21   12    1
+                                    urban_pop       86   50   22   13    1
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+              rec     5     safety  road_deaths     85   47   23   13    2
+                                    vehicles        83   47   21   13    2
+                            transit transport_co2   86   50   22   12    2
+                                    urban_pop       88   50   23   13    2
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+
+[QUICK] 재현 점검과 n 표만. rho는 계산하지 않음.
