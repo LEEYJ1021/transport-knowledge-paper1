@@ -1,0 +1,6 @@
+[재현 OK] S7 orig 기간 통계(main·rec)
+[QUICK] 재현 점검만 수행. 결과 통계는 출력하지 않음.
+
+real	0m0.804s
+user	0m3.557s
+sys	0m0.146s
