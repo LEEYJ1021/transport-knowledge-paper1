@@ -1,0 +1,36 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세. S4 결과·s4_main.py 라벨 규칙 열람 상태. PA-B5 결과 미열람. S0~S8 판정 불변.",
+ "input": "04_S4/topic_quadrants.csv (열: delta, within, quality_high, grade, quadrant, quadrant_within, big, big_within)",
+ "label_rule": "s4_main.label: cut=|col|.quantile(q), big=|col|>=cut, 라벨=small_change | (growth/decline)+(_highQ/_notHighQ). quality_high는 delta용·within용 라벨에서 같은 열",
+ "cut_grid": [
+  0.6,
+  0.6667,
+  0.7,
+  0.75
+ ],
+ "q_original": 0.6667,
+ "stats": {
+  "n_big": "big(delta) 수",
+  "stab_full": "big(delta) 중 라벨(delta)==라벨(within) 비율(S4 안정성 정의)",
+  "stab_A": "같은 정의, grade==A만(컷은 전체 토픽에서 계산)",
+  "lost_big": "big(delta) 중 big(within) 아닌 수",
+  "sign_flip": "big(delta)이고 big(within)인데 부호가 다른 수",
+  "sign_agree": "big(delta) 중 sign(within)==sign(delta) 비율",
+  "dir_stab": "방향 라벨(small/growth/decline, 품질 무시) 일치 비율은 stab_full과 같은 경로이므로 sign_agree와 lost_big 분해로 대체"
+ },
+ "reproduce_check": "q=0.6667에서 stab_full=0.700, stab_A=0.69(S4_meta.json, 소수 3자리), 저장된 quadrant·big 열과 재계산 라벨이 전 토픽 일치. 아니면 중단",
+ "wilson": "q 원본의 stab_full에 대한 Wilson 95% 구간을 '토픽을 표본으로 볼 경우의 참고치'로만 병기",
+ "reading": "판독 규칙 없음(기술 분석). 컷별 값을 표로 보고하고 범위만 서술. 탈락/부호반전 분해로 불일치의 원천을 보고",
+ "caveat": "안정성은 재표집이 아니라 150개 토픽에 대한 결정적 비율. 불일치는 within 기준 상위 1/3 재선정에 따른 탈락이며 품질 축 효과가 아님(quality_high 공유). 복구 코드(s4_main.py) 기준",
+ "forbidden": "결과를 본 뒤 컷 격자·정의 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T12:14:21",
+ "sha256": "85a7d60d3a9a2f8cb87ab91eade05b51e27f043e07dcb683023cc08502eab877",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "S4_meta.json": "494b53dc3720b2cd817c767634ad058287124f1f9c8b409749a5a3ecb83f246e",
+  "s4_main.py": "f803cb90bdc2429d5155e44810c169a4bd0cc04dedd5aea114f1896864e5eada"
+ }
+}
