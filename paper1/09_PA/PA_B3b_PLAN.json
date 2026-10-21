@@ -1,0 +1,26 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세. s4_main.py L116-119로 D1~D4 정의(D1=r=(s1+1e-4)/(s0+1e-4)>=3 and s1>=0.005, 구간 2005-09 대 2015-19; D2=주 대비 평활 로그 비율 상위 14; D3=주 대비 Δs 상위 14; D4=민감도 대비 Δs 상위 14), B3a 결과 열람. 결과 미열람. 지침서의 D1'는 D1이 이미 그 구간이라 의미 없어 구간/규칙 분리 변형 3종으로 대체. S0~S8 판정 불변.",
+ "shares": "S4 분석 집합 F(76,984편)에서 기간별 토픽 비중(pa_b7a와 동일 계산). 주 대비·기간은 S4 동결 규칙 파일에서 읽음. 비중 기준은 topic_quadrants.csv의 delta와 일치(F6_topics의 F2 기준 비중과 다름)",
+ "variants": {
+  "D1_rule": "D1 구간(2005-09 대 2015-19)에서 D2 규칙(평활 로그 비율 상위 14, 평활 eps=1e-4)",
+  "D1_rule_ds": "D1 구간에서 D3 규칙(Δs 상위 14)",
+  "D1_interval": "주 대비 구간에서 D1 규칙(r>=3 and s1>=0.005, eps=1e-4)"
+ },
+ "stats": "변형별 토픽 수, 저장된 D1~D4(definition_sensitivity.csv)와의 쌍별 Jaccard, 원 D1과 변형 각각의 D2·D3·D4에 대한 평균 Jaccard",
+ "reading": "원 D1의 (D2,D3,D4) 평균 Jaccard 대비 D1_rule/D1_rule_ds가 더 크면 '규칙 차이가 이질성의 주원인', D1_interval이 더 크면 '구간 차이가 주원인'으로 방향만 기술. 임계값·판정 없음. 둘 다 크거나 작으면 그대로 기술",
+ "reproduce_check": "(a) 관측 delta가 topic_quadrants.csv와 1e-9 이내, (b) 재계산 D3(주 대비 Δs 상위 14, 안정 정렬)가 저장 D3와 집합 일치(불일치 시 중단), (c) 정보용: 재계산 D1·D2와 저장 D1·D2의 Jaccard(F1 기준이라 완전 일치하지 않을 수 있음, 중단 조건 아님)",
+ "caveat": "D2 평활 방식과 D4(민감도 대비)는 미확인이라 D2는 정보용 재현, D4는 저장값만 사용. 31개 합집합 밖 토픽도 변형에 포함. 정의 차이의 설명이며 신생 토픽의 타당성 검증이 아님",
+ "forbidden": "결과를 본 뒤 변형·eps·판독 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T15:07:29",
+ "sha256": "7f61ff442f7f98f70678fa4408a493ecbe3c2c0fa067b0ee79ccf37116603a3b",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "pa_common.py": "94010d7067cc23a1d00f511ba0e4e9f8a459f9995322b217594f9c5437e2d64e",
+  "pa_b3b.py": "9db42193e451b4312133ed6eb54834c50d888a1a1f10f62fb6763ea4e01197f6",
+  "definition_sensitivity.csv": "4147f471ce6009877e400800f189ffa936da6642b9a088e010fe4522b90bb097",
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "s4_main.py": "f803cb90bdc2429d5155e44810c169a4bd0cc04dedd5aea114f1896864e5eada"
+ }
+}
