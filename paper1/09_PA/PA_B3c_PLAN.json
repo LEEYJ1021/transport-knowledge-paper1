@@ -1,0 +1,25 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(지침서 B3-3). B3a 결과(핵심 7·중간 10·특이적 14), S6 Pair 소스, PA-A2c(4항 분해, 진입=신규+복귀) 열람 상태. 결과 미열람. 이전에 생략 권고(미수행 목록 후보)했으나 연구자 요청으로 수행. S0~S8 판정 불변.",
+ "sets": "definition_sensitivity.csv의 n_defs: core>=3, mid==2, specific==1, union31=전체 31개. 참조 집합 all_growth=쌍별 총변화>0인 전 토픽",
+ "setting": "spec['main']과 s6_lib.make_pair 그대로, 쌍은 pairs_of(spec) 전부. 토픽 축은 Pair의 K(L['topics']). 집합 토픽이 L['topics']에 없으면 제외하고 수를 보고",
+ "stats": "집합 안에서 쌍별 총변화>0인 토픽만. 합산 몫: entry_frac=sum(entry)/sum(total), entry_new_frac, adapt_frac, realloc_frac(진입=신규+복귀). 토픽별 entry/total의 중앙값, entry>adapt인 토픽 비율. 차이: core-all_growth, core-specific의 entry_frac",
+ "boot": "저자 가중 wa~Exp(1)만(PA-A2c 저자 모드), B=spec['B_boot'], 역할 고정, 관측·백분위·basic 구간",
+ "reading": "쌍별로 core의 entry_frac와 adapt_frac의 대소, core-all_growth entry_frac 차이의 부호와 구간이 0을 포함하는지를 기술. 임계값·판정 없음, 쌍을 합치지 않음. 마지막 쌍(P1519->P2025)을 주 대상으로 표기",
+ "reproduce_check": "(a) 쌍별 total_half가 renewal_decomposition.csv(scheme=main, variant=all_venues)와 1e-6 이내, (b) 항 합=총변화(Pair 내부 assert), (c) definition_sensitivity 31행",
+ "caveat": "D2~D4가 변화량 상위 14 기준이라 핵심 집합은 총변화가 큰 토픽에 치우침(구조적). 합산 몫은 큰 토픽이 지배. 토픽 단위 인과 아님. 신생 후보가 성장 토픽뿐이라 total>0 조건이 대부분 충족될 것(미확인)",
+ "forbidden": "결과를 본 뒤 집합·통계·판독 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T15:03:46",
+ "sha256": "2b463ef196bef69a735b35efaf613975b3e44f384f3177978c13694dbdd2c9de",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "pa_common.py": "94010d7067cc23a1d00f511ba0e4e9f8a459f9995322b217594f9c5437e2d64e",
+  "pa_b3c.py": "2b2812cfcd125b2a47e2ef86d0127c5697b1c6d28a2aebd53977073c342de13c",
+  "definition_sensitivity.csv": "4147f471ce6009877e400800f189ffa936da6642b9a088e010fe4522b90bb097",
+  "s6_lib.py": "8df8416f4112d0ace4cf037f0306e2ef608ce288c00c43682c03203bb53a659f",
+  "renewal_decomposition.csv": "7f9608b32c034d884f5275929d38e6481caf23d4e8c2397d186cf512658416a1",
+  "PA_B3a_PLAN.json": "9202e7466420bc71f86dbd763857d0635475a7c921752c3f276e831c70062dac"
+ }
+}
