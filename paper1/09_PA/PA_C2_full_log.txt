@@ -1,0 +1,44 @@
+[재현 OK] S7 주 설정 기간 통계, S6 집합 76,984편, 질량 보존
+
+[Post-hoc] PA-C2 결과(보유 논문만 대 전체)
+ period       stat     orig    kept    delta  core verdict
+ P0709 top5_known   0.6424  0.6697   0.0273  True      차이
+ P0709  hhi_known   0.2248  0.2522   0.0274  True      차이
+ P0709   cn_known   0.0287  0.0264  -0.0023  True      일치
+ P0709   us_known   0.4582  0.4882   0.0299  True      차이
+ P0709        unk   0.1109  0.1009  -0.0099  True      일치
+ P0709   n_active  64.0000 57.0000  -7.0000 False      병기
+ P0709  top5_incl   0.5712  0.6021   0.0309 False      병기
+ P1014 top5_known   0.6006  0.6226   0.0219  True      차이
+ P1014  hhi_known   0.1699  0.1849   0.0149  True      차이
+ P1014   cn_known   0.0549  0.0559   0.0010  True      일치
+ P1014   us_known   0.3890  0.4078   0.0188  True      차이
+ P1014        unk   0.0746  0.0643  -0.0102  True      차이
+ P1014   n_active  80.0000 69.0000 -11.0000 False      병기
+ P1014  top5_incl   0.5559  0.5825   0.0267 False      병기
+ P1519 top5_known   0.6008  0.6223   0.0215  True      차이
+ P1519  hhi_known   0.1305  0.1395   0.0091  True      일치
+ P1519   cn_known   0.1373  0.1434   0.0061  True      일치
+ P1519   us_known   0.3116  0.3232   0.0116  True      차이
+ P1519        unk   0.0516  0.0457  -0.0059  True      일치
+ P1519   n_active  87.0000 81.0000  -6.0000 False      병기
+ P1519  top5_incl   0.5698  0.5939   0.0241 False      병기
+ P2025 top5_known   0.6486  0.6718   0.0232  True      차이
+ P2025  hhi_known   0.1667  0.1754   0.0088  True      일치
+ P2025   cn_known   0.3476  0.3524   0.0047  True      일치
+ P2025   us_known   0.1910  0.2048   0.0138  True      차이
+ P2025        unk   0.0400  0.0359  -0.0041  True      일치
+ P2025   n_active 104.0000 92.0000 -12.0000 False      병기
+ P2025  top5_incl   0.6226  0.6477   0.0250 False      병기
+
+[Post-hoc] 진단
+ period  papers_orig  papers_kept  kept_share  unk_orig  unk_kept  unk_dropped
+ P0709         5223         4044      0.7743    0.1109    0.1009       0.1450
+ P1014        13567        11262      0.8301    0.0746    0.0643       0.1246
+ P1519        20048        17447      0.8703    0.0516    0.0457       0.0915
+ P2025        42807        36501      0.8527    0.0400    0.0359       0.0635
+※ 기간·통계별로 따로 읽고 합치지 않음. 소속은 국적 아님. S0~S8 판정 불변.
+
+real	0m3.918s
+user	0m6.504s
+sys	0m0.253s
