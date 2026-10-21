@@ -1,0 +1,54 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(지침서 B9-3). B9a 결과, B9b 설계 점검(LIC는 하한 5에서도 1개국이라 자료상 불가, LMC n 12~13, UMC n 20~22), country_mass_long의 스킴 구조 열람 상태. 결과 미열람. 이전에 생략 권고했으나 연구자 요청으로 수행. S0~S8 판정 불변.",
+ "grid": {
+  "scheme": [
+   "inv_n_authors",
+   "full_count",
+   "equal"
+  ],
+  "variant": [
+   "main",
+   "rec"
+  ],
+  "floor": [
+   5,
+   10,
+   20
+  ],
+  "strata": [
+   "ALL",
+   "HIC",
+   "UMC",
+   "LMC",
+   "LIC"
+  ],
+  "control": "rank(gdp_pc) 통제 편 순위상관(B9a의 gdp와 동일)"
+ },
+ "definitions": "공급 강도 s = 해당 스킴·변형의 (도메인 논문 질량/국가 총 질량). 국가 포함 기준 = 같은 변형의 inv_n_authors 총질량 >= floor. 도메인·지표쌍은 S8_0_PREREG_v2.json의 domain_indicators 중 통과 도메인(domains_passed.json). 부담 지표·gdp_pc·소득군은 burden_country_table(wb_income_current 고정). full_count는 논문당 w 합이 국가 수라 총질량 분모도 같은 스킴",
+ "n_min": 20,
+ "B": 1000,
+ "ci": [
+  2.5,
+  97.5
+ ],
+ "boot": "국가 복원추출, 재표집마다 순위·잔차 재계산, 단일 rng(seed 고정) 순차",
+ "reading": "소득군별 n 표를 먼저 보고. 행(스킴x변형x하한x쌍x층)별로 n<20이면 NA, 아니면 부호가 기준행((ALL, inv_n_authors, main, floor 10)의 같은 쌍)과 같고 구간이 0을 배제하면 '관찰', 아니면 '비관찰'. 행을 합치지 않음. 기준 구간이 0을 배제하는 쌍은 B9a에서 safety-road_deaths 하나뿐이므로 나머지 쌍의 관찰 여부는 해석하지 않음",
+ "reproduce_check": "기준행((ALL, inv_n_authors, main, floor 10))의 n과 편 rho가 country_partial_spearman.csv(excl=none)와 1e-6 이내. 불일치 시 중단",
+ "caveat": "LIC는 하한과 무관하게 n<20(자료상 불가), LMC도 대부분 n<20이므로 소득군 내 추정이 가능한 칸은 HIC와 하한 5의 UMC 정도. 하한 5는 질량이 작은 국가(공급 강도 잡음 큼)를 포함. 변형 rec가 모든 스킴에 존재하지 않으면 해당 칸은 NA로 기록. 다중성 보정 없음, 탐색적. 국가 단위 상관은 생태학적 오류 가능, 인과·필요 충족 증거 아님",
+ "forbidden": "결과를 본 뒤 격자·n_min·판독 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T15:10:22",
+ "sha256": "9f65e027ba643a4654a5d33b3b611d8073d9c0635351c04f27e6de4c573ebd7a",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "pa_common.py": "94010d7067cc23a1d00f511ba0e4e9f8a459f9995322b217594f9c5437e2d64e",
+  "pa_b9b.py": "982e25acd2ba7a69a20cce88015e9103d695c08883e5162bdebaa88fe6790d14",
+  "S8_0_PREREG_v2.json": "644d3a2afcc76d2340a7326c50981559b9e02675d4ad9e8fe0635636c0a2c73a",
+  "domains_passed.json": "69dc7d1a58ee3ed5c4bbff9923e3167ddaa9aeb7a8a80c07575104d7723ec28a",
+  "country_partial_spearman.csv": "50b7a7ed607007b5fb3e7a901459007f8a2a29b8d8b69324558519fce2a0fe82",
+  "burden_country_table.csv": "5184ed442075ca6f634304c296fd840908c36a2f701eaacccc4598264661a78e",
+  "PA_B9a_PLAN.json": "230feb7d6eea5e516177851d22a7dc00b59c3edc88c01dd663f309c87cbe97c5"
+ }
+}
