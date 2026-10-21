@@ -6,8 +6,8 @@ import sys, json, hashlib, subprocess, warnings
 from pathlib import Path
 import numpy as np, pandas as pd
 warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 40)
-MODE = "tag"
-QUICK = True
+MODE = "run"
+QUICK = False
 
 ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; PA = P1/"09_PA"; S0, S1, S6D, S7D = P1/"00_S0", P1/"01_S1", P1/"06_S6", P1/"07_S7"
 DATA = ROOT/"analysis_data/final"; PAL = ROOT/"analysis_data/paper_author_long.csv"
