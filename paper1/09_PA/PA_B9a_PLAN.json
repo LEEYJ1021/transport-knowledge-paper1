@@ -1,0 +1,61 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-B9 중 (1) 소득군 내 상관과 (2) 통제 변형). S8 결과, country_partial_spearman.csv 전체(none·제외 행), 소득군별 국가 수(필터 전 HIC 86, UMC 59, LMC 47, LIC 25), 노트북 셀의 align L206~282와 partial_spearman 정의는 열람한 상태. PA-B9a 결과 미열람. 공급 정의(논문 수 기준)와 min_country_mass 5/20은 PA-B9b로 분리. S0~S8 판정 불변.",
+ "scope": "통과 도메인(domains_passed.json: safety, transit)의 기존 도메인-지표 쌍 4개(DOM_IND), 제외 없음(none) 설정, min_country_mass=10, 2007~2025 풀링 강도(S8 국가 수준과 동일)",
+ "definitions": "공급 강도 s = 국가의 도메인 d 질량 / 국가 총 질량(load_mass, 제목 정규식 플래그 pid 조인, tot>=min_country_mass), 부담 강도 b = burden_country_table의 INT[지표], z = gdp_pc, pop = pop. 코드는 노트북 셀 상단을 그대로 실행해 사용(해시 동결). 기본 df = (s,b,z) 결측 제거",
+ "strata_controls": {
+  "ALL": [
+   "none",
+   "gdp",
+   "income_dummy",
+   "gdp_pop"
+  ],
+  "HIC": [
+   "none",
+   "gdp"
+  ],
+  "UMC": [
+   "none",
+   "gdp"
+  ],
+  "LMC": [
+   "none",
+   "gdp"
+  ],
+  "LIC": [
+   "none",
+   "gdp"
+  ]
+ },
+ "control_defs": {
+  "none": "통제 없음(순위 상관)",
+  "gdp": "rank(gdp_pc) 통제 편 순위상관(S8 정의, 재현 대상)",
+  "income_dummy": "소득군 더미(HIC 기준 3개) 통제: s,b는 순위, 더미는 순위 변환 없이 OLS 잔차 상관. 소득군이 G4인 국가만",
+  "gdp_pop": "rank(gdp_pc)와 rank(pop) 이중 통제. pop 결측 국가 제외"
+ },
+ "n_min": 20,
+ "B": 1000,
+ "ci": [
+  2.5,
+  97.5
+ ],
+ "boot": "국가 복원추출, 재표집마다 순위·잔차 재계산(S8과 같은 방식), 층별 통제별로 독립 추출(seed 고정, 실행 순서 고정)",
+ "reading": "행(도메인x지표 x 층 x 통제)별로 보고. n<20이면 'NA'. 아니면 부호가 (ALL, gdp) 행의 부호와 같고 구간이 0을 배제하면 '관찰', 아니면 '비관찰'. 행·층·통제를 합쳐 하나의 결론으로 만들지 않음. 문구는 '소득 수준과 분리되지 않는 간극'이며 필요 충족 증거로 쓰지 않음",
+ "reproduce_check": "(a) 노트북 앞부분 해시가 동결 시점과 일치, (b) (ALL, gdp) 행의 n, raw rho, partial rho가 country_partial_spearman.csv의 excl=none 행과 1e-6 이내(4쌍 모두), (c) 이 코드의 편 상관 함수가 노트북 partial_spearman과 1e-9 이내. 하나라도 어긋나면 중단",
+ "caveat": "기존 편 rho에서 구간이 0을 배제하는 쌍은 safety-road_deaths 하나뿐이라 나머지 세 쌍의 '관찰' 여부는 해석하지 않음. 소득군 내는 n이 작아 구간이 넓고, 비관찰은 효과 없음이 아니라 검정력 한계일 수 있음. 소득군 더미와 gdp는 공선성이 큼. 48행, 다중성 보정 없음, 탐색적. 국가 단위 상관은 생태학적 오류 가능, 인과·필요 충족 증거 아님. 소득군 값은 wb_income_current 고정",
+ "forbidden": "결과를 본 뒤 통제·층·n_min·판독 규칙 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T14:11:46",
+ "sha256": "276e376f9d2f10af34b99a4fe4e3076f3e3d7663b4917a9161adf7a695df0c66",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S8_0_PREREG_v2.json": "644d3a2afcc76d2340a7326c50981559b9e02675d4ad9e8fe0635636c0a2c73a",
+  "country_partial_spearman.csv": "50b7a7ed607007b5fb3e7a901459007f8a2a29b8d8b69324558519fce2a0fe82",
+  "burden_country_table.csv": "5184ed442075ca6f634304c296fd840908c36a2f701eaacccc4598264661a78e",
+  "domains_passed.json": "69dc7d1a58ee3ed5c4bbff9923e3167ddaa9aeb7a8a80c07575104d7723ec28a",
+  "S7. 지역 집중과 신규 유입, S8. 공급-부담 정렬.ipynb": "d0724d9ea302f38fffe10d1c6381e3c66848d87e5bbdbf6e1f6b6aae9ba1d1d2",
+  "s8_prefix_sha256": "8a8309c4b5e66a66b00747f779684392ef4c4fc58ca2d65b88e14a6e23bf71e8",
+  "s8_prefix_cell_index": 24
+ }
+}
