@@ -1,0 +1,4 @@
+﻿sample,K,obs_R,obs_k,breaks,s5_breaks,s5_breaks_kept_pm1,p_N1,p_N2,passed_new,passed_s5,same_verdict,all_breaks_kept,B
+all,145,0.7589055897516251,3,"[2012, 2020]","[2012, 2020]","[True, True]",0.047619047619047616,0.9523809523809523,False,False,True,True,20
+fixed14,145,0.7737885570246197,4,"[2008, 2015, 2020]","[2008, 2015, 2020]","[True, True, True]",0.047619047619047616,0.23809523809523808,False,False,True,True,20
+within,145,0.7035551768826372,4,"[2009, 2015, 2020]","[2009, 2015, 2020]","[True, True, True]",0.047619047619047616,0.7142857142857143,False,False,True,True,20
