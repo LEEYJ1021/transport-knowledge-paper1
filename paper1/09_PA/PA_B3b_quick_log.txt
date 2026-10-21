@@ -1,0 +1,2 @@
+[재현 OK] delta, 재계산 D3=저장 D3 | 정보: 재계산 D1 n=14 Jaccard(저장 D1)=1.00, 재계산 D2 Jaccard(저장 D2)=1.00
+[QUICK] 재현 점검만.
