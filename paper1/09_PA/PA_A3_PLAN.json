@@ -1,0 +1,60 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세. S7 결과, s7_period_stats.csv 주 설정 행, PA-C2 결과(원본 기간의 main 통계), country_mass_long의 열·variant 구성은 열람한 상태. PA-A3 결과 미열람. S0~S8 판정 불변.",
+ "setting": "country_mass_long에서 scheme=inv_n_authors, variant in {main, rec}, year>=2007. UNK·ZZ_former는 미상, 알려진 국가 질량 기준 통계(S7 stats_of와 같은 정의). 소속 위치 기준이며 국적 아님",
+ "periods": {
+  "orig": {
+   "P0709": [
+    2007,
+    2009
+   ],
+   "P1014": [
+    2010,
+    2014
+   ],
+   "P1519": [
+    2015,
+    2019
+   ],
+   "P2025": [
+    2020,
+    2025
+   ]
+  },
+  "equal4": {
+   "E0711": [
+    2007,
+    2011
+   ],
+   "E1216": [
+    2012,
+    2016
+   ],
+   "E1721": [
+    2017,
+    2021
+   ],
+   "E2225": [
+    2022,
+    2025
+   ]
+  }
+ },
+ "stats": "top5_incl, top5_known, hhi_known, cn_known, us_known, unk, 그리고 CN 제외(알려진 질량에서 CN을 빼고 재정규화): hhi_exCN, top5_exCN. 병기: n_active",
+ "A3_1": "orig 기간에서 rec 대 main. 통계별 (마지막-첫) 변화의 부호가 같으면 '방향 일치'. 기간별 |rec-main|<=0.01은 '수준 일치'로 병기, 합치지 않음",
+ "A3_2": "equal4 기간(마지막 4년, 2025 부분연도). 통계별 (마지막-첫) 부호가 orig main과 같으면 '방향 유지'. variant별로 따로 보고",
+ "A3_3": "variant x 기간정의별로 hhi_known과 hhi_exCN 각각에서 (마지막 > 직전) 여부와 최솟값 기간을 보고. 포함만 반등: '반등은 중국 몫에 연동', 둘 다: '중국 제외에도 반등 유지', 둘 다 아님: '반등 없음'",
+ "reproduce_check": "orig 기간·두 variant의 top5_incl, top5_known, hhi_known, cn_known, us_known, unk가 s7_period_stats.csv(scheme=inv_n_authors, sample=all, terr_merge=False, income=fixed)와 1e-9 이내, n_active 일치. 아니면 중단",
+ "caveat": "결정적 재집계이며 추론 아님. equal4 마지막 구간은 4년·부분연도라 길이가 다름. rec와 main의 정의 차이는 S7 코드 기준이며 여기서 재검토하지 않음. 부호 판독은 변화가 0에 가까울 때 불안정함",
+ "forbidden": "결과를 본 뒤 기간·기준(0.01)·판독 규칙 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T13:54:25",
+ "sha256": "bf98b23ac193ba76ebba6e37cb2d27bebb1cf32cfae72bf16ef169197d063e9b",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S7_0_PREREG.json": "87cda08fc79ddbb19406b0f58c432f0849ee4784a62857e024b79b4c824ef48d",
+  "s7_period_stats.csv": "840bd1c8d0d7e0d2683bbc68e4d4c3c2290675ccbc547e0a2fbb48f7c9fd60cf",
+  "s7_run.py": "8ebe28c6be09e39cb861cd5a0f6f58b6594883e004f6d198c61518a2b5a94d15",
+  "PA_C2_results.csv": "ac9d66c0fae62e805287317f65be6e032f09941aba14fe4b289659d3463b3427"
+ }
+}
