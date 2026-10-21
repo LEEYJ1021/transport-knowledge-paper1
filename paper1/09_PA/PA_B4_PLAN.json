@@ -1,0 +1,41 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-B4 중 S5·S6 재추정만). S3 요약의 'F2 제외 시 A 145개', L7 열 구조, s5_lib·s6_lib 소스, S5·S6·A2a 결과는 열람한 상태. PA-B4 결과 미열람. S4 재추정과 응집도·Jaccard 지표는 별도 계획(PA-B4b 등)으로 분리. S0~S8 판정 불변.",
+ "grade_def": "L7_topic_grade.csv의 F1, F3 열(True=실패). 통과 = F1 False and F3 False. 재현 점검: 통과 토픽 정확히 145개",
+ "expectation_note": "F1·F3 실패는 합쳐 4개 토픽뿐이라 결과가 거의 같을 것으로 예상(약한 시험). 이 예상은 설계 사실이며 판독 기준이 아님",
+ "s5": {
+  "samples": [
+   "all",
+   "fixed14",
+   "within"
+  ],
+  "detector": "s5_lib.detect 그대로, pen=c_primary*phi_s*(K-1)*log(T), K=145, phi_s·c_primary·k_max·min_len는 S5_0_PREREG.json 값 고정(K 변경에 따른 phi 재계산 안 함)",
+  "data": "s5_lib.load_counts()의 cnt에서 토픽 축을 145개로 부분집합. wbar는 S5와 같이 전체 cnt 기준",
+  "nulls": "N1(gen_N1), N2(trend_probs를 부분 cnt에서 재계산 후 gen_N2), B=500, p=(1+#{null_R>=obs_R})/(1+B), 통과 규칙=N1·N2 모두 p<0.05 (S5와 동일)",
+  "reading": "표본별 (a) 통과 여부가 S5(전 표본 실패)와 같은가, (b) S5 관측 변화점(S5_meta.json obs_breaks) 각각이 새 관측 변화점 ±1년 안에 있는가를 따로 보고. 둘 다 같으면 '등급 선택에 둔감', 아니면 '민감'(표본별 표기, 하나로 합치지 않음)"
+ },
+ "s6": {
+  "setting": "spec['main']과 s6_lib.make_pair 그대로, R을 ti가 통과 토픽 인덱스인 행으로 제한(S6의 topic='A'와 같은 방식). 쌍은 pairs_of(spec) 전부",
+  "stats": "entry_share, adapt_share, entry_minus_adapt (PA-A2c·A2a와 같은 4항 분모, 진입=신규+복귀)",
+  "boot": "저자 가중 Exp(1)을 원본 저자 전체에서 뽑고 부분 자료의 같은 저자에게 같은 값 적용(대응 부트스트랩), B=spec['B_boot'], delta=sub-orig의 백분위·basic 구간",
+  "reading": "쌍별로 entry_minus_adapt의 |delta_obs|<=0.03 이고 부호 유지면 '둔감', 아니면 '민감'. 쌍별 표기, 합치지 않음. 구간은 병기만"
+ },
+ "reproduce_check": "(a) 통과 토픽 145개, (b) 전체 토픽 마스크에서 S5 관측 R이 regime_nulls.csv obs_R과 1e-3 이내, (c) S6 orig total_half가 renewal_decomposition.csv와 1e-6 이내, (d) orig entry_share가 PA_A2c_results.csv(mode=author)와 1e-6 이내, (e) 부분 자료 저자 집합이 원본의 부분집합",
+ "caveat": "제외 토픽이 4개뿐이라 판별력이 약함. phi를 K=149 기준 S5 값으로 고정해 K=145에서 벌점 비율이 미세하게 어긋날 수 있음. 등급 자체의 타당성(F1·F3가 실제로 '좋은 토픽'을 가리는지)은 검증하지 않음",
+ "forbidden": "결과를 본 뒤 통과 정의·B·판독 기준 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T12:36:04",
+ "sha256": "67b9a2b0b2943e8e318b6acf7ba4c7258b5e0693226061473f7f94489b0de072",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "L7_topic_grade.csv": "d0fb3c9b855db88ad8d928297d09dc007ab9f04ff8b995568d0cad6c6559da1a",
+  "S5_0_PREREG.json": "4c67abd884031748c8e1e0aa0bbb3052bcca3efa1f4be52f56eeafe8f9771d4f",
+  "regime_nulls.csv": "21700f7736f76989b57bbae60461ab9f75ec0fbc276cd1aa626149591f0e7bed",
+  "S5_meta.json": "a6fec9dd6e902404d14ef8c90d744cc50af9ca1e4b71fbb31b84b4b9d30f7fbd",
+  "s5_lib.py": "9143b0048532e49ff681a41a400b140e29656456d0dbaaaed27339567ebee9fa",
+  "s6_lib.py": "8df8416f4112d0ace4cf037f0306e2ef608ce288c00c43682c03203bb53a659f",
+  "renewal_decomposition.csv": "7f9608b32c034d884f5275929d38e6481caf23d4e8c2397d186cf512658416a1",
+  "PA_A2c_results.csv": "b9d7d79e8d8268bbaf10ec047aa97e418d15a6cf330a2dfb8babff81e5387cc2"
+ }
+}
