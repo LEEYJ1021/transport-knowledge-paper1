@@ -1,0 +1,28 @@
+[재현 OK] 31개 토픽, n_defs 일치, 정의별 토픽 수 {'D1': 14, 'D2': 14, 'D3': 14, 'D4': 14} | 쌍별 Jaccard {'D1-D2': 0.08, 'D1-D3': 0.27, 'D1-D4': 0.04, 'D2-D3': 0.33, 'D2-D4': 0.47, 'D3-D4': 0.47}
+
+[Post-hoc] PA-B3a 집합별 요약
+         set  n  nA  nB  nC  big_share  qhigh_share  bs_med  bs_q25  bs_q75  wr_med  wr_q25  wr_q75
+  core(>=3)  7   7   0   0      1.000        0.571   0.251   0.223   0.498   0.749   0.502   0.777
+     mid(2) 10  10   0   0      1.000        0.700   0.394   0.236   0.414   0.606   0.586   0.764
+specific(1) 14  12   2   0      0.357        0.714   0.199   0.123   0.411   0.836   0.589   0.979
+
+[Post-hoc] 총변화 기준 4분면 분포
+ quadrant     growth_highQ  growth_notHighQ  small_change
+set                                                     
+core(>=3)               4                3             0
+mid(2)                  7                3             0
+specific(1)             4                1             9
+
+[Post-hoc] 저널 내 성분 기준 4분면 분포
+ quadrant_within  growth_highQ  growth_notHighQ  small_change
+set                                                         
+core(>=3)                   4                3             0
+mid(2)                      5                2             3
+specific(1)                 6                2             6
+
+[동결 판독] between_share 중앙값 핵심 0.251 대 특이적 0.199 → 방향: 핵심이 더 높음(저널 간 성분 비중 큼)
+※ 31개 토픽 기술 통계이며 검정 아님. n_defs>=3은 비슷한 정의의 겹침일 수 있음. S0~S8 판정 불변.
+
+real	0m0.654s
+user	0m3.240s
+sys	0m0.069s
