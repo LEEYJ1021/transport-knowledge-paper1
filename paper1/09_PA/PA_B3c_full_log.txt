@@ -1,0 +1,97 @@
+nohup: ignoring input
+IPW 모델별 행 수: {'A': 91794, 'B': 81645} | 사용: A
+IPW 범위(주제 논문) 0.866~1.883 (S4는 0.86~1.94) | 결측 0편은 1로 대체
+F4에 없는 저자 0명 | F4 첫해 > F2 첫해인 저자 0명(0이어야 정상) | F4 마지막해 < F2 마지막해 0명
+분석 논문 76,984 | 저자-논문 행 255,354 | 저자 93,763 | 가중치 ['equal', 'inv_n_authors', 'first_last', 'full_count'] | 위험군 변형 ['baseline'] (F2는 위험군 제외 상태)
+[설계 정보] 집합 크기(정의/S6 토픽 축에 존재): {'core': (7, 7), 'mid': (10, 10), 'specific': (14, 14), 'union31': (31, 31)}
+  P0004->P0509 완료
+  P0509->P1014 완료
+  P1014->P1519 완료
+  P1519->P2025 완료
+
+[Post-hoc] PA-B3c 집합별 합산 몫(쌍별)
+ stat                                adapt_frac  entry_frac  entry_new_frac  n_topics  realloc_frac
+pair         set                                                                                  
+P0004->P0509 all_growth                 0.2822      0.3046          0.2851      83.0        0.1321
+             core                       0.4282      0.3720          0.4509       2.0        0.4269
+             core_minus_all_growth         NaN      0.0674             NaN       NaN           NaN
+             core_minus_specific           NaN     -0.1834             NaN       NaN           NaN
+             mid                        0.5269      0.1150          0.0814       7.0        0.1457
+             specific                   0.1568      0.5554          0.4383       8.0        0.0672
+             union31                    0.3217      0.3619          0.2847      17.0        0.1081
+P0509->P1014 all_growth                 0.2330      0.3445          0.3392      90.0        0.1130
+             core                       0.2888      0.4460          0.4250       5.0        0.0298
+             core_minus_all_growth         NaN      0.1014             NaN       NaN           NaN
+             core_minus_specific           NaN      0.0444             NaN       NaN           NaN
+             mid                        0.2797      0.6116          0.6345      10.0       -0.0943
+             specific                   0.3771      0.4015          0.4213      14.0        0.0816
+             union31                    0.3470      0.4480          0.4632      29.0        0.0408
+P1014->P1519 all_growth                 0.3122      0.3805          0.3743      79.0        0.1165
+             core                       0.1134      0.5716          0.5646       7.0        0.1185
+             core_minus_all_growth         NaN      0.1911             NaN       NaN           NaN
+             core_minus_specific           NaN      0.1601             NaN       NaN           NaN
+             mid                        0.3769      0.3479          0.3425      10.0        0.1038
+             specific                   0.3804      0.4115          0.4097      14.0        0.0646
+             union31                    0.3148      0.4274          0.4231      31.0        0.0916
+P1519->P2025 all_growth                 0.2778      0.4151          0.4085      55.0        0.1363
+             core                       0.2518      0.4575          0.4564       7.0        0.1358
+             core_minus_all_growth         NaN      0.0424             NaN       NaN           NaN
+             core_minus_specific           NaN      0.0121             NaN       NaN           NaN
+             mid                        0.2908      0.3775          0.3650      10.0        0.1278
+             specific                   0.2523      0.4453          0.4397      12.0        0.1449
+             union31                    0.2659      0.4257          0.4194      29.0        0.1352
+
+[Post-hoc] 차이와 구간
+         pair                   set       stat     obs  pct_lo  pct_hi  basic_lo  basic_hi      B
+P0004->P0509 core_minus_all_growth entry_frac  0.0674 -0.5073  0.8199   -0.6851    0.6421 2000.0
+P0004->P0509   core_minus_specific entry_frac -0.1834 -0.7728  0.6031   -0.9699    0.4060 2000.0
+P0509->P1014 core_minus_all_growth entry_frac  0.1014 -0.0153  0.2106   -0.0077    0.2182 2000.0
+P0509->P1014   core_minus_specific entry_frac  0.0444 -0.0821  0.1744   -0.0856    0.1710 2000.0
+P1014->P1519 core_minus_all_growth entry_frac  0.1911  0.1423  0.2398    0.1424    0.2399 2000.0
+P1014->P1519   core_minus_specific entry_frac  0.1601  0.0973  0.2170    0.1033    0.2230 2000.0
+P1519->P2025 core_minus_all_growth entry_frac  0.0424  0.0271  0.0633    0.0215    0.0577 2000.0
+P1519->P2025   core_minus_specific entry_frac  0.0121 -0.0306  0.0467   -0.0224    0.0548 2000.0
+
+[Post-hoc] 토픽별 지표
+         pair        set                 stat    obs  pct_lo  pct_hi  basic_lo  basic_hi      B
+P0004->P0509       core       med_entry_frac 0.0562 -0.6904  1.3722   -1.2597    0.8029 2000.0
+P0004->P0509       core share_entry_gt_adapt 0.5000  0.3333  1.0000    0.0000    0.6667 2000.0
+P0004->P0509        mid       med_entry_frac 0.2910 -0.0414  0.6455   -0.0634    0.6235 2000.0
+P0004->P0509        mid share_entry_gt_adapt 0.4286  0.2000  0.7143    0.1429    0.6571 2000.0
+P0004->P0509   specific       med_entry_frac 0.6140  0.4257  0.7587    0.4693    0.8022 2000.0
+P0004->P0509   specific share_entry_gt_adapt 0.8750  0.5556  1.0000    0.7500    1.1944 2000.0
+P0004->P0509    union31       med_entry_frac 0.5074  0.3601  0.7207    0.2941    0.6548 2000.0
+P0004->P0509    union31 share_entry_gt_adapt 0.6471  0.5000  0.7778    0.5163    0.7941 2000.0
+P0004->P0509 all_growth       med_entry_frac 0.4720  0.3383  0.5129    0.4311    0.6057 2000.0
+P0004->P0509 all_growth share_entry_gt_adapt 0.5904  0.5060  0.6506    0.5301    0.6747 2000.0
+P0509->P1014       core       med_entry_frac 0.4969  0.3395  0.6069    0.3869    0.6543 2000.0
+P0509->P1014       core share_entry_gt_adapt 0.6000  0.4000  1.0000    0.2000    0.8000 2000.0
+P0509->P1014        mid       med_entry_frac 0.6185  0.4137  0.7080    0.5289    0.8232 2000.0
+P0509->P1014        mid share_entry_gt_adapt 0.9000  0.5000  0.9000    0.9000    1.3000 2000.0
+P0509->P1014   specific       med_entry_frac 0.4456  0.3346  0.5594    0.3318    0.5567 2000.0
+P0509->P1014   specific share_entry_gt_adapt 0.6429  0.4286  0.7857    0.5000    0.8571 2000.0
+P0509->P1014    union31       med_entry_frac 0.5008  0.4124  0.5848    0.4169    0.5893 2000.0
+P0509->P1014    union31 share_entry_gt_adapt 0.7241  0.5385  0.8148    0.6335    0.9098 2000.0
+P0509->P1014 all_growth       med_entry_frac 0.4040  0.3348  0.4528    0.3551    0.4731 2000.0
+P0509->P1014 all_growth share_entry_gt_adapt 0.6222  0.5357  0.6744    0.5700    0.7087 2000.0
+P1014->P1519       core       med_entry_frac 0.6835  0.5970  0.7317    0.6353    0.7700 2000.0
+P1014->P1519       core share_entry_gt_adapt 1.0000  0.8333  1.0000    1.0000    1.1667 2000.0
+P1014->P1519        mid       med_entry_frac 0.4840  0.3594  0.5281    0.4398    0.6086 2000.0
+P1014->P1519        mid share_entry_gt_adapt 0.7000  0.5000  0.8000    0.6000    0.9000 2000.0
+P1014->P1519   specific       med_entry_frac 0.4333  0.3565  0.5748    0.2917    0.5101 2000.0
+P1014->P1519   specific share_entry_gt_adapt 0.5000  0.3846  0.7143    0.2857    0.6154 2000.0
+P1014->P1519    union31       med_entry_frac 0.4960  0.4334  0.5543    0.4377    0.5586 2000.0
+P1014->P1519    union31 share_entry_gt_adapt 0.6774  0.5806  0.7742    0.5806    0.7742 2000.0
+P1014->P1519 all_growth       med_entry_frac 0.4264  0.3952  0.5065    0.3463    0.4576 2000.0
+P1014->P1519 all_growth share_entry_gt_adapt 0.5696  0.5316  0.6625    0.4767    0.6076 2000.0
+P1519->P2025       core       med_entry_frac 0.4212  0.3773  0.4998    0.3425    0.4651 2000.0
+P1519->P2025       core share_entry_gt_adapt 0.7143  0.5714  0.8571    0.5714    0.8571 2000.0
+P1519->P2025        mid       med_entry_frac 0.4517  0.4081  0.4899    0.4135    0.4953 2000.0
+P1519->P2025        mid share_entry_gt_adapt 0.7000  0.6000  0.7000    0.7000    0.8000 2000.0
+P1519->P2025   specific       med_entry_frac 0.4238  0.3734  0.5186    0.3290    0.4742 2000.0
+P1519->P2025   specific share_entry_gt_adapt 0.5833  0.5000  0.7000    0.4667    0.6667 2000.0
+P1519->P2025    union31       med_entry_frac 0.4212  0.3990  0.4861    0.3562    0.4433 2000.0
+P1519->P2025    union31 share_entry_gt_adapt 0.6552  0.6071  0.7241    0.5862    0.7032 2000.0
+P1519->P2025 all_growth       med_entry_frac 0.4527  0.4082  0.5149    0.3905    0.4973 2000.0
+P1519->P2025 all_growth share_entry_gt_adapt 0.6364  0.5690  0.6727    0.6000    0.7038 2000.0
+※ 쌍별로 따로 읽고 합치지 않음. 핵심 집합은 변화량 상위 정의의 부산물일 수 있음. S0~S8 판정 불변.
