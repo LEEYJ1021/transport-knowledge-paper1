@@ -1,0 +1,24 @@
+[규칙 파일] S4_0_PREREG.json | main_contrast P0509->P2025 | (2005, 2009), (2020, 2025)
+[재현 OK] 분석 집합 76,984, 관측 delta | 결측 중 분석 저널 밖으로 제외된 논문 0
+[기간별 결측률(설계 정보)]
+ period  n_obs  n_missing  miss_rate
+ P0509   7182       1906     0.2097
+ P2025  36501       6306     0.1473
+
+[Post-hoc] PA-B7a big 토픽 50개 | k=1(저널 구성 보정만) 부호 유지 50개
+
+[동결 판독]
+ scenario  kept_share  n_not_kept  kstar_min  kstar_median  n_kstar_in_range 판독
+    both         1.0           0        NaN           NaN                 0 유지
+   only0         1.0           0      5.161        46.997                 0 유지
+   only1         1.0           0     11.452        43.585                 0 유지
+
+[부호 유지 실패 big 토픽]
+ Empty DataFrame
+Columns: [topic, grade, quadrant, delta, delta_full_base, kstar_both, kstar_only0, kstar_only1]
+Index: []
+※ 결측 분포에 대한 가정(k)에 의존하는 민감도이며 경계가 아님. 시나리오를 합치지 않음. S0~S8 판정 불변.
+
+real	0m1.253s
+user	0m3.906s
+sys	0m0.176s

@@ -1,0 +1,4 @@
+﻿scenario,kept_share,n_not_kept,kstar_min,kstar_median,n_kstar_in_range,판독
+both,1.0,0,,,0,유지
+only0,1.0,0,5.1606787125449385,46.99679655949856,0,유지
+only1,1.0,0,11.452100478601466,43.584972907791794,0,유지
