@@ -1,0 +1,5 @@
+﻿variant,periodset,hhi_known_min,hhi_exCN_min,rebound_known,rebound_exCN,판독
+main,orig,P1519,P2025,True,False,반등은 중국 몫에 연동
+main,equal4,E1721,E2225,True,False,반등은 중국 몫에 연동
+rec,orig,P1519,P2025,True,False,반등은 중국 몫에 연동
+rec,equal4,E1721,E2225,True,False,반등은 중국 몫에 연동
