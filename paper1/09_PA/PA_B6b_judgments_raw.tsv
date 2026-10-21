@@ -1,0 +1,50 @@
+1	?	No overlapping coauthors or clear topical continuity in the supplied metadata; author identity cannot be established from the available information alone.
+2	?	Same venue and broadly related crash-safety topics, but no shared coauthors.
+3	?	Both concern road-crash analysis, but coauthors and specific research tasks differ.
+4	1	Shared coauthor Tin Kin Ho and continuity in railway energy-efficient control.
+5	?	Both concern traffic and automated-vehicle control, but no shared coauthors.
+6	0	Maritime vessel coordination and driver-fatigue analysis are substantially different fields.
+7	?	Both concern networked control systems, but the vehicle and marine applications differ.
+8	1	Shared coauthor C. L. Saraf and consistent pavement-engineering subject matter.
+9	?	Both concern public transport, but no shared coauthors or direct topical link is established.
+10	0	Public-transport optimization and infrastructure-health monitoring have different research focuses.
+11	1	Shared coauthor Javier Gutierrez Puebla and continuity in transport geography in Spain.
+12	1	Shared coauthor Wei David Fan and consistent truck-crash severity modeling.
+13	?	Both concern driving safety, but the specific methods and coauthors differ.
+14	?	Both relate to transportation energy or emissions, but no shared coauthors are listed.
+15	?	Both concern shipping markets and maritime economics, but no shared coauthors are listed.
+16	1	Shared coauthor Eleni I. Vlahogianni and continuity in transport research.
+17	?	Both concern road infrastructure or pavement-related measurements, but identity evidence is limited.
+18	?	Both concern infrastructure management or pavement condition, but no shared coauthors are listed.
+19	?	Both relate broadly to urban transport, but the research topics and available collaborators differ.
+20	?	Both concern bus services, but no shared coauthors or direct identity evidence are available.
+21	0	Parking-surveillance AI and electric-vehicle charging-location optimization have distinct research focuses.
+22	0	Bicycle conflict behavior and deep-learning-based driver-distraction detection differ substantially.
+23	1	Shared coauthor Canrong Zhang and continuity in routing optimization.
+24	?	Both examine road-user injury severity, but the coauthors and vehicle populations differ.
+25	0	VANET security and smart-city parking prediction are distinct research topics.
+26	?	Both concern traffic measurement or traffic-flow analysis, but no shared coauthors are listed.
+27	?	Both concern civil infrastructure durability, but the specific structures and methods differ.
+28	?	Both concern railway routing or freight-service design, but no shared coauthors are listed.
+29	?	Both concern ports and freight-related operations, but no shared coauthors are listed.
+30	?	Both concern travel planning and travel behavior, but no shared coauthors are listed.
+31	1	Shared coauthor Samantha L. Jamson and continuity in driver behavior research.
+32	?	Both concern transport-network modeling and optimization, but no shared coauthors are listed.
+33	1	Shared coauthor Xuehao Chu and continuity in transportation research.
+34	0	Logistics text mining and personal-mobility crash-risk analysis are distinct domains.
+35	0	Automated vehicle control and electric-machine modeling have different technical focuses.
+36	1	Shared coauthor Praveen K. Edara and continuity in highway operations and safety.
+37	?	Both concern transport geography and mobility, but no shared coauthors are listed.
+38	?	Both concern transportation choice or network modeling, but the specific problems differ.
+39	0	Railway pantograph detection and autonomous-vehicle freight ridesharing are distinct applications.
+40	0	Clinical stress-response research and COVID-era traffic-collision analysis are substantially different fields.
+41	?	Both concern construction management, but the methods and coauthors differ.
+42	?	Both concern intelligent transportation and computer vision, but no shared coauthors are listed.
+43	?	Both concern highway operations and reliability, but no shared coauthors are listed.
+44	?	Both concern asphalt testing and pavement engineering, but no shared coauthors are listed.
+45	0	Humanitarian-logistics optimization and mobile-sensor traffic analysis have different research focuses.
+46	?	Both concern road safety, but the specific study settings and coauthors differ.
+47	?	Both concern communication networks, but the second paper's coauthor and author-identity evidence is incomplete.
+48	?	Both concern urban geography and land-use effects, but no shared coauthors are listed.
+49	0	Transit-performance control and airport-area firm-location policy have distinct research focuses.
+50	?	Both concern crash-frequency or crash-risk modeling, but no shared coauthors are listed.
