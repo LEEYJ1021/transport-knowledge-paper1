@@ -1,0 +1,21 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세. S7 결과와 s7_run.py 일부 소스, s7_period_stats.csv 주 설정 행(P1519 cn 0.1373, P2025 cn 0.3476 등)은 열람한 상태. PA-C2 결과 미열람. S0~S8 판정 불변.",
+ "setting": "S7 주 설정: scheme=inv_n_authors, variant=main, sample=all, terr_merge=False, income=fixed. country_mass_long에서 year>=2007, 기간은 S7_0_PREREG.json의 periods",
+ "subset": "F1_papers.csv에서 EXCLUDE_PIDS_FROZEN.csv 제외(FREEZE_LOG 해시 검증), in_sample 참, 연도 2000~2025, has_topic 참, topic150 결측 아님. 이 pid 집합에 속한 country_mass_long 행만 유지. 재현 점검: 이 집합이 2000~2025에서 76,984편",
+ "stats": "기간별 top5_known, hhi_known, cn_known, us_known, unk (S7 stats_of와 같은 정의: UNK·ZZ_former를 미상으로, 알려진 국가 질량 기준). 병기만: n_active(질량>=1 국가 수), top5_incl",
+ "reading": "기간x통계별 |filtered - original| <= 0.01 이면 '일치', 아니면 '차이'. 기간별·통계별로 따로 보고하고 합치지 않음",
+ "diagnostics": "기간별 원본·잔존 논문 수와 질량, 원본에서 걸러진 쪽과 남은 쪽의 unk 비율",
+ "reproduce_check": "(a) 거르기 전 기간 통계가 s7_period_stats.csv 주 설정 행과 1e-9 이내(n_active는 일치), (b) S6 집합 76,984편, (c) 거른 뒤 논문당 질량 합 1",
+ "caveat": "이 분석은 보유 논문 부분집합이 국가 몫을 바꾸는지만 본다. 소속은 국적이 아님. 국가 층 논문 중 F1에 없는 pid가 있으면 걸러진 쪽에 포함되어 보고됨",
+ "forbidden": "결과를 본 뒤 설정·판독 기준(0.01) 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T13:39:34",
+ "sha256": "e9f378dfa8dcaf4d1810cda9498878719deb4e353cb9f05bc211a6c3421ee49c",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S7_0_PREREG.json": "87cda08fc79ddbb19406b0f58c432f0849ee4784a62857e024b79b4c824ef48d",
+  "s7_period_stats.csv": "840bd1c8d0d7e0d2683bbc68e4d4c3c2290675ccbc547e0a2fbb48f7c9fd60cf",
+  "s7_run.py": "8ebe28c6be09e39cb861cd5a0f6f58b6594883e004f6d198c61518a2b5a94d15"
+ }
+}
