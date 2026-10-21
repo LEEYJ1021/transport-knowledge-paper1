@@ -1,0 +1,24 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(지침서 B6-1). F7 구조(pid, rank, name_norm, oa_id; 2020-2025만), 분할 이름 3,749개, 위험군 1,431개 중 1,116개가 분할 이름이라는 점은 열람. ORCID 조회 결과 미열람. S0~S8 판정 불변.",
+ "fetch": "F7의 고유 oa_id를 OpenAlex /authors?filter=openalex:ID1|ID2...(50개씩)로 조회해 orcid만 저장(select=id,orcid). 없으면 빈 값. 캐시 CSV는 재개 가능, 결과 해석 전에 해시를 changelog에 기록",
+ "population": "F7에서 name_norm이 있고, 그 이름의 oa_id 중 ORCID가 하나 이상 있는 이름",
+ "truth": "양성(동명이인 확실) = 이름에 서로 다른 ORCID가 2개 이상. 음성 = ORCID가 하나뿐이거나 모두 같은 ORCID. 한 이름에 ID가 둘 이상이어도 ORCID가 같으면 프로필 분할로 보고 음성",
+ "flag": "F2_risk_names.csv의 name_norm = 위험군",
+ "stats": "혼동표, 정밀도=P(양성|위험군), 재현율=P(위험군|양성), 각 Wilson 95%. 위험군 이름 중 F7 존재·모집단 포함 비율. 보조: ID가 둘 이상이고 ORCID 보유 ID가 둘 이상인 이름 중 서로 다른 ORCID 비율(분할 이름 중 실제 동명이인 비율)",
+ "reading": "수치와 구간만 보고. 임계값·통과 판정 없음. 위험군 검증 순환성에 대한 독립 정답 1개로 기술",
+ "reproduce_check": "F7 행 141,836, 분할 이름 3,749, 위험군 이름 수는 F2_risk_names 행 수와 일치(출력)",
+ "caveat": "ORCID 보유자는 연구 활동이 활발한 저자에 치우침. F7은 2020+만 덮음. ORCID가 다른 두 프로필이 같은 사람일 가능성은 낮지만 0이 아님. 음성은 '동명이인 증거 없음'이지 '단일인 확인'이 아님",
+ "forbidden": "결과를 본 뒤 정답 정의·모집단 변경(변경 시 v2 계획으로 분리)",
+ "created": "2026-10-21T15:27:42",
+ "sha256": "764956a259fdbde1e9b38507c8283375d9e674f4efe5ab3423365642e2a7a524",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "pa_common.py": "94010d7067cc23a1d00f511ba0e4e9f8a459f9995322b217594f9c5437e2d64e",
+  "pa_b6a.py": "97012ad53f3fba75def276a6542221f57652cdcb7ea06d9b8c602acaab2c4c60",
+  "F7_oa_author_ids.csv": "d8f0ad9388e69318ab64626c4ce18edf6073c62ff2abca946f94d64236698bcd",
+  "F2_risk_names.csv": "02eb8d1e88db92732ad42297017f463750a872fcabea79b955a7686404101ea1",
+  "pa_extra.py": "72f45d678a5db15143c11dbdea88fe1850969a3a54185d78a5451d83e2d667a1"
+ }
+}
