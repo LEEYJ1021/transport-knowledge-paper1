@@ -1,0 +1,265 @@
+nohup: ignoring input
+[재현 OK] 기준행 4쌍이 country_partial_spearman.csv(none)와 일치
+
+[층별 n(설계 정보)]
+ stratum                                            ALL  HIC  UMC  LMC  LIC
+scheme        variant floor domain  indicator                             
+equal         main    5     safety  road_deaths     83   47   22   13    1
+                                    vehicles        81   47   20   13    1
+                            transit transport_co2   84   50   21   12    1
+                                    urban_pop       86   50   22   13    1
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+              rec     5     safety  road_deaths     85   47   23   13    2
+                                    vehicles        83   47   21   13    2
+                            transit transport_co2   86   50   22   12    2
+                                    urban_pop       88   50   23   13    2
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+full_count    main    5     safety  road_deaths     83   47   22   13    1
+                                    vehicles        81   47   20   13    1
+                            transit transport_co2   84   50   21   12    1
+                                    urban_pop       86   50   22   13    1
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+              rec     5     safety  road_deaths     85   47   23   13    2
+                                    vehicles        83   47   21   13    2
+                            transit transport_co2   86   50   22   12    2
+                                    urban_pop       88   50   23   13    2
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+inv_n_authors main    5     safety  road_deaths     83   47   22   13    1
+                                    vehicles        81   47   20   13    1
+                            transit transport_co2   84   50   21   12    1
+                                    urban_pop       86   50   22   13    1
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+              rec     5     safety  road_deaths     85   47   23   13    2
+                                    vehicles        83   47   21   13    2
+                            transit transport_co2   86   50   22   12    2
+                                    urban_pop       88   50   23   13    2
+                      10    safety  road_deaths     75   45   19   11    0
+                                    vehicles        73   45   17   11    0
+                            transit transport_co2   76   48   18   10    0
+                                    urban_pop       78   48   19   11    0
+                      20    safety  road_deaths     66   42   15    9    0
+                                    vehicles        65   42   14    9    0
+                            transit transport_co2   67   44   14    9    0
+                                    urban_pop       68   44   15    9    0
+
+[Post-hoc] PA-B9b ALL (rho / 구간 / verdict)
+        scheme variant  floor  domain     indicator  n    rho     lo     hi verdict
+inv_n_authors    main      5  safety   road_deaths 83  0.202 -0.008  0.394     비관찰
+inv_n_authors    main      5  safety      vehicles 81  0.031 -0.185  0.209     비관찰
+inv_n_authors    main      5 transit     urban_pop 86  0.018 -0.216  0.260     비관찰
+inv_n_authors    main      5 transit transport_co2 84 -0.133 -0.339  0.093     비관찰
+inv_n_authors    main     10  safety   road_deaths 75  0.237  0.005  0.438      관찰
+inv_n_authors    main     10  safety      vehicles 73  0.079 -0.157  0.272     비관찰
+inv_n_authors    main     10 transit     urban_pop 78  0.023 -0.213  0.251     비관찰
+inv_n_authors    main     10 transit transport_co2 76 -0.116 -0.333  0.116     비관찰
+inv_n_authors    main     20  safety   road_deaths 66  0.250 -0.025  0.454     비관찰
+inv_n_authors    main     20  safety      vehicles 65  0.118 -0.116  0.332     비관찰
+inv_n_authors    main     20 transit     urban_pop 68  0.121 -0.123  0.359     비관찰
+inv_n_authors    main     20 transit transport_co2 67 -0.118 -0.386  0.143     비관찰
+inv_n_authors     rec      5  safety   road_deaths 85  0.157 -0.075  0.361     비관찰
+inv_n_authors     rec      5  safety      vehicles 83  0.056 -0.159  0.250     비관찰
+inv_n_authors     rec      5 transit     urban_pop 88 -0.008 -0.223  0.218     비관찰
+inv_n_authors     rec      5 transit transport_co2 86 -0.146 -0.348  0.074     비관찰
+inv_n_authors     rec     10  safety   road_deaths 75  0.229  0.015  0.422      관찰
+inv_n_authors     rec     10  safety      vehicles 73  0.089 -0.147  0.287     비관찰
+inv_n_authors     rec     10 transit     urban_pop 78  0.019 -0.201  0.243     비관찰
+inv_n_authors     rec     10 transit transport_co2 76 -0.116 -0.339  0.104     비관찰
+inv_n_authors     rec     20  safety   road_deaths 66  0.245  0.001  0.437      관찰
+inv_n_authors     rec     20  safety      vehicles 65  0.125 -0.128  0.346     비관찰
+inv_n_authors     rec     20 transit     urban_pop 68  0.116 -0.119  0.340     비관찰
+inv_n_authors     rec     20 transit transport_co2 67 -0.120 -0.365  0.137     비관찰
+   full_count    main      5  safety   road_deaths 83  0.220  0.013  0.417      관찰
+   full_count    main      5  safety      vehicles 81  0.061 -0.158  0.255     비관찰
+   full_count    main      5 transit     urban_pop 86 -0.026 -0.248  0.198     비관찰
+   full_count    main      5 transit transport_co2 84 -0.217 -0.422  0.000     비관찰
+   full_count    main     10  safety   road_deaths 75  0.255  0.017  0.463      관찰
+   full_count    main     10  safety      vehicles 73  0.138 -0.084  0.314     비관찰
+   full_count    main     10 transit     urban_pop 78 -0.021 -0.255  0.203     비관찰
+   full_count    main     10 transit transport_co2 76 -0.215 -0.404  0.027     비관찰
+   full_count    main     20  safety   road_deaths 66  0.241 -0.041  0.465     비관찰
+   full_count    main     20  safety      vehicles 65  0.172 -0.072  0.390     비관찰
+   full_count    main     20 transit     urban_pop 68  0.067 -0.167  0.283     비관찰
+   full_count    main     20 transit transport_co2 67 -0.130 -0.363  0.127     비관찰
+   full_count     rec      5  safety   road_deaths 85  0.219  0.005  0.410      관찰
+   full_count     rec      5  safety      vehicles 83  0.074 -0.138  0.282     비관찰
+   full_count     rec      5 transit     urban_pop 88 -0.041 -0.252  0.173     비관찰
+   full_count     rec      5 transit transport_co2 86 -0.217 -0.394 -0.013      관찰
+   full_count     rec     10  safety   road_deaths 75  0.264  0.044  0.462      관찰
+   full_count     rec     10  safety      vehicles 73  0.141 -0.073  0.340     비관찰
+   full_count     rec     10 transit     urban_pop 78 -0.020 -0.234  0.215     비관찰
+   full_count     rec     10 transit transport_co2 76 -0.204 -0.411  0.045     비관찰
+   full_count     rec     20  safety   road_deaths 66  0.258 -0.014  0.472     비관찰
+   full_count     rec     20  safety      vehicles 65  0.178 -0.062  0.408     비관찰
+   full_count     rec     20 transit     urban_pop 68  0.065 -0.178  0.298     비관찰
+   full_count     rec     20 transit transport_co2 67 -0.125 -0.376  0.138     비관찰
+        equal    main      5  safety   road_deaths 83  0.202 -0.018  0.398     비관찰
+        equal    main      5  safety      vehicles 81  0.031 -0.193  0.239     비관찰
+        equal    main      5 transit     urban_pop 86  0.018 -0.221  0.249     비관찰
+        equal    main      5 transit transport_co2 84 -0.133 -0.347  0.077     비관찰
+        equal    main     10  safety   road_deaths 75  0.237  0.023  0.446      관찰
+        equal    main     10  safety      vehicles 73  0.079 -0.150  0.293     비관찰
+        equal    main     10 transit     urban_pop 78  0.023 -0.203  0.266     비관찰
+        equal    main     10 transit transport_co2 76 -0.116 -0.337  0.135     비관찰
+        equal    main     20  safety   road_deaths 66  0.250 -0.001  0.451     비관찰
+        equal    main     20  safety      vehicles 65  0.118 -0.110  0.333     비관찰
+        equal    main     20 transit     urban_pop 68  0.121 -0.117  0.348     비관찰
+        equal    main     20 transit transport_co2 67 -0.118 -0.360  0.147     비관찰
+        equal     rec      5  safety   road_deaths 85  0.157 -0.053  0.343     비관찰
+        equal     rec      5  safety      vehicles 83  0.056 -0.180  0.244     비관찰
+        equal     rec      5 transit     urban_pop 88 -0.008 -0.239  0.196     비관찰
+        equal     rec      5 transit transport_co2 86 -0.146 -0.341  0.076     비관찰
+        equal     rec     10  safety   road_deaths 75  0.229 -0.023  0.440     비관찰
+        equal     rec     10  safety      vehicles 73  0.089 -0.150  0.289     비관찰
+        equal     rec     10 transit     urban_pop 78  0.019 -0.224  0.249     비관찰
+        equal     rec     10 transit transport_co2 76 -0.116 -0.335  0.123     비관찰
+        equal     rec     20  safety   road_deaths 66  0.245  0.007  0.461      관찰
+        equal     rec     20  safety      vehicles 65  0.125 -0.119  0.338     비관찰
+        equal     rec     20 transit     urban_pop 68  0.116 -0.104  0.347     비관찰
+        equal     rec     20 transit transport_co2 67 -0.120 -0.358  0.134     비관찰
+
+[Post-hoc] PA-B9b HIC (rho / 구간 / verdict)
+        scheme variant  floor  domain     indicator  n    rho     lo    hi verdict
+inv_n_authors    main      5  safety   road_deaths 47  0.136 -0.179 0.444     비관찰
+inv_n_authors    main      5  safety      vehicles 47  0.056 -0.237 0.355     비관찰
+inv_n_authors    main      5 transit     urban_pop 50  0.149 -0.175 0.452     비관찰
+inv_n_authors    main      5 transit transport_co2 50 -0.097 -0.403 0.198     비관찰
+inv_n_authors    main     10  safety   road_deaths 45  0.189 -0.158 0.478     비관찰
+inv_n_authors    main     10  safety      vehicles 45  0.077 -0.213 0.348     비관찰
+inv_n_authors    main     10 transit     urban_pop 48  0.064 -0.265 0.378     비관찰
+inv_n_authors    main     10 transit transport_co2 48 -0.055 -0.345 0.255     비관찰
+inv_n_authors    main     20  safety   road_deaths 42  0.203 -0.144 0.516     비관찰
+inv_n_authors    main     20  safety      vehicles 42  0.089 -0.208 0.386     비관찰
+inv_n_authors    main     20 transit     urban_pop 44  0.183 -0.181 0.498     비관찰
+inv_n_authors    main     20 transit transport_co2 44 -0.022 -0.375 0.297     비관찰
+inv_n_authors     rec      5  safety   road_deaths 47  0.144 -0.184 0.393     비관찰
+inv_n_authors     rec      5  safety      vehicles 47  0.059 -0.231 0.356     비관찰
+inv_n_authors     rec      5 transit     urban_pop 50  0.131 -0.218 0.429     비관찰
+inv_n_authors     rec      5 transit transport_co2 50 -0.086 -0.386 0.230     비관찰
+inv_n_authors     rec     10  safety   road_deaths 45  0.196 -0.128 0.483     비관찰
+inv_n_authors     rec     10  safety      vehicles 45  0.081 -0.209 0.366     비관찰
+inv_n_authors     rec     10 transit     urban_pop 48  0.043 -0.295 0.382     비관찰
+inv_n_authors     rec     10 transit transport_co2 48 -0.042 -0.337 0.286     비관찰
+inv_n_authors     rec     20  safety   road_deaths 42  0.215 -0.113 0.513     비관찰
+inv_n_authors     rec     20  safety      vehicles 42  0.089 -0.231 0.375     비관찰
+inv_n_authors     rec     20 transit     urban_pop 44  0.154 -0.189 0.466     비관찰
+inv_n_authors     rec     20 transit transport_co2 44 -0.001 -0.333 0.317     비관찰
+   full_count    main      5  safety   road_deaths 47  0.143 -0.214 0.457     비관찰
+   full_count    main      5  safety      vehicles 47  0.098 -0.213 0.390     비관찰
+   full_count    main      5 transit     urban_pop 50  0.168 -0.165 0.450     비관찰
+   full_count    main      5 transit transport_co2 50 -0.249 -0.511 0.027     비관찰
+   full_count    main     10  safety   road_deaths 45  0.196 -0.162 0.521     비관찰
+   full_count    main     10  safety      vehicles 45  0.123 -0.163 0.409     비관찰
+   full_count    main     10 transit     urban_pop 48  0.089 -0.222 0.401     비관찰
+   full_count    main     10 transit transport_co2 48 -0.220 -0.486 0.102     비관찰
+   full_count    main     20  safety   road_deaths 42  0.185 -0.176 0.517     비관찰
+   full_count    main     20  safety      vehicles 42  0.148 -0.171 0.438     비관찰
+   full_count    main     20 transit     urban_pop 44  0.150 -0.177 0.432     비관찰
+   full_count    main     20 transit transport_co2 44 -0.076 -0.392 0.268     비관찰
+   full_count     rec      5  safety   road_deaths 47  0.172 -0.182 0.471     비관찰
+   full_count     rec      5  safety      vehicles 47  0.115 -0.181 0.402     비관찰
+   full_count     rec      5 transit     urban_pop 50  0.139 -0.199 0.443     비관찰
+   full_count     rec      5 transit transport_co2 50 -0.231 -0.496 0.072     비관찰
+   full_count     rec     10  safety   road_deaths 45  0.226 -0.121 0.545     비관찰
+   full_count     rec     10  safety      vehicles 45  0.142 -0.173 0.442     비관찰
+   full_count     rec     10 transit     urban_pop 48  0.055 -0.286 0.366     비관찰
+   full_count     rec     10 transit transport_co2 48 -0.200 -0.478 0.133     비관찰
+   full_count     rec     20  safety   road_deaths 42  0.222 -0.126 0.527     비관찰
+   full_count     rec     20  safety      vehicles 42  0.170 -0.128 0.450     비관찰
+   full_count     rec     20 transit     urban_pop 44  0.117 -0.227 0.390     비관찰
+   full_count     rec     20 transit transport_co2 44 -0.061 -0.404 0.273     비관찰
+        equal    main      5  safety   road_deaths 47  0.136 -0.204 0.426     비관찰
+        equal    main      5  safety      vehicles 47  0.056 -0.245 0.352     비관찰
+        equal    main      5 transit     urban_pop 50  0.149 -0.200 0.464     비관찰
+        equal    main      5 transit transport_co2 50 -0.097 -0.401 0.208     비관찰
+        equal    main     10  safety   road_deaths 45  0.189 -0.148 0.493     비관찰
+        equal    main     10  safety      vehicles 45  0.077 -0.235 0.353     비관찰
+        equal    main     10 transit     urban_pop 48  0.064 -0.264 0.358     비관찰
+        equal    main     10 transit transport_co2 48 -0.055 -0.379 0.225     비관찰
+        equal    main     20  safety   road_deaths 42  0.203 -0.146 0.505     비관찰
+        equal    main     20  safety      vehicles 42  0.089 -0.218 0.387     비관찰
+        equal    main     20 transit     urban_pop 44  0.183 -0.184 0.471     비관찰
+        equal    main     20 transit transport_co2 44 -0.022 -0.397 0.310     비관찰
+        equal     rec      5  safety   road_deaths 47  0.144 -0.167 0.409     비관찰
+        equal     rec      5  safety      vehicles 47  0.059 -0.225 0.339     비관찰
+        equal     rec      5 transit     urban_pop 50  0.131 -0.187 0.438     비관찰
+        equal     rec      5 transit transport_co2 50 -0.086 -0.389 0.223     비관찰
+        equal     rec     10  safety   road_deaths 45  0.196 -0.127 0.494     비관찰
+        equal     rec     10  safety      vehicles 45  0.081 -0.222 0.374     비관찰
+        equal     rec     10 transit     urban_pop 48  0.043 -0.303 0.356     비관찰
+        equal     rec     10 transit transport_co2 48 -0.042 -0.345 0.278     비관찰
+        equal     rec     20  safety   road_deaths 42  0.215 -0.123 0.539     비관찰
+        equal     rec     20  safety      vehicles 42  0.089 -0.204 0.401     비관찰
+        equal     rec     20 transit     urban_pop 44  0.154 -0.204 0.450     비관찰
+        equal     rec     20 transit transport_co2 44 -0.001 -0.321 0.343     비관찰
+
+[Post-hoc] PA-B9b UMC (rho / 구간 / verdict)
+        scheme variant  floor  domain     indicator  n    rho     lo    hi verdict
+inv_n_authors    main      5  safety   road_deaths 22  0.627  0.134 0.875      관찰
+inv_n_authors    main      5  safety      vehicles 20  0.200 -0.351 0.706     비관찰
+inv_n_authors    main      5 transit     urban_pop 22  0.039 -0.378 0.427     비관찰
+inv_n_authors    main      5 transit transport_co2 21 -0.168 -0.638 0.315     비관찰
+inv_n_authors     rec      5  safety   road_deaths 23  0.559  0.084 0.839      관찰
+inv_n_authors     rec      5  safety      vehicles 21  0.205 -0.346 0.651     비관찰
+inv_n_authors     rec      5 transit     urban_pop 23 -0.005 -0.402 0.416     비관찰
+inv_n_authors     rec      5 transit transport_co2 22 -0.233 -0.608 0.241     비관찰
+   full_count    main      5  safety   road_deaths 22  0.501  0.010 0.796      관찰
+   full_count    main      5  safety      vehicles 20  0.173 -0.376 0.689     비관찰
+   full_count    main      5 transit     urban_pop 22 -0.132 -0.499 0.306     비관찰
+   full_count    main      5 transit transport_co2 21 -0.181 -0.634 0.331     비관찰
+   full_count     rec      5  safety   road_deaths 23  0.511  0.079 0.814      관찰
+   full_count     rec      5  safety      vehicles 21  0.156 -0.373 0.653     비관찰
+   full_count     rec      5 transit     urban_pop 23 -0.152 -0.530 0.319     비관찰
+   full_count     rec      5 transit transport_co2 22 -0.277 -0.649 0.176     비관찰
+        equal    main      5  safety   road_deaths 22  0.627  0.078 0.866      관찰
+        equal    main      5  safety      vehicles 20  0.200 -0.382 0.689     비관찰
+        equal    main      5 transit     urban_pop 22  0.039 -0.409 0.441     비관찰
+        equal    main      5 transit transport_co2 21 -0.168 -0.593 0.343     비관찰
+        equal     rec      5  safety   road_deaths 23  0.559  0.059 0.836      관찰
+        equal     rec      5  safety      vehicles 21  0.205 -0.326 0.657     비관찰
+        equal     rec      5 transit     urban_pop 23 -0.005 -0.380 0.405     비관찰
+        equal     rec      5 transit transport_co2 22 -0.233 -0.623 0.216     비관찰
+
+[동결 판독] verdict 집계
+ verdict  NA  관찰  비관찰
+stratum             
+ALL       0  10   62
+HIC       0   0   72
+LIC      72   0    0
+LMC      72   0    0
+UMC      48   6   18
+※ LIC·LMC는 대부분 NA(자료상 불가). 기준 구간이 0을 배제하는 쌍(safety-road_deaths)만 해석. 48행 이상 탐색적. S0~S8 판정 불변.
