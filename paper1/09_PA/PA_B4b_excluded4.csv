@@ -1,0 +1,5 @@
+﻿topic,grade,delta,within,big,quadrant,quadrant_within
+0,C,-0.0133116138748284,-0.0068942474622504,True,decline_notHighQ,decline_notHighQ
+28,C,0.0005163681328285,-2.2519849257058265e-05,False,small_change,small_change
+49,C,-0.0020968858224939,-0.0023055450051474,False,small_change,small_change
+147,C,-0.0148206763404039,-0.0087466185252601,True,decline_notHighQ,decline_notHighQ

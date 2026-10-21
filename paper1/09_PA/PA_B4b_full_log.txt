@@ -1,0 +1,36 @@
+[재현 OK] 통과 토픽 145개, 전체 149개 라벨 일치, 안정성 0.700/0.690
+
+[Post-hoc] PA-B4b 요약(145개, 컷만 재계산)
+ cut_total_orig        0.0079
+cut_total_145         0.0078
+cut_within_145        0.0061
+n_big_orig           48.0000
+n_big_145            49.0000
+orig_big_still_big    1.0000
+orig_big_same_label   1.0000
+n_newly_big           1.0000
+stab_all_orig         0.6875
+stab_all_145          0.7143
+stab_A_orig           0.6905
+stab_A_145            0.7209
+
+[제외 4개 토픽]
+  topic grade   delta  within   big         quadrant  quadrant_within
+     0     C -0.0133 -0.0069  True decline_notHighQ decline_notHighQ
+    28     C  0.0005 -0.0000 False     small_change     small_change
+    49     C -0.0021 -0.0023 False     small_change     small_change
+   147     C -0.0148 -0.0087  True decline_notHighQ decline_notHighQ
+
+[원본 big인데 라벨이 바뀐 토픽]
+ 없음
+
+[새로 big이 된 토픽]
+  topic grade  delta     quadrant      quad145
+     1     A 0.0078 small_change growth_highQ
+
+[동결 판독] 1) 같은 라벨 유지율 1.000 → 둔감 | 2) 안정성 변화 전체 +0.027, A +0.030 → 민감
+※ 제외 4개뿐인 약한 시험. 몫은 149개 기준. 판독을 합치지 않음. S0~S8 판정 불변.
+
+real	0m0.624s
+user	0m3.381s
+sys	0m0.072s
