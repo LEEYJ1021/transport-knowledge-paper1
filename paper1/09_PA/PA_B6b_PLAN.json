@@ -1,0 +1,22 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(지침서 B6-2). 판정 전 시트 생성, 판정 결과 미열람. 연구자 1인 판정. S0~S8 판정 불변.",
+ "population": "F2_author_paper.csv(위험군 제외 상태, 분석 논문)에서 name_norm별 행 수 >= 10인 이름 중, 연도 차이 5년 이상인 논문 쌍을 만들 수 있는 이름",
+ "sampling": "이름 50개를 seed 2026으로 비복원 무작위 추출. 이름마다 논문 쌍 1개: 연도 차이 >=5인 논문 쌍 중 무작위 1개. 시트는 이름 순서를 무작위 섞음",
+ "sheet": "pair_id, name_norm, 논문 A·B의 pid·연도·저널·제목·공저자(최대 6명), same_person(1=동일인, 0=다른 사람, ?=판정 불가), note. 판정 칸 비워서 생성. 소속은 자료에 있는 경우만(없으면 공란)",
+ "stats": "n_same, n_diff, n_unsure; 미탐지 동명이인 비율 = n_diff/(n_diff+n_same)와 Wilson 95%; 판정 불가를 모두 다른 사람/모두 동일인으로 본 경계",
+ "reading": "수치와 구간만 보고. 임계값 없음. 연구자 1인 판정이라는 한계를 함께 표기",
+ "caveat": "이름 단위 표본이며 다작 이름에 치우침(행 10편 이상). 논문 쌍 1개는 이름 전체의 혼합 정도를 과소·과대 추정할 수 있음. 위험군 이름은 모집단에서 이미 빠져 있음. 판정은 제목·공저자·저널 정보에 의존하며 오판 가능",
+ "forbidden": "결과를 본 뒤 표본·판정 규칙 변경(변경 시 v2 계획으로 분리)",
+ "created": "2026-10-21T16:21:00",
+ "sha256": "3d5843b0498682f8c99a0665c171e54bea75a53eec3e183526ac5c9725a92fcc",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "pa_common.py": "94010d7067cc23a1d00f511ba0e4e9f8a459f9995322b217594f9c5437e2d64e",
+  "pa_b6b.py": "f9c3fda926d3eb9204d372794f58c96652773e4384cbf3a60d02892577d49dfa",
+  "F2_author_paper.csv": "ff6920dcdcfbcf85a1af4f14b6b484b7ef0981963d91d01e30df911a0b825f08",
+  "pa_extra.py": "72f45d678a5db15143c11dbdea88fe1850969a3a54185d78a5451d83e2d667a1"
+ }
+}
