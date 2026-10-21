@@ -1,0 +1,16 @@
+﻿topic,jaccard_p10,grade,f1f3_fail
+0,0.538,C,True
+1,0.538,A,False
+2,0.538,A,False
+3,0.538,A,False
+9,0.429,B,False
+24,0.429,A,False
+27,0.429,B,False
+28,0.333,C,True
+32,0.429,B,False
+49,0.429,C,True
+57,0.429,B,False
+91,0.429,A,False
+96,0.429,B,False
+112,0.429,A,False
+147,0.25,C,True

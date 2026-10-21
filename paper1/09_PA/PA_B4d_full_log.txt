@@ -1,0 +1,21 @@
+nohup: ignoring input
+[재현 설계] 제외 15개 | F1·F3 실패와 겹침 4 | 등급 분포 {'A': 6, 'B': 5, 'C': 4}
+IPW 모델별 행 수: {'A': 91794, 'B': 81645} | 사용: A
+IPW 범위(주제 논문) 0.866~1.883 (S4는 0.86~1.94) | 결측 0편은 1로 대체
+F4에 없는 저자 0명 | F4 첫해 > F2 첫해인 저자 0명(0이어야 정상) | F4 마지막해 < F2 마지막해 0명
+분석 논문 76,984 | 저자-논문 행 255,354 | 저자 93,763 | 가중치 ['equal', 'inv_n_authors', 'first_last', 'full_count'] | 위험군 변형 ['baseline'] (F2는 위험군 제외 상태)
+
+[Post-hoc] PA-B4d S5
+  sample   K  obs_R       breaks          s5_breaks  p_N1   p_N2  passed_new  passed_s5  all_breaks_kept   B
+    all 134 0.7634 [2014, 2020]       [2012, 2020] 0.002 0.7425       False      False            False 500
+fixed14 134 0.7274 [2012, 2020] [2008, 2015, 2020] 0.002 0.9721       False      False            False 500
+ within 134 0.6584 [2015, 2020] [2009, 2015, 2020] 0.002 1.0000       False      False            False 500
+
+[Post-hoc] PA-B4d S6 entry_minus_adapt
+         pair              stat  obs_orig  obs_sub  delta  pct_lo  pct_hi    B  insensitive
+P0004->P0509 entry_minus_adapt   -0.0055   0.0406 0.0460  0.0113  0.0562 2000        False
+P0509->P1014 entry_minus_adapt    0.0271   0.0405 0.0134 -0.0033  0.0272 2000         True
+P1014->P1519 entry_minus_adapt    0.0461   0.0665 0.0203  0.0068  0.0265 2000         True
+P1519->P2025 entry_minus_adapt    0.1128   0.1239 0.0111  0.0061  0.0174 2000         True
+[동결 판독] S5: [{'sample': 'all', 'same': True, 'all_breaks_kept': False}, {'sample': 'fixed14', 'same': True, 'all_breaks_kept': False}, {'sample': 'within', 'same': True, 'all_breaks_kept': False}]
+※ 제외 집합 15개의 부분집합 재추정. S0~S8 판정 불변.
