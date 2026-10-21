@@ -1,0 +1,2 @@
+﻿n_same,n_diff,n_unsure,undetected_homonym_rate,lo,hi,bound_lo_if_unsure_same,bound_hi_if_unsure_diff
+9,11,30,0.55,0.3420820083075997,0.7418049791429071,0.12753786224302288,0.902299172675462

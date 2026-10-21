@@ -1,1 +1,11 @@
-⛔ 중단: PA_B6b_sheet.csv와 PA_B6b_sheet_filled.csv가 모두 필요
+
+[Post-hoc] PA-B6b
+ n_same                    9.0000
+n_diff                   11.0000
+n_unsure                 30.0000
+undetected_homonym_rate   0.5500
+lo                        0.3421
+hi                        0.7418
+bound_lo_if_unsure_same   0.1275
+bound_hi_if_unsure_diff   0.9023
+※ 연구자 1인 판정, 다작 이름 표본. 수치만 보고. S0~S8 판정 불변.
