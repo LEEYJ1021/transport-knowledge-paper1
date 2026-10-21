@@ -1,0 +1,38 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-B7 중 결측 경계 (1)만). S4 결과, s4_main.py 38~80행, 연도별 결측률(제외 목록 미적용 근사치 0.12~0.30)은 열람한 상태. PA-B7a 결과 미열람. 분류기 대입(B7b)과 저널x연도 IPW(B7c)는 별도 계획으로 분리(S4 missingness_sensitivity.csv와 중복 가능). S0~S8 판정 불변.",
+ "why_not_manski": "순수 최악·최선(Manski) 경계는 결측 약 16%라 토픽 몫 경계 폭이 big 토픽 delta(0.01 안팎)보다 훨씬 커서 항상 0을 포함함. 정보가 없으므로 계산하지 않음",
+ "data": "F1_papers.csv에서 EXCLUDE_PIDS_FROZEN 제외(FREEZE_LOG 해시 검증 없이 S4와 같은 파일 사용), in_sample 참, 연도 2000~2025. 분석 집합 F = has_topic 참 and topic150 있음(76,984편). 결측 집합 = 나머지. 기간·대비는 S4 동결 규칙의 periods, main_contrast",
+ "assumption": "결측 논문의 같은 저널·같은 기간 안 토픽 비중 r_jt = k * s_jt (해당 토픽만, 나머지 토픽은 합이 1이 되도록 조정되나 집계에는 불필요). 결측 논문의 저널 분포는 관측 그대로. 전체 몫 = sum_j (n_j + k*m_j) s_jt / sum_j (n_j + m_j)",
+ "scenarios": {
+  "both": "두 기간 모두 배수 k",
+  "only0": "앞 기간만 k, 뒤 기간 1",
+  "only1": "앞 기간 1, 뒤 기간만 k"
+ },
+ "grid_k": [
+  0.5,
+  0.75,
+  1,
+  1.5,
+  2
+ ],
+ "plausible_range": [
+  0.5,
+  2
+ ],
+ "scope": "S4 big 토픽(topic_quadrants.csv의 big 참, 50개). 각 토픽의 delta_full(k) 부호가 관측 delta 부호와 같은지, 부호가 바뀌는 k*. big이 아닌 토픽의 big 전환과 4분면 라벨 변화는 토픽 간 결합 시나리오가 필요해 이번 범위에서 제외",
+ "stats": "delta_full_base(k=1, 시나리오 공통, 저널 구성 보정만), 격자별 부호 유지 여부, 시나리오별 k*(선형 해, k<0이면 '없음')",
+ "reading": "시나리오별로 격자 전체에서 부호가 유지되는 big 토픽 비율 >=0.90 '유지', 0.70~0.90 '부분', <0.70 '민감'. 시나리오를 합치지 않음. 임계값은 임의의 동결 사양",
+ "reproduce_check": "(a) 분석 집합 76,984편, (b) 관측 delta가 topic_quadrants.csv와 1e-9 이내, (c) 동결 규칙 파일에서 main_contrast·periods를 읽을 수 있음. 하나라도 어긋나면 중단",
+ "caveat": "k의 현실성 범위는 연구자 가정. 결측 논문이 저널 안에서도 무작위라는 k=1 기준과 저널 분포 고정 가정이 핵심. 결측 사유(임베딩 미보유)가 토픽과 무관하다는 보장 없음. 인과 해석 아님",
+ "forbidden": "결과를 본 뒤 격자·범위·판독 임계값 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T13:59:10",
+ "sha256": "741fb6db9851410e431350435f90ef877954e931d2aadcdd71bde41016e0b876",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "s4_main.py": "f803cb90bdc2429d5155e44810c169a4bd0cc04dedd5aea114f1896864e5eada",
+  "F1_papers.csv": "9340e0369cb9a1f7b040fe949f57f69058867d459178dd4ea348e0f45283e288"
+ }
+}
