@@ -1,0 +1,16 @@
+﻿topic,grade,delta,within,lab_delta,lab_within,lost_big,sign_flip
+14,A,-0.0108807744409652,-0.0045034843765526,decline_highQ,small_change,True,False
+20,A,0.0089473865022912,0.0050363933365765,growth_highQ,small_change,True,False
+26,A,-0.0079271468901745,-0.0024655129055061,decline_notHighQ,small_change,True,False
+29,A,0.0102188981123804,0.006025699539633,growth_notHighQ,small_change,True,False
+60,B,-0.0091802797222547,-0.0038645752803286,decline_notHighQ,small_change,True,False
+68,A,0.0082166984724809,0.0044252025867121,growth_highQ,small_change,True,False
+84,A,-0.0115473084050729,-0.0052847655986182,decline_notHighQ,small_change,True,False
+92,A,-0.0107885372362625,-0.0017226285181237,decline_notHighQ,small_change,True,False
+93,A,-0.009730464348867,-0.0047434476859909,decline_notHighQ,small_change,True,False
+101,A,-0.0088530894096422,-0.0061450097167896,decline_notHighQ,small_change,True,False
+102,B,-0.0093894041240833,0.0012082193685045,decline_notHighQ,small_change,True,False
+106,A,-0.0098397070729479,-0.0013081223922949,decline_notHighQ,small_change,True,False
+107,A,-0.0131945779080176,-0.0055287485464431,decline_notHighQ,small_change,True,False
+120,A,0.0092600202734171,0.0046471234447206,growth_highQ,small_change,True,False
+148,A,0.0093493164158856,0.002162425629101,growth_highQ,small_change,True,False

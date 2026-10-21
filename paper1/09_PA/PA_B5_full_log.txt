@@ -1,0 +1,34 @@
+[재현 OK] 원본 컷에서 S4 안정성·라벨 일치
+
+[Post-hoc] PA-B5 컷 민감도
+     q  n_big  n_big_A  stab_full  stab_A  lost_big  sign_flip  kept  sign_agree  lost_but_sign_same
+0.600     60       49      0.767   0.816        14          0    46       0.967                  12
+0.667     50       42      0.700   0.690        15          0    35       0.980                  14
+0.700     45       38      0.667   0.658        15          0    30       0.978                  14
+0.750     38       33      0.658   0.636        13          0    25       1.000                  13
+
+[참고] 원본 35/50의 Wilson 95%: [0.562, 0.809] (토픽을 표본으로 볼 경우의 참고치, 결정적 비율임)
+
+[Post-hoc] 원본 컷 불일치 토픽
+  topic grade   delta  within        lab_delta   lab_within  lost_big  sign_flip
+    14     A -0.0109 -0.0045    decline_highQ small_change      True      False
+    20     A  0.0089  0.0050     growth_highQ small_change      True      False
+    26     A -0.0079 -0.0025 decline_notHighQ small_change      True      False
+    29     A  0.0102  0.0060  growth_notHighQ small_change      True      False
+    60     B -0.0092 -0.0039 decline_notHighQ small_change      True      False
+    68     A  0.0082  0.0044     growth_highQ small_change      True      False
+    84     A -0.0115 -0.0053 decline_notHighQ small_change      True      False
+    92     A -0.0108 -0.0017 decline_notHighQ small_change      True      False
+    93     A -0.0097 -0.0047 decline_notHighQ small_change      True      False
+   101     A -0.0089 -0.0061 decline_notHighQ small_change      True      False
+   102     B -0.0094  0.0012 decline_notHighQ small_change      True      False
+   106     A -0.0098 -0.0013 decline_notHighQ small_change      True      False
+   107     A -0.0132 -0.0055 decline_notHighQ small_change      True      False
+   120     A  0.0093  0.0046     growth_highQ small_change      True      False
+   148     A  0.0093  0.0022     growth_highQ small_change      True      False
+
+※ 불일치 원천은 within 기준 상위 1/3 재선정에 따른 탈락. quality_high 공유라 품질 축 효과 아님. S0~S8 판정 불변.
+
+real	0m0.587s
+user	0m2.313s
+sys	0m0.077s

@@ -5,7 +5,7 @@ import json, hashlib, subprocess, warnings
 from pathlib import Path
 import numpy as np, pandas as pd
 warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 40)
-MODE = "tag"
+MODE = "run"
 
 ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; PA = P1/"09_PA"; S4 = P1/"04_S4"
 now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
