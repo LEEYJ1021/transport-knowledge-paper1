@@ -1,0 +1,22 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-B4의 S4 부분). s4_main.py 80~100행(big=|x|의 2/3 분위 이상, quality_high=q_mean>0.5 and q_lo>0.5), S4 요약(안정성 0.70/0.69), PA-B5·B4 결과는 열람한 상태. PA-B4b 결과 미열람. S0~S8 판정 불변.",
+ "grade_def": "L7_topic_grade.csv의 F1, F3 열(True=실패). 통과 = 둘 다 False. 재현 점검: 정확히 145개",
+ "option": "(b): delta, within, quality_high는 topic_quadrants.csv 값 그대로(149개 토픽 기준 몫). big 컷만 통과 145개 토픽의 |delta|(또는 |within|)의 2/3 분위(pandas quantile, 선형 보간)로 재계산. 질 지표는 재추정하지 않음",
+ "labels": "s4_main.py label()과 동일: small_change 또는 (growth|decline)+(_highQ|_notHighQ). 총변화 기준 quadrant, 저널 내 성분 기준 quadrant_within",
+ "stats": "(1) 통과 토픽 중 원본 big의 새 컷 big 유지율과 같은 4분면 라벨 유지율, 새 컷에서 새로 big이 된 토픽 수, (2) 안정성 = big 토픽 중 quadrant==quadrant_within 비율을 전체와 A등급 각각, 원본(같은 145개 부분집합 기준) 대비, (3) 제외 4개 토픽의 원본 big 여부와 라벨",
+ "reading": "판독1: 원본 big 통과 토픽의 같은 라벨 유지율 >=0.95 이면 '둔감', 아니면 '민감'. 판독2: 안정성(전체)·안정성(A) 변화 모두 |.|<=0.03이면 '둔감', 아니면 '민감'. 두 판독을 합치지 않음. 임계값은 임의의 동결 사양",
+ "reproduce_check": "(a) 통과 토픽 145개, (b) 149개 전체에서 재계산한 big, quadrant, quadrant_within이 topic_quadrants.csv와 전부 일치, (c) 전체 안정성 round 2자리 0.70, A등급 0.69. 하나라도 어긋나면 중단",
+ "caveat": "제외 토픽이 4개뿐이라 약한 시험. 몫을 재정규화하지 않아 145개 기준 몫이 아님. 질 라벨은 149개 기준 인용 백분위 구간 그대로. 등급의 타당성은 검증하지 않음",
+ "forbidden": "결과를 본 뒤 통과 정의·임계값(0.95, 0.03) 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T14:05:30",
+ "sha256": "9904855a777458a9b18987b930fd5347030130f537ea12aaa6a868ac4c8a9158",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "L7_topic_grade.csv": "d0fb3c9b855db88ad8d928297d09dc007ab9f04ff8b995568d0cad6c6559da1a",
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "s4_main.py": "f803cb90bdc2429d5155e44810c169a4bd0cc04dedd5aea114f1896864e5eada",
+  "PA_B4_PLAN.json": "ce3f2f86ccca5aaae402d610e77b59e1c7bd34782e5742c6e7ab4274f8bacb7e"
+ }
+}
