@@ -1,0 +1,3271 @@
+# # 논문 1 사후 교정 분석 지침 (S0~S8 결과 기준, 2026-10-19)
+
+# ## 0. 먼저 지켜야 할 원칙
+
+# 사후분석은 **확증이 아니라 보완**입니다. 아래 규칙을 어기면 지금까지 쌓은 동결 체계의 신뢰가 무너집니다.
+
+# 1. **동결 판정은 바꾸지 않습니다.** 사후분석 결과는 "PA-" 번호(Post-hoc Analysis)로 따로 표기하고, 본문에서 사전 명시 분석과 시각적으로 구분합니다.
+# 2. **폴더와 동결을 분리합니다.** `paper1/09_PA/`를 만들고 `PA_0_PLAN.json`(분석 목록, 정의, 임계값)을 **실행 전에** 해시와 태그로 남깁니다. 사후분석이어도 "사후분석 안에서의 사전등록"은 가능합니다.
+# 3. **보고 의무:** 모든 PA 결과는 방향이 기대와 반대여도 보고합니다. 기각된 PA 목록을 부록에 둡니다.
+# 4. **다중성:** PA 항목 수를 먼저 세고(아래 약 14개), 본문에 "탐색적, 다중성 보정 없음"이라고 씁니다. 핵심 주장에 쓰는 PA는 3개 이하로 제한합니다(PA-A1, A2, B1 권장).
+# 5. **진단 먼저, 코드 변경은 나중.** 각 PA는 ① 진단 출력 ② 해석 ③ (필요할 때만) 코드 수정 순서입니다.
+# 6. **재현성 선행:** S4 코드 복구, 잘못된 태그(`S4-main`, `S4-final`) 정리, 미푸시 태그 푸시, `oa_raw` 외부 백업을 PA 시작 전에 끝냅니다(PA-0).
+
+# ---
+
+# ## PA-0. 재현성 정리 (분석 아님, 1~2일)
+
+# | 작업 | 확인 방법 | 완료 기준 |
+# |---|---|---|
+# | S4 코드 3종 저장 | `ls paper1/s4_*.py` | `s4_main.py`, `s4_6_rotation.py`, `s4_6b_floor_check.py` 존재 |
+# | 잘못된 태그 정리 | `git show --stat S4-main S4-final` 후 로컬 삭제, CHANGELOG에 정정 기록 | 태그가 실제 커밋을 가리킴 |
+# | 미추적 파일 | `git status --short paper1/` | 04_S4, 07_S7, 08_S8 포함 전부 추적 |
+# | 푸시와 백업 | `git push --follow-tags`, `archive/oa_raw_*.tar.gz` 복사 | 원격에 태그 존재 |
+# | 전체 manifest | 각 단계 해시를 `paper1/MASTER_MANIFEST.csv` 한 장으로 통합 | 논문 부록용 |
+
+# ---
+
+# ## 파트 A. 강점 강화
+
+# ### PA-A1. N2(완만 추세) 귀무 재설계로 "연속 변화" 결론을 정량 강화
+
+# **왜:** 현재 "체제 전환 없음"은 N2 통과 실패라는 **부정적 증거**에 기대고 있습니다. N2의 검정력이 낮아서 실패했을 가능성(점프가 있어도 못 잡음)과 점프가 정말 없는 경우를 구분하지 못합니다. 이 구분이 논문의 핵심 주장의 방어선입니다.
+
+# **진단 먼저**
+# - S5 N2 시뮬레이션에서 **관측 기울기와 같은 선형 추세**가 얼마나 큰 R(비용 감소율)을 만드는지 분포를 저장해 두었는지 확인합니다. 저장돼 있으면 재사용합니다.
+
+# **교정 분석 (검정력 곡선)**
+# 1. 관측 자료의 토픽 비중에 **인위적 점프**를 심습니다. 점프 크기 δ ∈ {0.5, 1, 2, 3}× 관측 2020 점프(JS 기준)를 연도 t* ∈ {2008, 2012, 2015, 2020}에 삽입합니다.
+# 2. 각 조합에서 S5 탐지를 B=200회 반복하고, N2 귀무 대비 p<0.05가 나오는 비율(=검정력)을 구합니다.
+# 3. 출력: 점프 크기별 검정력 곡선.
+
+# **판독 규칙(미리 정함)**
+# - 관측 점프 크기의 1배에서 검정력 ≥ 0.8이면: "이 크기의 점프가 있었다면 탐지했을 것이므로 N2 비통과는 연속 변화의 증거"로 강화됩니다.
+# - 검정력 < 0.5이면: "체제 전환 부재"가 아니라 **"체제 전환 여부 판정 불가(검정력 부족)"**로 리프레이밍합니다. 이 경우도 유효한 결과입니다.
+
+# **추가:** 구간별 상수(piecewise constant) 대 구간별 선형(piecewise linear) 적합의 BIC·교차검증 오차 비교를 `all`, `fixed14`, `within` 각각에서 보고합니다. 선형 연속 모형이 우세하면 직접 증거가 됩니다.
+
+# ### PA-A2. S6 신규 진입 주도 결과의 "구성 방어" 강화
+
+# **왜:** 이 결과가 논문의 새 중심 기여가 됩니다. 현재 약점은 (a) 이름 기반 식별, (b) 지속 저자의 선택성, (c) 부트스트랩 구간이 점추정을 포함하지 못한 점입니다.
+
+# **교정 분석 3종**
+
+# 1. **ID 기반 대조 (2020년대 한정):** F7의 OpenAlex ID로 마지막 쌍(2015–19→2020–25)의 신규·지속 판별을 이름 대신 ID로 다시 하고 진입 몫을 비교합니다. 차이가 ±0.03 이내면 "이름 기반 결과가 ID 기반과 일치"라고 쓸 수 있습니다. **2020+ 한정임을 명시**합니다.
+# 2. **진입 정의 민감도:** 현재 신규는 "첫 출판 연도 ≥ t1 시작"입니다. 대안을 두 가지 더 돌립니다.
+#    - 신규 = 첫 출판이 t1 시작 후 **2년 이내**
+#    - 신규 = 이전 5년간 코퍼스에 없던 저자(복귀를 별도 칸에서 흡수)
+#    진입 몫이 모든 정의에서 적응 몫보다 큰지 확인합니다.
+# 3. **부트스트랩 보고 방식 교정:** 구간이 점추정을 포함하지 않는 문제는 절대값 합 통계의 상향 편향입니다. 편향 보정 값 `2×관측 − 부트스트랩 중앙값`과 **저자 단위 클러스터 부트스트랩**(저자 복원추출만)을 병기합니다. 곱셈 가중 부트스트랩은 민감도로 내립니다.
+
+# **판독:** 세 교정에서 "진입 > 적응" 방향이 유지되면 강화입니다.
+
+# ### PA-A3. S7 선두 국가 교체 서술의 정밀화
+
+# **왜:** 미국↓ 중국↑는 견고하지만, "알려진 국가 기준 상위 5개국 몫은 변하지 않음"이 가장 독창적인 서술입니다.
+
+# **교정 분석**
+# 1. **국가 미상 질량의 시간 변화 교정:** 미상(11%→4%)이 상위 5개국 몫의 겉보기 증가를 만든다는 해석을 **복구판(variant=rec)**에서도 재현하는지 표로 제시합니다(이미 격자 안에 있으므로 재집계만 필요).
+# 2. **기간 길이·부분연도 교정:** P0709(3년), P2025(6년, 2025 부분연도)의 길이 불균등 영향을 보려고 기간을 **2007–11, 2012–16, 2017–21, 2022–25**의 균등 4구간(4~5년)으로 바꿔 상위 5개국 몫, HHI, 중국·미국 몫을 재계산합니다. 방향이 같으면 강화입니다.
+# 3. **HHI의 비단조성:** P1519 최저, P2025 반등이 중국 몫 증가에 의한 것인지 확인하려고 **중국 제외 HHI**를 보고합니다.
+
+# ### PA-A4. S2·S3의 투명성을 "방법론적 기여"로 정리 (분석 아님, 서술 작업)
+
+# - 동결·CHANGELOG·사후 결정 기록 체계를 **부록 표 한 장**으로 만듭니다(단계 / 동결 해시 / 결과 열람 여부 / 사후 결정 사항).
+# - 이는 약점(완전 비열람이 아님)을 강점(모든 예외가 기록됨)으로 바꾸는 장치입니다.
+
+# ---
+
+# ## 파트 B. 약점 리프레이밍
+
+# 각 약점마다 **현재 문구 → 교정 문구(before/after)**와 **뒷받침 분석**을 짝지었습니다.
+
+# ### B1. 체제 서사 철회
+
+# | | 문구 |
+# |---|---|
+# | Before | "체제 전환 서사를 철회했다" (실패처럼 읽힘) |
+# | After | "교통 지식 생산의 주제 구조 변화는 점프보다 연속적 재배치로 서술하는 편이 자료에 부합한다. 2020 부근은 세 표본에서 유지되는 유일한 후보이나 측정 아티팩트와 구분되지 않는다" |
+
+# **뒷받침:** PA-A1(검정력 곡선). 검정력이 충분하면 "연속 변화 발견", 부족하면 "판정 불가"로 쓰되, 어느 쪽이든 제목에서 **"체제 전환"을 빼는 것**이 안전합니다. 제목 가안은 "교통 지식 생산의 연속적 재배치와 갱신 메커니즘" 계열로 수정을 검토하세요.
+
+# ### B2. 2020 변화점이 아티팩트 후보로 남은 문제
+
+# **진단 먼저:** 2020 점프가 (a) 논문 수 급증(3,866→4,794), (b) T-ITS·T-TE 대형 저널 비중 변화, (c) 임베딩 보유율 변화 중 무엇과 함께 움직이는지 분리합니다.
+
+# **PA-B2 교정 분석**
+# 1. **표본 크기 정규화:** 2020 전후 연도를 **연도당 동일 수(예: 3,800편)로 하향 무작위 추출**(B=200)해 JS 점프를 재계산합니다.
+# 2. **저널 가중 고정:** `within` 표본이 이미 이 역할을 합니다. 2020이 `within`에서도 유지되고 하향 추출 후에도 유지되면 "표본 크기 아티팩트가 아님"으로 말할 수 있습니다.
+# 3. **COVID 인접 사건 분리:** 2020 이후 주제(자율주행, 전기, 팬데믹 이동성)의 점유 변화를 S3 카드 기준으로 나눠 **어느 토픽이 2020 점프를 구성하는지** 상위 10개를 표로 냅니다.
+
+# **리프레이밍:** "아티팩트 후보"를 "표본 크기·저널 구성 통제 후에도 유지되는 2020년 부근의 가속"으로 바꿀 수 있는지가 이 PA의 목표입니다. 유지되지 않으면 "아티팩트"로 확정합니다.
+
+# ### B3. 신생 토픽 정의 4종 불일치 (Jaccard 0.04~0.47)
+
+# | | 문구 |
+# |---|---|
+# | Before | "단일 신생 목록으로 주장할 수 없다" |
+# | After | "신생은 정의 의존적 개념이며, 어느 정의에서도 반복적으로 나타나는 **핵심 신생 집합**과 정의 특이적 토픽을 구분해 보고한다" |
+
+# **PA-B3 교정 분석**
+# 1. D1~D4에서 **n_defs ≥ 3**인 토픽(핵심 집합)과 n_defs = 1인 토픽을 나눠 S4 4분면·저널 구성 분해를 각각 재요약합니다.
+# 2. D1이 이질적인 이유를 **D1을 2005–09 대 2015–19로 재구성한 D1'**(사후 정의, 표기)와 비교해 검증합니다. F6 생성 코드를 먼저 확인하세요.
+# 3. 핵심 집합 토픽의 신규 저자 진입 몫(S6 연계)을 보고합니다. 일관되게 신규 진입으로 설명되면 PA-A2와 연결되는 강화 문장이 됩니다.
+
+# ### B4. S3 등급의 낮은 변별력
+
+# | | 문구 |
+# |---|---|
+# | Before | "통과했으나 약한 증거" |
+# | After | "등급은 변별 기준이 아니라 **분석 대상 토픽의 이질성을 점검하는 감사 도구**로 사용했다. 실질적으로 변별하는 기준은 F1(안정성)과 F3(비연구·복합)이다" |
+
+# **PA-B4 교정 분석 (등급 대체안)**
+# 1. F2·F4를 빼고 **F1+F3만 쓴 이분 등급**(안정, 불안정)을 사후 정의로 만들고, S4·S5·S6 핵심 결과를 "F1·F3 모두 통과 토픽(145개)"으로 재추정해 병기합니다.
+# 2. 더 변별적인 지표를 추가합니다: 토픽 안 논문 간 평균 코사인(임베딩 응집도), 부트스트랩 Jaccard의 10퍼센타일. 사후 표기로만 사용합니다.
+# 3. 결과가 전체와 거의 같으면 "등급 선택이 결과를 좌우하지 않음"이라고 씁니다.
+
+# ### B5. S4 안정성 0.700(경계)
+
+# **진단 먼저:** big 50개 중 35개 유지의 **이항 구간**을 계산합니다(Wilson 95% 약 [0.56, 0.81]). 구간이 0.70을 포함하므로 "경계 통과"가 아니라 **"0.70 전후에서 불확정"**이라고 쓰는 것이 정직합니다.
+
+# **PA-B5 교정 분석**
+# 1. 상위 3분위 컷을 2/3 대신 **0.60, 0.70, 0.75 분위**로 바꿔 안정성이 어떻게 변하는지 곡선으로 제시합니다(사전 규칙 변경 아님, 민감도 곡선).
+# 2. 라벨 6종을 **"성장/쇠퇴 방향"만** 남겨 부호 안정성을 재계산합니다(앞서 부호 유지율 0.98). "4분면의 질 축이 불안정하고 방향 축은 견고하다"로 리프레이밍하면 정확한 서술입니다.
+
+# ### B6. 위험군 검증의 순환성
+
+# | | 문구 |
+# |---|---|
+# | Before | "검증이 순환적이다" |
+# | After | "동명이인 위험은 독립 정답 없이 **상한·하한 범위**로 다뤘고, 결과는 변형 7종과 위험군 미제외(none) 변형에서 일관했다" |
+
+# **PA-B6 교정 분석 (독립 정답 확보)**
+# 1. **ORCID 기반 소표본:** OpenAlex에서 ORCID가 있는 저자만 추려 이름→ORCID 분할 여부를 정답으로 하는 위험군 정밀도·재현율을 계산합니다(ID 분할 정의와 독립). 표본이 작으면 구간을 넓게 씁니다.
+# 2. **수작업 표본:** 이름 빈도 상위 구간(행 10편 이상)에서 50쌍을 무작위로 뽑아 소속·분야로 동일인 여부를 판정합니다. 연구자 1인 판정이므로 한계로 적습니다.
+# 3. S6 homonym 결과에 이 범위를 덧붙여 "변형 7종 범위 + 독립 정밀도"를 함께 보고합니다.
+
+# ### B7. 분석 집합이 임베딩 보유 논문(83.9%)
+
+# **PA-B7 교정 분석**
+# 1. **경계(bounds) 분석:** 토픽 결측 14,810편이 전부 특정 토픽(예: 증가 토픽 vs 쇠퇴 토픽)이라는 **최악·최선 대입**으로 S4 핵심 결과(big_change 방향)의 유지 여부를 확인합니다(S2.6(c)에서 이월된 항목).
+# 2. **제목 분류기 예측 토픽(민감도 전용)**을 tau 0.5, F1 하한 0.30에서 붙여 S4·S5 핵심 결과를 재현합니다. 분류기 정확도가 0.508이므로 "방향이 유지되는가"만 봅니다.
+# 3. **저널×연도 상호작용 IPW:** 2007년 하락을 보정하는 모형을 민감도로 추가하고 변화점이 이동하는지 봅니다. 동결 후 추가이므로 CHANGELOG에 "탐색적"으로 남깁니다.
+
+# ### B8. S8: 6개 도메인 중 2개 통과
+
+# | | 문구 |
+# |---|---|
+# | Before | "2/6만 통과" |
+# | After | "사전 기준으로 정규식 사전의 정밀도를 검증한 결과, 교통안전·대중교통에서만 정렬 분석을 수행했고 나머지 4개는 부록에 precision을 공개했다. RQ5는 **사례 2개의 정렬 간극 지도**로 제한한다" |
+
+# **PA-B8 교정 분석**
+# 1. **미달 4개 도메인의 부록 정렬 결과**를 "참고용(precision 미달)" 표지로 같은 코드로 돌려 부록에 둡니다. 방향이 통과 도메인과 같으면 일반화 가능성의 약한 단서, 다르면 "도메인 의존"으로 보고합니다.
+# 2. **사전 개선 후 재검증(별도 사후 표지):** precision 0.76~0.84 도메인에서 오탐 패턴을 보고(예: active_urban의 "accessibility"), 개정 사전 v2를 만들어 **새로운 무작위 표본 25편**으로 다시 검증합니다. 이 경우 반드시 "사후 개정 사전"으로 표기하고 본 결과와 섞지 않습니다.
+# 3. **소득 통제 문제 정리(PA-B9)로 연결.**
+
+# ### B9. SBR 간극이 소득 수준과 겹침 (국가 수준 편 ρ가 약함)
+
+# **왜:** 소득군 SBR은 뚜렷하지만 GDP 통제 후 약하다는 점이 가장 큰 해석 위험입니다.
+
+# **PA-B9 교정 분석**
+# 1. **소득군 내 분석:** HIC 안에서(58~86개국), UMC 안에서 각각 공급 강도와 부담 강도의 순위상관을 구합니다. 소득군 안의 상관이 양이면 "소득 효과만이 아님"의 단서가 됩니다.
+# 2. **로그 GDP 대신 소득군 더미 통제**와 **GDP·인구 이중 통제**를 병행합니다.
+# 3. **공급 강도의 정의 민감도:** 공급 강도를 질량 기준에서 **논문 수 기준**으로 바꾸고, 총 질량이 작은 국가(min_country_mass 10)의 영향을 20과 5에서 확인합니다.
+# 4. **결론 문구:** "소득 수준과 분리되지 않는 간극"이라고 쓰며 필요 충족 증거로 쓰지 않습니다.
+
+# ---
+
+# ## 파트 C. 정합성·결과 간 교차 점검
+
+# ### PA-C1. S6와 S7을 한 문장으로 잇는 교차 분석
+
+# **목표:** "신규 진입 저자가 중국 몫 증가를 이끌었다"가 S6의 토픽 갱신과 같은 현상인지 확인합니다.
+# 1. 신규 저자 중 중국 소속 비중이 높은 토픽(S7 7-3)과 S4 성장 big 토픽의 겹침을 계산합니다.
+# 2. **중국 소속 신규 저자를 제외한 S6 분해**(진입·적응 몫)를 다시 돌려 진입 우세가 유지되는지 봅니다. 유지되면 "신규 진입 주도는 중국 유입에 의한 것만이 아니다"라는 강한 문장이 가능합니다. 유지되지 않으면 두 결과는 같은 현상의 두 측면입니다. 어느 쪽이든 보고합니다.
+
+# ### PA-C2. 모집단 불일치 정리 (S6 저자 층 vs S7 국가 층)
+
+# - S6은 임베딩 보유 논문의 저자(76,984편), S7 국가 층은 창 안 전체(81,645편)입니다. 두 결과를 한 문장으로 엮으려면 **S7 국가 몫을 임베딩 보유 논문만으로 재계산한 값**을 부록에 병기해 차이가 ±0.01 이내인지 보여 줍니다.
+
+# ---
+
+# ## 실행 순서와 일정(제안)
+
+# | 순서 | 항목 | 이유 | 난이도 |
+# |---|---|---|---|
+# | 1 | PA-0 재현성 정리 | 모든 PA의 전제 | 낮음 |
+# | 2 | PA-0.5: `PA_0_PLAN.json` 동결 + 태그 | 사후분석의 신뢰 | 낮음 |
+# | 3 | PA-A1 검정력 곡선, B1 문구 확정 | 핵심 주장의 방어선, 제목 결정에 영향 | 중간 |
+# | 4 | PA-B2 (2020 하향 추출) | A1과 연결 | 중간 |
+# | 5 | PA-A2 (ID 대조, 진입 정의 민감도, 부트스트랩 교정) | 중심 기여 강화 | 중간 |
+# | 6 | PA-C1, C2 | 결과 간 정합성 | 중간 |
+# | 7 | PA-B3, B4, B5, B7 | S3·S4 약점 리프레이밍 | 중간 |
+# | 8 | PA-A3, B9, B8 | S7·S8 정리 | 중간 |
+# | 9 | PA-B6 (ORCID·수작업) | 시간 소요, 병렬 가능 | 높음(인력) |
+# | 10 | PA-A4 부록 표, 논문 문구 확정 | 마무리 | 낮음 |
+
+# **우선순위 3개만 고른다면:** PA-A1(검정력), PA-A2(진입 주도 강화), PA-B2(2020 아티팩트 분리). 논문 서사의 중심이 이 세 곳에 걸려 있습니다.
+
+# ---
+
+# ## 사후분석 결과 보고 형식
+
+# - **표지:** 모든 PA 표와 그림 제목에 `[Post-hoc]`을 붙입니다.
+# - **CHANGELOG:** `PA_CHANGELOG.md`에 PA별로 "목적 / 정의 / 결과 / 본 결과 변경 여부(없음)"를 한 줄씩 기록합니다.
+# - **해석 한계 문구(영문 원고용 예시):** "Post-hoc analyses were specified after inspecting the primary results and are reported as exploratory; no pre-registered decision rule was altered."
+# - **금지:** PA 결과를 근거로 S0~S8의 통과·실패 판정을 바꾸는 것, PA에서 유리한 정의만 골라 본문에 올리는 것.
+
+# ---
+
+# ## 지금 필요한 입력
+
+# 1. S5의 N2 시뮬레이션 출력이 파일로 저장돼 있는지(`regime_nulls.csv`의 분포 열), 그리고 `s5_lib.py`의 비용·벌점 함수 위치.
+# 2. F6 생성 코드 위치(D1 재구성용)와 `(2) 데이터셋정의.ipynb`의 `BASE` 정의.
+# 3. 연구자 시간 여건: PA-B6(수작업)과 PA-B8-2(새 표본 25편 코딩)를 할 수 있는지.
+# 4. 위 우선순위(A1, A2, B2)로 먼저 가도 되는지, 또는 다른 약점을 우선하고 싶은지.
+
+# 확인해 주시면 `PA_0_PLAN.json` 동결 스크립트와 PA-A1 코드부터 단일 셀로 드리겠습니다. 진단 출력(기존 N2 분포, 기간별 JS 점프 크기)을 먼저 붙여 주시면, 점프 크기 격자(δ)를 실측에 맞춰 정하겠습니다.
+
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# 논문 1 사후 교정분석 (PA) 단일 셀. 미실행 코드: QUICK=True로 먼저 시험.
+# MODE: "freeze"(PA_0_PLAN.json 동결, 결과 미열람) -> "tag"(커밋·태그) -> "check"(PA-0 재현성 점검, 읽기 전용) -> "a1"(PA-A1 검정력 곡선)
+# 원칙: S0~S8 판정 불변. 모든 산출물·표 제목에 [Post-hoc]. 해석은 '함께 움직인다'까지.
+# 주의: S5 탐지기(s5_lib)를 첨부에서 못 봤으므로, a1은 자체 대체 탐지기(Hellinger 좌표 + 동적계획 분할)를 씀.
+#       S5와 정확히 같은 통계가 아님. USE_S5_LIB 훅에 s5_lib 함수를 연결하면 그쪽을 씀.
+# =====================================================================================
+import json, hashlib, subprocess, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+from scipy.spatial.distance import jensenshannon
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 40); pd.set_option("display.max_rows", 200)
+
+MODE = "check"       # "freeze" | "tag" | "check" | "a1"
+QUICK = True          # True: 귀무 B=200, 검정력 B=40 (파일명 _QUICK)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"
+DATA, S0, S1, S3, PA = ROOT/"analysis_data/final", ROOT/"paper1/00_S0", ROOT/"paper1/01_S1", ROOT/"paper1/03_S3", ROOT/"paper1/09_PA"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_b = lambda b: hashlib.sha256(b).hexdigest(); sha_f = lambda p: sha_b(Path(p).read_bytes())
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+git = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+class Halt(Exception): pass
+
+# ------------------------------ PA_0_PLAN (실행 전 동결) ------------------------------
+PLAN = dict(
+    version=1, seed=2026,
+    status="사후분석. S0~S8 결과 열람 후 설계. 탐색적, 다중성 보정 없음. 사전 명시 판정(통과/실패)은 변경하지 않음.",
+    n_pa=14, core_claim_pa=["PA-A1", "PA-A2", "PA-B2"],
+    core_note="지침서 0절은 A1·A2·B1(문구 작업)을, 우선순위 절은 A1·A2·B2를 권장해 불일치. 분석 3개는 A1·A2·B2로 둠(B1은 A1 결과로 정하는 문구).",
+    items={
+        "PA-A1": "N2 검정력 곡선 + 구간별 상수 대 선형 BIC", "PA-A2": "S6 진입 우세의 구성 방어(ID 대조, 진입 정의 2종, 부트스트랩 교정)",
+        "PA-A3": "S7 국가 미상 교정, 균등 4구간, 중국 제외 HHI", "PA-B1": "체제 서사 철회 문구 확정(PA-A1 연동, 분석 아님)",
+        "PA-B2": "2020 변화점 아티팩트 분리(하향 추출, 구성 토픽)", "PA-B3": "신생 핵심 집합(n_defs>=3)과 D1'", "PA-B4": "F1+F3 이분 등급 재추정",
+        "PA-B5": "S4 안정성 Wilson 구간, 분위 컷 곡선, 방향 축만", "PA-B6": "위험군 독립 정답(ORCID, 수작업 50쌍)", "PA-B7": "결측 경계 분석, 분류기 대입, 저널x연도 IPW",
+        "PA-B8": "미달 4도메인 부록 정렬, 사전 v2(새 25편)", "PA-B9": "소득군 내 상관, 더미 통제, 공급 정의 민감도", "PA-C1": "S6x S7 교차(중국 소속 신규 제외 분해)", "PA-C2": "S7 국가 몫을 임베딩 보유 논문만으로 재계산"},
+    pa_a1=dict(window=[2007, 2025], samples=["all", "fixed14", "within"], delta_x=[0.5, 1, 2, 3], t_star=[2008, 2012, 2015, 2020],
+               B_null=1000, B_power=200, null="N2 = 표본별 선형 추세 적합 + 다항 표본 잡음", alpha=0.05,
+               baseline="선형 추세 적합 확률(점프 없음)에 점프를 삽입. 점프 크기 = delta x 관측 2020 점프(JS 거리, 전3년 대 후3년 평균 비중), 삽입 방향 = 관측 2020 이후 평균 - 이전 평균",
+               statistic="R = 1 - cost(k*)/cost(1). Hellinger 좌표 제약 분할(min_len 3, k<=6), k* = argmin cost_k + lam(k-1), lam = pen_c*cost_1/T, pen_c=0.5(대체 탐지기 값)",
+               reading="power(1x)>=0.8: 연속 변화 증거로 강화 / power(1x)<0.5: '체제 전환 여부 판정 불가'로 리프레이밍 / 사이: 둘 다 쓰지 않고 곡선으로만 보고",
+               within_rule="저널 내: 전 연도 연도당 5편 이상인 저널만, 고정 저널 비중 고정(wbar)",
+               bic_compare="Hellinger 좌표 상위 5 PC에서 구간별 상수 대 구간별 선형, 최소 구간 3, k<=6, BIC"),
+    forbidden="PA 결과로 S0~S8 판정 변경, PA에서 유리한 정의만 본문 게재",
+    report_marker="[Post-hoc]", changelog="PA_CHANGELOG.md")
+spec_hash = lambda s: sha_b(json.dumps({k: v for k, v in s.items() if k not in ("sha256", "created", "refs")}, sort_keys=True, ensure_ascii=False).encode())
+PP = PA/"PA_0_PLAN.json"
+
+def freeze():
+    PA.mkdir(parents=True, exist_ok=True); h = spec_hash(PLAN); print("PA-0 해시(예정)", h[:12])
+    if PP.exists(): old = json.loads(PP.read_text(encoding="utf-8")); print("이미 동결:", "동일" if old["sha256"] == h else "⛔ 다름(새 버전으로 분리하고 CHANGELOG에 사유)"); return
+    refs = {f.name: sha_f(f) for f in [S0/"PREREG.json", S3/"L7_topic_grade.csv", ROOT/"paper1/07_S7/S7_0_PREREG.json", ROOT/"paper1/08_S8/S8_0_PREREG_v2.json"] if f.exists()}
+    PP.write_text(json.dumps(dict(PLAN, created=now(), sha256=h, refs=refs), ensure_ascii=False, indent=1), encoding="utf-8")
+    (PA/"PA_CHANGELOG.md").write_text(f"# PA_CHANGELOG\n\n- {now()} | PA-0 계획 동결(해시 {h[:12]}) | 목적: 사후분석 14개 항목·A1 정의·판독 규칙을 실행 전에 고정 | 본 결과 변경 여부: 없음\n", encoding="utf-8")
+    print("저장: PA_0_PLAN.json, PA_CHANGELOG.md | refs", list(refs))
+
+def tag():
+    if not PP.exists(): raise Halt("먼저 freeze")
+    t = f"PA-0-plan-{pd.Timestamp.now().strftime('%Y-%m-%d')}"
+    if git("tag", "-l", t).stdout.strip(): print("이미 있음:", t); return
+    r = git("add", "--", "paper1/09_PA"); print("add", r.returncode, r.stderr.strip())
+    r = git("commit", "-m", "PA-0 plan freeze (post-hoc, before execution)"); print("commit", r.returncode, (r.stdout + r.stderr)[:200])
+    r = git("tag", "-a", t, "-m", "PA-0 plan"); print("tag", r.returncode, r.stderr.strip())
+
+def check():   # PA-0 재현성 (읽기 전용: 삭제·수정 없음)
+    print("[S4 코드]", {f: (ROOT/"paper1"/f).exists() for f in ["s4_main.py", "s4_6_rotation.py", "s4_6b_floor_check.py"]})
+    for t in ["S4-main-2026-10-16", "S4-final-2026-10-16"]:
+        print(f"\n[git show --stat {t}]\n", git("show", "--stat", "--format=%h %s (%ad)", t).stdout[:600])
+    print("[git status paper1/]\n", git("status", "--short", "--", "paper1/").stdout[:1500] or "(깨끗함)")
+    print("[원격 태그 미푸시 점검: 로컬 태그]", git("tag", "--sort=-creatordate").stdout.split()[:12])
+    print("[origin 태그]", git("ls-remote", "--tags", "origin").stdout[:800] or "(원격 태그 없음 또는 origin 미설정)")
+    print("[oa_raw 백업 존재]", [str(p) for p in (ROOT/"archive").glob("oa_raw_*.tar.gz")] if (ROOT/"archive").exists() else "archive/ 없음")
+    print("※ 태그 정정은 직접: 가리키는 커밋 확인 -> git tag -d <이름> -> CHANGELOG에 정정 기록 -> 재태그 -> git push --follow-tags")
+
+# ------------------------------ PA-A1 ------------------------------
+USE_S5_LIB = None   # 예: from s5_lib import detect_R; USE_S5_LIB = detect_R  (시그니처 f(shares[T,K], years) -> float)
+def load_F1X():
+    F1 = pd.read_csv(DATA/"F1_papers.csv", low_memory=False); F1["pid"] = F1.pid.astype(str)
+    exf = S0/"EXCLUDE_PIDS_FROZEN.csv"; log = pd.read_csv(S0/"FREEZE_LOG.csv"); last = log[log.file == exf.name].iloc[-1]
+    if sha_f(exf) != last.sha256: raise Halt("EXCLUDE_PIDS_FROZEN.csv 해시 불일치")
+    return F1[~F1.pid.isin(set(pd.read_csv(exf, dtype=str, encoding="utf-8-sig").pid))].copy()
+
+def seg_costs(X, minlen=3, kmax=6):
+    T = len(X); cs = np.vstack([np.zeros(X.shape[1]), np.cumsum(X, 0)]); sq = np.r_[0, np.cumsum((X**2).sum(1))]
+    S = cs[None, :, :] - cs[:, None, :]; a = np.arange(T+1); L = (a[None, :] - a[:, None]).astype(float)
+    C = (sq[None, :] - sq[:, None]) - (S**2).sum(2)/np.where(L > 0, L, 1); C[L < minlen] = np.inf
+    best = np.full((kmax+1, T+1), np.inf); best[0, 0] = 0
+    for k in range(1, kmax+1): best[k] = np.min(best[k-1][:, None] + C, axis=0)
+    return best[:, T]
+def detect_R(shares, years, pen_c=0.5, kmax=6):
+    if USE_S5_LIB: return USE_S5_LIB(shares, years)
+    c = seg_costs(np.sqrt(shares), 3, kmax); ks = np.arange(1, kmax+1); ok = np.isfinite(c[1:]); lam = pen_c*c[1]/len(shares)
+    crit = np.where(ok, c[1:] + lam*(ks-1), np.inf); k = int(ks[np.argmin(crit)]); return 1 - c[k]/c[1]
+
+def make_panel(sample, tops):
+    tix = {t: i for i, t in enumerate(tops)}; K = len(tops); yrs = np.arange(2007, 2026)
+    F = load_F1X(); F = F[F.year.between(2007, 2025) & tf(F.has_topic) & F.topic150.notna()]; F = F.assign(k=F.topic150.astype(int).map(tix)).dropna(subset=["k"])
+    if sample == "fixed14":
+        FIXED = set(json.loads((S0/"PREREG.json").read_text(encoding="utf-8"))["event"]["fixed_venues"]); F = F[F.venue_short.isin(FIXED)]
+    if sample == "within":
+        n = F.groupby(["venue_short", "year"]).size().unstack(fill_value=0).reindex(columns=yrs, fill_value=0); vs = list(n.index[(n >= 5).all(1)]); F = F[F.venue_short.isin(vs)]
+    else: vs = ["ALL"]; F = F.assign(venue_short="ALL")
+    C = np.zeros((len(yrs), len(vs), K)); np.add.at(C, (F.year.values-2007, F.venue_short.map({v: i for i, v in enumerate(vs)}).values, F.k.astype(int).values), 1)
+    n = C.sum(2); W = (n/n.sum(1, keepdims=True)).mean(0); W = W/W.sum()    # 고정 저널 비중(within) 또는 [1]
+    return yrs, C, n.astype(int), W, len(F)
+def agg(P, W): return np.tensordot(P, W, axes=([1], [0])) if False else (P*W[None, :, None]).sum(1)
+def draw(P, n, W, rng):
+    S = np.zeros((P.shape[0], P.shape[2]))
+    for y in range(P.shape[0]):
+        for j in range(P.shape[1]):
+            if n[y, j] > 0: S[y] += W[j]*rng.multinomial(n[y, j], P[y, j]/P[y, j].sum())/n[y, j]
+    return S/W.sum()
+def jump(S, i): pre, post = S[max(0, i-3):i].mean(0), S[i:i+3].mean(0); return float(jensenshannon(pre, post))
+
+def a1():
+    if not PP.exists(): raise Halt("먼저 freeze")
+    sp = json.loads(PP.read_text(encoding="utf-8"))
+    if sp["sha256"] != spec_hash(sp) or sp["sha256"] != spec_hash(PLAN): raise Halt("동결 파일과 현재 PLAN이 다릅니다(사후 변경 금지)")
+    cfg = PLAN["pa_a1"]; sfx = "_QUICK" if QUICK else ""; Bn = 200 if QUICK else cfg["B_null"]; Bp = 40 if QUICK else cfg["B_power"]
+    rng = np.random.default_rng(PLAN["seed"]); tops = np.array(sorted(pd.read_csv(S3/"L7_topic_grade.csv").topic.astype(int))); rows, info, bic_rows = [], [], []
+    for sample in cfg["samples"]:
+        yrs, C, n, W, npap = make_panel(sample, tops); T, J, K = C.shape; Pobs = np.divide(C, n[:, :, None], out=np.full(C.shape, 1.0/K), where=n[:, :, None] > 0)
+        coef = np.polyfit(yrs, Pobs.reshape(T, -1), 1); Ptr = np.clip((coef[0]*yrs[:, None] + coef[1]).reshape(Pobs.shape), 1e-9, None); Ptr /= Ptr.sum(2, keepdims=True)
+        Sobs, Str = agg(Pobs, W), agg(Ptr, W); i20 = list(yrs).index(2020); Jobs = jump(Sobs, i20); d = Sobs[i20:].mean(0) - Sobs[:i20].mean(0)
+        Robs = detect_R(Sobs, yrs); Rnull = np.array([detect_R(draw(Ptr, n, W, rng), yrs) for _ in range(Bn)]); q95 = float(np.quantile(Rnull, 1-cfg["alpha"])); pobs = float((Rnull >= Robs).mean())
+        info.append(dict(sample=sample, n_papers=npap, n_venues=J, J_obs_2020=Jobs, R_obs=Robs, null_q95=q95, p_N2_this_detector=pobs)); print(f"\n[{sample}] 논문 {npap:,}, 저널 {J}, 관측 2020 점프(JS) {Jobs:.4f}, R_obs {Robs:.3f}, 귀무 95% {q95:.3f}, p(이 탐지기) {pobs:.3f}")
+        for ts in cfg["t_star"]:
+            it = list(yrs).index(ts); base_j = jump(Str, it)
+            for dx in cfg["delta_x"]:
+                target = base_j + dx*Jobs; lo, hi = 0.0, 2.0/np.abs(d).max()
+                def inj(a):
+                    P = Ptr.copy(); P[it:] = np.clip(P[it:] + a*d[None, None, :], 1e-9, None); return P/P.sum(2, keepdims=True)
+                if jump(agg(inj(hi), W), it) < target: rows.append(dict(sample=sample, t_star=ts, delta_x=dx, power=np.nan, note="목표 점프 도달 불가")); continue
+                for _ in range(40):
+                    mid = (lo+hi)/2; lo, hi = (mid, hi) if jump(agg(inj(mid), W), it) < target else (lo, mid)
+                Pi = inj(hi); Rs = np.array([detect_R(draw(Pi, n, W, rng), yrs) for _ in range(Bp)])
+                rows.append(dict(sample=sample, t_star=ts, delta_x=dx, power=float((Rs > q95).mean()), R_mean=float(Rs.mean()), jump_target=target, jump_base=base_j, note=""))
+        # 구간별 상수 대 선형 BIC (상위 5 PC)
+        Z = np.sqrt(Sobs); Z = Z - Z.mean(0); U, s, Vt = np.linalg.svd(Z, full_matrices=False); Y = (U*s)[:, :5]; N = Y.size
+        def seg_rss(lin):
+            R = np.full((T+1, T+1), np.inf)
+            for a_ in range(T+1):
+                for b_ in range(a_+3, T+1):
+                    y = Y[a_:b_]; x = np.arange(b_-a_); A = np.c_[np.ones_like(x), x] if lin else np.ones((len(x), 1)); R[a_, b_] = ((y - A @ np.linalg.lstsq(A, y, rcond=None)[0])**2).sum()
+            best = np.full((7, T+1), np.inf); best[0, 0] = 0
+            for k in range(1, 7): best[k] = np.min(best[k-1][:, None] + R, axis=0)
+            return best[:, T]
+        for name, lin in [("constant", False), ("linear", True)]:
+            rs = seg_rss(lin)
+            for k in range(1, 7):
+                if np.isfinite(rs[k]): bic_rows.append(dict(sample=sample, model=name, k=k, rss=rs[k], bic=N*np.log(rs[k]/N + 1e-12) + (k*5*(2 if lin else 1) + (k-1))*np.log(N)))
+    PW, IN, BC = pd.DataFrame(rows), pd.DataFrame(info), pd.DataFrame(bic_rows)
+    PW.to_csv(PA/f"PA_A1_power_curve{sfx}.csv", index=False, encoding="utf-8-sig"); IN.to_csv(PA/f"PA_A1_observed{sfx}.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/f"PA_A1_bic{sfx}.csv", index=False, encoding="utf-8-sig")
+    print("\n[Post-hoc] PA-A1 검정력(행: 표본 x t*, 열: delta x 관측 점프)\n", PW.pivot_table(index=["sample", "t_star"], columns="delta_x", values="power").round(2).to_string())
+    one = PW[PW.delta_x == 1].groupby("sample").power.agg(["min", "median", "max"]).round(2); print("\n[1배 점프 검정력 요약]\n", one.to_string())
+    for sname, r in one.iterrows():
+        v = "강화(연속 변화 증거)" if r["min"] >= 0.8 else ("리프레이밍(판정 불가)" if r["median"] < 0.5 else "곡선으로만 보고(0.5~0.8 구간 또는 t*별 혼재)"); print(f"  {sname}: 사전 판독 규칙 → {v}")
+    print("\n[Post-hoc] BIC 최솟값(표본별 상수 대 선형)\n", BC.loc[BC.groupby(["sample", "model"]).bic.idxmin()].round(1).to_string(index=False))
+    print("\n※ 대체 탐지기·5 PC·within 정의는 S5와 같지 않음. 규칙 판독(min/median)은 PLAN의 reading을 코드로 옮긴 것이며, 경계 사례는 사람이 곡선을 보고 판단. S0~S8 판정은 바꾸지 않음.")
+    if not QUICK:
+        with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f: f.write(f"- {now()} | PA-A1 | 목적: N2 검정력 곡선 | 정의: PA_0_PLAN {sp['sha256'][:12]} | 결과: PA_A1_*.csv | 본 결과 변경 여부: 없음\n")
+
+try: {"freeze": freeze, "tag": tag, "check": check, "a1": a1}[MODE]()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+[S4 코드] {'s4_main.py': False, 's4_6_rotation.py': False, 's4_6b_floor_check.py': False}
+
+[git show --stat S4-main-2026-10-16]
+ tag S4-main-2026-10-16
+Tagger: LEEYJ1021 <yongjaelee1021@gmail.com>
+
+S4 main
+33b3912 CHANGELOG_S3: S3-final 생성 순서 기록 (Fri Oct 16 11:07:38 2026 +0900)
+
+ paper1/03_S3/CHANGELOG_S3.md | 1 +
+ 1 file changed, 1 insertion(+)
+
+
+[git show --stat S4-final-2026-10-16]
+ tag S4-final-2026-10-16
+Tagger: LEEYJ1021 <yongjaelee1021@gmail.com>
+
+S4 final (4.7은 S6 직전으로 이월)
+33b3912 CHANGELOG_S3: S3-final 생성 순서 기록 (Fri Oct 16 11:07:38 2026 +0900)
+
+ paper1/03_S3/CHANGELOG_S3.md | 1 +
+ 1 file changed, 1 insertion(+)
+
+[git status paper1/]
+  M paper1/01_S1/CHANGELOG_S1.md
+ M paper1/03_S3/CHANGELOG_S3.md
+ M paper1/04_S4/CHANGELOG_S4.md
+ M paper1/06_S6/CHANGELOG_S6.md
+ M paper1/06_S6/S6_MANIFEST.json
+ M paper1/06_S6/S6_final_summary.md
+ M paper1/07_S7/CHANGELOG_S7.md
+ M "paper1/S0 \354\202\254\354\240\204\353\223\261\353\241\235\302\267\353\217\231\352\262\260.ipynb"
+?? paper1/01_S1/S1_FREEZE_MANIFEST_scimago.csv
+?? paper1/01_S1/_backup_before_income_tv/
+?? paper1/01_S1/oa_raw/
+?? paper1/01_S1/scimago/
+?? paper1/01_S1/unk_share_by_year.csv
+?? paper1/02_S2/
+?? paper1/03_S3/S3_MANIFEST.json
+?? paper1/03_S3/S3_final_summary.md
+?? paper1/03_S3/S3_human_review_checklist.csv
+?? paper1/03_S3/supplement_label_grid.pdf
+?? paper1/03_S3/topic_evidence_cards.csv
+?? paper1/03_S3/topic_grade.csv
+?? paper1/04_S4/D1_diagnostic_posthoc.csv
+?? paper1/04_S4/S4_MANIFEST.json
+?? paper1/04_S4/S4_final_summary.md
+?? paper1/04_S4/S4_meta.json
+?? paper1/04_S4/definition_sensitivity.csv
+?? paper1/04_S4/heatmap_topic_venue_period.csv
+?? paper1/04_S4/journal_decomposition.csv
+?? paper1/04_S4/journal_decomposition_sens_1519_2024.csv
+?? paper1/04_S4/keyword_turnover.csv
+?? paper1/04_S4/missingness_sensitivity.csv
+?? paper1/04_S4/rotation_index_periods.csv
+?? paper1/04_S4/s4_1_output.txt
+?? paper1/04_S4/s4_6_output.txt
+?? paper1/04_S4/topic_quadrants.csv
+?? paper1/04_S4/topics_order.csv
+?? paper1/04_S4/venues_order.csv
+?? paper1/04_S4/yearly_js_poolfloor_check.csv
+?? paper1/04_S4/yearly_series_for_S5.csv
+?? paper1/04_S4/yearly_topic_shares_all.
+[원격 태그 미푸시 점검: 로컬 태그] ['PA-0-plan-2026-10-19', 'S8-results-2026-10-19', 'S8-precision-2026-10-19', 'S8-inputs-2026-10-19', 'S8-v2-freeze-2026-10-19', 'S7-results-2026-10-19', 'S7-0-freeze-2026-10-19', 'S8-0-freeze-2026-10-19', 'S6-close-2026-10-19', 'S6-0-freeze-2026-10-16', 'S5-results-2026-10-16', 'S5-0-freeze-2026-10-16']
+[origin 태그] 43ba1737ddf5d1e7942bee76d5b61a747511f692	refs/tags/s0-frozen
+f4d24c5880ee1e52b154bd64ed4e39a5100ca56b	refs/tags/s0-frozen^{}
+a358791a4cb28623eae34b1bcd48fef4f528966f	refs/tags/s0-frozen-v2
+90416c06e8fd83fccaf85ab78dfbec12eb326970	refs/tags/s0-frozen-v2^{}
+
+[oa_raw 백업 존재] ['/home/yjlee/Research/Minnesota_Transport/archive/oa_raw_20261013.tar.gz']
+※ 태그 정정은 직접: 가리키는 커밋 확인 -> git tag -d <이름> -> CHANGELOG에 정정 기록 -> 재태그 -> git push --follow-tags
+
+# -*- coding: utf-8 -*-
+# PA-0 재현성 정리 단일 셀. MODE: "find"(S4 코드 탐색, 읽기 전용) -> "verify"(manifest 해시 검증, 읽기 전용) -> "commit"(정리 커밋·태그)
+# commit은 DRY=True면 계획만 출력. 결과·판정은 바꾸지 않는 정리 작업.
+import json, re, hashlib, sqlite3, tarfile, subprocess
+from pathlib import Path
+import pandas as pd
+
+MODE = "find"
+DRY = True
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds"); d_ = pd.Timestamp.now().strftime("%Y-%m-%d")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+git = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+class Halt(Exception): pass
+HEX = re.compile(r"^[0-9a-f]{64}$")
+
+def find():
+    pat = re.compile(r"s4_main|s4_6_rotation|s4_6b|floor_check|journal_decomposition|topic_quadrants")
+    print("[paper1 직하 .py]", sorted(p.name for p in P1.glob("*.py")))
+    hits = list(ROOT.rglob("s4*.py")) + list(ROOT.rglob("*s4*.ipynb"))
+    print("[s4 이름 파일]", [str(p.relative_to(ROOT)) for p in hits if ".git" not in p.parts][:20])
+    for nb in ROOT.rglob("*.ipynb"):
+        if ".git" in nb.parts or "oa_raw" in nb.parts: continue
+        try: cells = json.loads(nb.read_text(encoding="utf-8")).get("cells", [])
+        except Exception: continue
+        n = [i for i, c in enumerate(cells) if c.get("cell_type") == "code" and pat.search("".join(c.get("source", [])))]
+        if n: print(f"[노트북 코드 셀 일치] {nb.relative_to(ROOT)} | 셀 {len(n)}개 (예: {n[:6]}) | 수정 {pd.Timestamp(nb.stat().st_mtime, unit='s'):%Y-%m-%d %H:%M}")
+    hist = Path.home()/".ipython/profile_default/history.sqlite"
+    if hist.exists():
+        con = sqlite3.connect(hist); r = con.execute("select session, line, source from history").fetchall(); m = [(s, l) for s, l, src in r if pat.search(src or "")]
+        print(f"[IPython 히스토리 일치] {len(m)}줄, 세션 {sorted({s for s, _ in m})[:8]} (sqlite 직접 조회로 복구 가능)")
+    print("※ 코드가 나오면 paper1/s4_main.py 등으로 저장하고, 저장본 실행 여부와 무관하게 '산출물은 manifest 해시로 검증됨, 코드는 복구본'이라고 CHANGELOG에 적으세요.")
+
+def collect_hashes(o, out, key=None):
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if isinstance(v, str) and HEX.match(v): out.append((k if "/" in str(k) or "." in str(k) else key, v))
+            else: collect_hashes(v, out, k)
+    elif isinstance(o, list):
+        for v in o:
+            if isinstance(v, dict) and "sha256" in v and any(f in v for f in ("file", "name", "path")): out.append((v.get("file") or v.get("name") or v.get("path"), v["sha256"]))
+            else: collect_hashes(v, out, key)
+
+def verify():
+    tot = {"일치": 0, "불일치": [], "파일없음": [], "이름 해석 불가": 0}
+    for mf in sorted(P1.glob("0[1-8]_*/*MANIFEST*.json")) + sorted(P1.glob("0[1-8]_*/*_meta*.json")):
+        try: J = json.loads(mf.read_text(encoding="utf-8"))
+        except Exception as e: print("읽기 실패", mf.name, e); continue
+        pairs = []; collect_hashes(J, pairs)
+        for name, h in pairs:
+            if not name: tot["이름 해석 불가"] += 1; continue
+            cand = [mf.parent/name, ROOT/name, P1/name]; f = next((c for c in cand if c.exists() and c.is_file()), None)
+            if f is None: tot["파일없음"].append(f"{mf.name}:{name}"); continue
+            if sha_f(f) == h: tot["일치"] += 1
+            else: tot["불일치"].append(f"{mf.name}:{name}")
+    print("[manifest 검증]", {k: (len(v) if isinstance(v, list) else v) for k, v in tot.items()})
+    for k in ("불일치", "파일없음"):
+        if tot[k]: print(f" {k} 예:", tot[k][:15])
+    return tot
+
+def commit():
+    tot = verify()
+    if tot["불일치"]: raise Halt("해시 불일치가 있습니다: 원인(동결 이후 파일 변경, 줄바꿈 등)을 확인한 뒤 진행하세요")
+    gi = ROOT/".gitignore"; cur = gi.read_text(encoding="utf-8") if gi.exists() else ""
+    add_ign = [x for x in ["paper1/01_S1/oa_raw/", "paper1/01_S1/_backup_before_income_tv/", "archive/*.tar.gz"] if x not in cur]
+    sz = []
+    for f in git("ls-files", "-o", "--exclude-standard", "paper1").stdout.splitlines():
+        if any(f.startswith(x.rstrip("/*")) for x in add_ign if x.endswith("/")): continue
+        s = (ROOT/f).stat().st_size
+        if s > 30e6: sz.append((f, round(s/1e6, 1)))
+    if sz: raise Halt(f"30MB 초과 미추적 파일(무시 목록 또는 LFS 검토): {sz}")
+    tg = {t: git("rev-list", "-n", "1", t).stdout.strip() for t in ["S4-main-2026-10-16", "S4-final-2026-10-16"]}
+    on_origin = git("ls-remote", "--tags", "origin").stdout
+    del_t = [t for t, c in tg.items() if c.startswith("33b3912") and t not in on_origin]
+    print("삭제할 잘못된 태그(로컬 전용, 33b3912 가리킴):", del_t); print(".gitignore 추가:", add_ign)
+    print("커밋 1: paper1/02_S2 03_S3 04_S4 | 커밋 2: 나머지 paper1 변경(CHANGELOG, S1 파일, S0 노트북, 09_PA) + .gitignore")
+    note = (f"- {now()} | 재현성 정리(PA-0): 잘못된 태그 S4-main-2026-10-16, S4-final-2026-10-16(실제로는 S3 CHANGELOG 커밋 33b3912을 가리킴, S4 산출물 미포함)을 로컬 삭제. "
+            f"S2·S3·S4 산출물은 2026-10-16 이전에 생성됐으나 미추적이었고, 이번에 manifest 해시 {tot['일치']}건 일치를 확인한 뒤 {d_}에 처음 커밋. 커밋 날짜는 생성일이 아님 | 본 결과 변경: 없음\n")
+    if DRY: print("\nDRY=True: 변경 없음. 위 계획이 맞으면 DRY=False로 다시 실행."); return
+    for t in del_t: print("tag -d", t, git("tag", "-d", t).stdout.strip())
+    if add_ign: gi.write_text(cur.rstrip("\n") + "\n" + "\n".join(add_ign) + "\n", encoding="utf-8")
+    for f in [P1/"04_S4/CHANGELOG_S4.md", P1/"09_PA/PA_CHANGELOG.md"]:
+        with f.open("a", encoding="utf-8") as h: h.write(note)
+    r = git("add", "-A", "--", "paper1/02_S2", "paper1/03_S3", "paper1/04_S4"); print("add1", r.returncode, r.stderr.strip())
+    r = git("commit", "-m", "Record S2/S3/S4 outputs (created before S5; manifest-verified, no result change)"); print("commit1", r.returncode, (r.stdout + r.stderr)[:160])
+    r = git("tag", "-a", f"S4-results-recommit-{d_}", "-m", "S4(S2,S3) outputs first committed; verified against manifests"); print("tag", r.returncode, r.stderr.strip())
+    r = git("add", "-A", "--", "paper1", ".gitignore"); print("add2", r.returncode, r.stderr.strip())
+    r = git("commit", "-m", "PA-0 cleanup: changelogs, S1 files, gitignore for raw data"); print("commit2", r.returncode, (r.stdout + r.stderr)[:160])
+    print("[tags]", git("tag", "--sort=-creatordate").stdout.split()[:8], "\n[미추적 잔여]", git("status", "--short", "--", "paper1").stdout[:300] or "없음")
+
+try: {"find": find, "verify": verify, "commit": commit}[MODE]()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+[paper1 직하 .py] ['s2_measurement.py', 's4_1_keywords.py', 's4_close.py', 's5_0_freeze.py', 's5_close.py', 's5_detect.py', 's5_lib.py', 's5_phi.py', 's6_0_freeze.py', 's6_close.py', 's6_lib.py', 's6_run.py', 's7_run.py']
+[s4 이름 파일] ['paper1/s4_1_keywords.py', 'paper1/s4_close.py', 'paper1/.ipynb_checkpoints/s4_close-checkpoint.py']
+[노트북 코드 셀 일치] paper1/S3. 토픽 증거 카드와 신뢰 등급.ipynb | 셀 5개 (예: [29, 30, 32, 33, 34]) | 수정 2026-10-16 02:21
+[노트북 코드 셀 일치] paper1/S4. 신생·쇠퇴의 재정의.ipynb | 셀 3개 (예: [1, 3, 6]) | 수정 2026-10-16 02:44
+[노트북 코드 셀 일치] paper1/S5. 체제 식별.ipynb | 셀 3개 (예: [0, 2, 7]) | 수정 2026-10-16 03:38
+[노트북 코드 셀 일치] paper1/S6. 체제별 갱신 분해.ipynb | 셀 3개 (예: [0, 1, 2]) | 수정 2026-10-19 06:22
+[노트북 코드 셀 일치] paper1/S7. 지역 집중과 신규 유입, S8. 공급-부담 정렬.ipynb | 셀 1개 (예: [0]) | 수정 2026-10-19 07:52
+[노트북 코드 셀 일치] paper1/교정분석.ipynb | 셀 2개 (예: [0, 1]) | 수정 2026-10-19 08:11
+[노트북 코드 셀 일치] paper1/.ipynb_checkpoints/S3. 토픽 증거 카드와 신뢰 등급-checkpoint.ipynb | 셀 5개 (예: [29, 30, 32, 33, 34]) | 수정 2026-10-16 02:21
+[노트북 코드 셀 일치] paper1/.ipynb_checkpoints/S4. 신생·쇠퇴의 재정의-checkpoint.ipynb | 셀 3개 (예: [1, 3, 6]) | 수정 2026-10-16 02:44
+[노트북 코드 셀 일치] paper1/.ipynb_checkpoints/S5. 체제 식별-checkpoint.ipynb | 셀 3개 (예: [0, 2, 7]) | 수정 2026-10-16 03:38
+[노트북 코드 셀 일치] paper1/.ipynb_checkpoints/S6. 체제별 갱신 분해-checkpoint.ipynb | 셀 3개 (예: [0, 1, 2]) | 수정 2026-10-19 06:22
+[노트북 코드 셀 일치] paper1/.ipynb_checkpoints/S7. 지역 집중과 신규 유입, S8. 공급-부담 정렬-checkpoint.ipynb | 셀 1개 (예: [0]) | 수정 2026-10-19 07:52
+[노트북 코드 셀 일치] paper1/.ipynb_checkpoints/교정분석-checkpoint.ipynb | 셀 2개 (예: [0, 1]) | 수정 2026-10-19 08:11
+[IPython 히스토리 일치] 12줄, 세션 [1079, 1080, 1083, 1084] (sqlite 직접 조회로 복구 가능)
+※ 코드가 나오면 paper1/s4_main.py 등으로 저장하고, 저장본 실행 여부와 무관하게 '산출물은 manifest 해시로 검증됨, 코드는 복구본'이라고 CHANGELOG에 적으세요.
+
+
+
+
+# -*- coding: utf-8 -*-
+# S4 코드 복구 + S5 연결 정보 점검. 새 폴더 paper1/_recovered_s4/ 에만 쓰기. 기존 파일 수정 없음.
+import json, re, sqlite3, ast
+from pathlib import Path
+import pandas as pd
+MODE = "recover"      # "recover" | "s5info"
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; OUT = P1/"_recovered_s4"
+
+def recover():
+    OUT.mkdir(exist_ok=True); pat = re.compile(r"s4_main|s4_6_rotation|s4_6b|floor_check|journal_decomposition|topic_quadrants|rotation_index")
+    nb = P1/"S4. 신생·쇠퇴의 재정의.ipynb"; cells = json.loads(nb.read_text(encoding="utf-8"))["cells"]
+    print(f"[노트북] {nb.name} | 전체 셀 {len(cells)} | 수정 {pd.Timestamp(nb.stat().st_mtime, unit='s'):%Y-%m-%d %H:%M}")
+    for i, c in enumerate(cells):
+        if c.get("cell_type") != "code": continue
+        src = "".join(c.get("source", []))
+        (OUT/f"nb_cell_{i:02d}.py").write_text(src, encoding="utf-8")
+        out = "".join("".join(o.get("text", [])) for o in c.get("outputs", []) if o.get("output_type") == "stream")
+        first = src.strip().splitlines()[0][:110] if src.strip() else ""
+        flag = "◀ 일치" if pat.search(src) else ""
+        try: ast.parse(src); ok = "구문 OK"
+        except SyntaxError: ok = "구문 오류(매직 명령 포함 가능)"
+        print(f"  셀 {i:02d} | {len(src):6,}자 | 출력 {len(out):6,}자 | {ok} | {first} {flag}")
+    h = Path.home()/".ipython/profile_default/history.sqlite"
+    if h.exists():
+        con = sqlite3.connect(h); rows = [(s, l, src) for s, l, src in con.execute("select session, line, source from history order by session, line") if pat.search(src or "")]
+        for s, l, src in rows: (OUT/f"hist_{s}_{l:04d}.py").write_text(src, encoding="utf-8")
+        print(f"\n[IPython 히스토리] {len(rows)}줄 저장: " + ", ".join(f"{s}:{l}({len(src):,}자)" for s, l, src in rows))
+    print(f"\n저장 위치: {OUT}\n※ 셀·히스토리는 수정본이 여러 번 섞여 있을 수 있음: 어느 것이 '산출물을 만든 최종 실행본'인지는 파일의 s4_meta.json·MANIFEST 시각과 비교해 사람이 확정.")
+    for f in ["S4_meta.json", "S4_MANIFEST.json"]:
+        p = P1/"04_S4"/f
+        if p.exists(): print(f"  {f} 수정 {pd.Timestamp(p.stat().st_mtime, unit='s'):%Y-%m-%d %H:%M:%S}")
+
+def s5info():
+    for fn in ["s5_lib.py", "s5_detect.py"]:
+        t = (P1/fn).read_text(encoding="utf-8"); tree = ast.parse(t); print(f"\n[{fn}] {len(t.splitlines())}줄")
+        for n in tree.body:
+            if isinstance(n, ast.FunctionDef): print(f"  def {n.name}({', '.join(a.arg for a in n.args.args)})  # {(ast.get_docstring(n) or '').splitlines()[0][:70] if ast.get_docstring(n) else ''}")
+            elif isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) and n.targets[0].id.isupper(): print(f"  {n.targets[0].id} = {ast.unparse(n.value)[:90]}")
+    for p in list((P1/"05_S5").glob("regime_nulls*.csv")) + list((P1/"05_S5").glob("regime_breaks*.csv")):
+        d = pd.read_csv(p, nrows=3); print(f"\n[{p.name}] 열: {list(d.columns)}")
+    print("\n※ 위 함수 목록(특히 비용·벌점·귀무 시뮬레이션 관련)을 붙여 주세요.")
+
+{"recover": recover, "s5info": s5info}[MODE]()
+
+[노트북] S4. 신생·쇠퇴의 재정의.ipynb | 전체 셀 7 | 수정 2026-10-16 02:44
+  셀 00 |  4,141자 | 출력      0자 | 구문 OK | # # S4 신생·쇠퇴의 재정의: 스텝별 지침 
+  셀 01 |  6,628자 | 출력  1,681자 | 구문 OK | # -*- coding: utf-8 -*- ◀ 일치
+  셀 02 |      1자 | 출력      0자 | 구문 OK | # 
+  셀 03 |  4,278자 | 출력  1,835자 | 구문 OK | # -*- coding: utf-8 -*- ◀ 일치
+  셀 04 |      1자 | 출력      0자 | 구문 OK | # 
+  셀 05 |  2,267자 | 출력      0자 | 구문 OK | # # 4.6b 해석: 이전 "연 단위 신호 없음"은 바닥 정의 탓이었습니다 
+  셀 06 |  3,606자 | 출력      0자 | 구문 OK | # # S4 진행 현황 업데이트 (2026-10-16 기준) ◀ 일치
+
+[IPython 히스토리] 13줄 저장: 1079:23(12,689자), 1079:25(6,310자), 1079:26(4,399자), 1080:1(6,295자), 1080:3(5,307자), 1080:4(6,628자), 1080:6(4,278자), 1083:1(4,720자), 1084:1(13,597자), 1084:3(13,594자), 1084:5(13,596자), 1084:7(6,278자), 1084:9(2,948자)
+
+저장 위치: /home/yjlee/Research/Minnesota_Transport/paper1/_recovered_s4
+※ 셀·히스토리는 수정본이 여러 번 섞여 있을 수 있음: 어느 것이 '산출물을 만든 최종 실행본'인지는 파일의 s4_meta.json·MANIFEST 시각과 비교해 사람이 확정.
+  S4_meta.json 수정 2026-10-16 02:10:54
+  S4_MANIFEST.json 수정 2026-10-16 02:42:57
+
+# -*- coding: utf-8 -*-
+# S4 코드 후보 판정표. 기본은 읽기 전용(SAVE=False). 모든 시각은 로컬(KST) 기준으로 통일.
+import re, sqlite3, json, datetime as dt
+from pathlib import Path
+import pandas as pd
+SAVE = False
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; S4 = P1/"04_S4"; REC = P1/"_recovered_s4"
+loc = lambda p: dt.datetime.fromtimestamp(Path(p).stat().st_mtime)
+SIG = {"s4_main.py": ["journal_decomposition.csv", "topic_quadrants.csv", "S4_meta.json"],
+       "s4_6_rotation.py": ["rotation_index_periods.csv"],
+       "s4_6b_floor_check.py": ["yearly_js_poolfloor_check.csv"]}
+# 1) 산출물 수정 시각(로컬)
+OUT_T = {f: loc(S4/f) for fs in SIG.values() for f in fs if (S4/f).exists()}
+print("[산출물 수정 시각(로컬)]"); [print(f"  {f:34s} {t:%Y-%m-%d %H:%M:%S}") for f, t in sorted(OUT_T.items(), key=lambda x: x[1])]
+# 2) 히스토리 세션 시각
+con = sqlite3.connect(Path.home()/".ipython/profile_default/history.sqlite"); cols = [r[1] for r in con.execute("pragma table_info(sessions)")]
+sess = {r[0]: (pd.Timestamp(r[1]).to_pydatetime() if r[1] else None, pd.Timestamp(r[2]).to_pydatetime() if r[2] else None) for r in con.execute("select session, start, end from sessions")}
+rows = []
+for p in sorted(REC.glob("hist_*.py")):
+    s, l = map(int, re.findall(r"hist_(\d+)_(\d+)", p.name)[0]); src = p.read_text(encoding="utf-8"); st, en = sess.get(s, (None, None))
+    rows.append(dict(src=p.name, session_start=st, session_end=en, chars=len(src), **{k: [f for f in v if f in src] for k, v in SIG.items()}))
+for i in (1, 3):
+    p = REC/f"nb_cell_{i:02d}.py"; src = p.read_text(encoding="utf-8")
+    rows.append(dict(src=p.name, session_start=None, session_end=loc(P1/"S4. 신생·쇠퇴의 재정의.ipynb"), chars=len(src), **{k: [f for f in v if f in src] for k, v in SIG.items()}))
+T = pd.DataFrame(rows); pd.set_option("display.width", 250, "display.max_colwidth", 60)
+print("\n[후보 표: 열 s4_*.py 는 그 코드 안에 들어 있는 해당 산출물 파일명]\n", T.to_string(index=False))
+# 3) 규칙: 서명 파일명을 포함하고, 산출물 최초 수정 시각 이전에 시작한 후보 중 가장 늦은 것
+for tgt, fs in SIG.items():
+    t_out = min(OUT_T[f] for f in fs if f in OUT_T) if any(f in OUT_T for f in fs) else None
+    c = T[T[tgt].map(len) > 0].copy()
+    if t_out is not None: c = c[c.session_start.isna() | (c.session_start <= t_out)]
+    print(f"\n[{tgt}] 산출물 시각 {t_out} | 후보 {len(c)}개:", list(c.src))
+    if SAVE and len(c):
+        pick = c.sort_values(["session_start", "src"], na_position="first").iloc[-1].src
+        body = (REC/pick).read_text(encoding="utf-8")
+        (P1/tgt).write_text(f"# 복구본: {pick} (S4 산출물 시각 이전의 후보 중 규칙 선택; 2026-10-19 복구, 최초 실행은 2026-10-16)\n# 최종 실행본임을 증명하지는 못함: 산출물은 MANIFEST 해시로 검증\n{body}", encoding="utf-8"); print("  저장:", tgt, "←", pick)
+print("\n※ 규칙은 추정입니다. 후보가 2개 이상이면 diff로 차이를 보고 사람이 확정하세요.")
+
+[산출물 수정 시각(로컬)]
+  topic_quadrants.csv                2026-10-16 11:10:54
+  journal_decomposition.csv          2026-10-16 11:10:54
+  S4_meta.json                       2026-10-16 11:10:54
+  rotation_index_periods.csv         2026-10-16 11:26:56
+  yearly_js_poolfloor_check.csv      2026-10-16 11:29:15
+
+[후보 표: 열 s4_*.py 는 그 코드 안에 들어 있는 해당 산출물 파일명]
+               src              session_start                session_end  chars                                                     s4_main.py             s4_6_rotation.py            s4_6b_floor_check.py
+hist_1079_0023.py 2026-10-16 10:41:56.134582                        NaT  12689 [journal_decomposition.csv, topic_quadrants.csv, S4_meta.json]                           []                              []
+hist_1079_0025.py 2026-10-16 10:41:56.134582                        NaT   6310                                                             [] [rotation_index_periods.csv]                              []
+hist_1079_0026.py 2026-10-16 10:41:56.134582                        NaT   4399                                                             []                           []                              []
+hist_1080_0001.py 2026-10-16 11:22:09.737369                        NaT   6295                                                             [] [rotation_index_periods.csv]                              []
+hist_1080_0003.py 2026-10-16 11:22:09.737369                        NaT   5307                            [topic_quadrants.csv, S4_meta.json] [rotation_index_periods.csv]                              []
+hist_1080_0004.py 2026-10-16 11:22:09.737369                        NaT   6628                                                             [] [rotation_index_periods.csv]                              []
+hist_1080_0006.py 2026-10-16 11:22:09.737369                        NaT   4278                                                             []                           [] [yearly_js_poolfloor_check.csv]
+hist_1083_0001.py 2026-10-19 15:27:01.946326                        NaT   4720                                                             []                           []                              []
+hist_1084_0001.py 2026-10-19 16:57:47.715148                        NaT  13597                                                             []                           []                              []
+hist_1084_0003.py 2026-10-19 16:57:47.715148                        NaT  13594                                                             []                           []                              []
+hist_1084_0005.py 2026-10-19 16:57:47.715148                        NaT  13596                                                             []                           []                              []
+hist_1084_0007.py 2026-10-19 16:57:47.715148                        NaT   6278                                                             []                           []                              []
+hist_1084_0009.py 2026-10-19 16:57:47.715148                        NaT   2948                                                 [S4_meta.json]                           []                              []
+    nb_cell_01.py                        NaT 2026-10-16 11:44:25.228508   6628                                                             [] [rotation_index_periods.csv]                              []
+    nb_cell_03.py                        NaT 2026-10-16 11:44:25.228508   4278                                                             []                           [] [yearly_js_poolfloor_check.csv]
+
+[s4_main.py] 산출물 시각 2026-10-16 11:10:54.040356 | 후보 1개: ['hist_1079_0023.py']
+
+[s4_6_rotation.py] 산출물 시각 2026-10-16 11:26:56.568215 | 후보 5개: ['hist_1079_0025.py', 'hist_1080_0001.py', 'hist_1080_0003.py', 'hist_1080_0004.py', 'nb_cell_01.py']
+
+[s4_6b_floor_check.py] 산출물 시각 2026-10-16 11:29:15.010249 | 후보 2개: ['hist_1080_0006.py', 'nb_cell_03.py']
+
+※ 규칙은 추정입니다. 후보가 2개 이상이면 diff로 차이를 보고 사람이 확정하세요.
+
+# -*- coding: utf-8 -*-
+# S4 복구본 검증 + 저장. 기본 SAVE=False(읽기 전용). 이미 있는 파일은 덮어쓰지 않음.
+import json, difflib
+from pathlib import Path
+SAVE = False
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; REC = P1/"_recovered_s4"; S4 = P1/"04_S4"
+rd = lambda n: (REC/n).read_text(encoding="utf-8")
+PICK = {"s4_main.py": "hist_1079_0023.py", "s4_6_rotation.py": "hist_1080_0004.py", "s4_6b_floor_check.py": "hist_1080_0006.py"}
+NBC = {"s4_6_rotation.py": "nb_cell_01.py", "s4_6b_floor_check.py": "nb_cell_03.py"}
+
+# 1) 선택본 = 노트북 셀(같은 코드)인가
+for tgt, nb in NBC.items():
+    a, b = rd(PICK[tgt]).strip(), rd(nb).strip(); r = difflib.SequenceMatcher(None, a, b).ratio()
+    print(f"[{tgt}] {PICK[tgt]} vs {nb}: {'동일' if a == b else f'차이 있음(유사도 {r:.4f})'}")
+    if a != b:
+        d = [l for l in difflib.unified_diff(a.splitlines(), b.splitlines(), lineterm="", n=0) if not l.startswith(("---", "+++", "@@"))]; print("   차이 줄 수", len(d), "| 예:", d[:6])
+
+# 2) 후보 간 차이(rotation): 앞선 수정본과 무엇이 다른가
+base = rd("hist_1080_0004.py").splitlines()
+for other in ["hist_1079_0025.py", "hist_1080_0001.py"]:
+    d = [l for l in difflib.unified_diff(rd(other).splitlines(), base, lineterm="", n=0) if not l.startswith(("---", "+++", "@@"))]
+    print(f"\n[rotation] {other} -> 선택본: 변경 줄 {len(d)}개 (예)"); [print("  ", l[:150]) for l in d[:12]]
+
+# 3) 노트북 셀의 저장된 출력과 04_S4/s4_6_output.txt 일치 여부
+nb = json.loads((P1/"S4. 신생·쇠퇴의 재정의.ipynb").read_text(encoding="utf-8"))["cells"]
+for i, f in [(1, "s4_6_output.txt")]:
+    o = "".join("".join(x.get("text", [])) for x in nb[i].get("outputs", []) if x.get("output_type") == "stream").strip(); t = (S4/f).read_text(encoding="utf-8", errors="replace").strip()
+    print(f"\n[셀 {i:02d} 출력 vs {f}] {'동일' if o == t else '다름'} | 길이 {len(o)} / {len(t)}")
+    if o != t:
+        k = next((j for j, (x, y) in enumerate(zip(o, t)) if x != y), min(len(o), len(t))); print("   첫 차이 위치", k, "| 노트북:", repr(o[k:k+60]), "| 파일:", repr(t[k:k+60]))
+
+# 4) 저장(기존 파일 보호)
+if SAVE:
+    for tgt, src in PICK.items():
+        p = P1/tgt
+        if p.exists(): print("건너뜀(이미 있음):", tgt); continue
+        hdr = (f"# 복구본: {src} (+ 노트북 셀 교차 확인). 2026-10-19 복구. 최초 실행은 2026-10-16 (산출물 시각 이전 세션)\n"
+               f"# 최종 실행본임을 증명하지는 못함: 산출물은 S4_MANIFEST.json 해시로 검증. 재실행하지 않음\n")
+        p.write_text(hdr + rd(src), encoding="utf-8"); print("저장:", tgt, "←", src)
+
+[s4_6_rotation.py] hist_1080_0004.py vs nb_cell_01.py: 동일
+[s4_6b_floor_check.py] hist_1080_0006.py vs nb_cell_03.py: 동일
+
+[rotation] hist_1079_0025.py -> 선택본: 변경 줄 38개 (예)
+   -W["topic"] = W.topic150.astype(int); W["fixed"] = tf(W.fixed_venue)
+   +PRE = json.loads((ROOT / "paper1/00_S0/PREREG.json").read_text(encoding="utf-8"))
+   +def _find(o):
+   +    if isinstance(o, dict):
+   +        for k, v in o.items():
+   +            if k == "fixed_venues": return v
+   +            r = _find(v)
+   +            if r is not None: return r
+   +FIXED = set(_find(PRE)); assert len(FIXED) == 14, len(FIXED)
+   +W["topic"] = W.topic150.astype(int); W["fixed"] = W.venue_short.isin(FIXED)
+   -# 연도 x 저널 x 토픽 개수, 저널 가중(전 기간 평균, 저널 내 성분 시계열용)
+   +print(f"저널 {len(venues)}개 | 고정 저널로 판정된 수 {int(fixed_v.sum())} (14여야 함)")
+
+[rotation] hist_1080_0001.py -> 선택본: 변경 줄 10개 (예)
+   -W["topic"] = W.topic150.astype(int); W["fixed"] = tf(W.fixed_venue)
+   +PRE = json.loads((ROOT / "paper1/00_S0/PREREG.json").read_text(encoding="utf-8"))
+   +def _find(o):
+   +    if isinstance(o, dict):
+   +        for k, v in o.items():
+   +            if k == "fixed_venues": return v
+   +            r = _find(v)
+   +            if r is not None: return r
+   +FIXED = set(_find(PRE)); assert len(FIXED) == 14, len(FIXED)
+   +W["topic"] = W.topic150.astype(int); W["fixed"] = W.venue_short.isin(FIXED)
+
+[셀 01 출력 vs s4_6_output.txt] 다름 | 길이 1680 / 128
+   첫 차이 위치 0 | 노트북: '저널 34개 | 고정 저널로 판정된 수 14 (14여야 함)\n[연도 인접 JS: 보정값 상위 5, 표본별]\n' | 파일: "python3: can't open file '/home/yjlee/Research/Minnesota_Tra"
+
+
+
+# -*- coding: utf-8 -*-
+# S4 복구본 저장 + CHANGELOG 기록 + 출력 파일 점검 + manifest 해시 검증. DRY=True면 쓰기 없음.
+import json, re, hashlib
+from pathlib import Path
+import pandas as pd
+
+DRY = True
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; REC = P1/"_recovered_s4"; S4 = P1/"04_S4"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+rd = lambda n: (REC/n).read_text(encoding="utf-8")
+PICK = {"s4_main.py": "hist_1079_0023.py", "s4_6_rotation.py": "hist_1080_0004.py", "s4_6b_floor_check.py": "hist_1080_0006.py"}
+MARK = "S4 코드 복구:"
+LOG_RECOVER = (f"- {now()} | S4 코드 복구: s4_main.py(←IPython 히스토리 1079:23), s4_6_rotation.py(←1080:4, 노트북 셀 01과 동일), s4_6b_floor_check.py(←1080:6, 노트북 셀 03과 동일). "
+               "2026-10-16 최초 실행 시 .py로 저장되지 않았음. 선택 근거: 산출물 생성 시각 이전 세션, 산출 파일명 포함, 노트북 셀 01 출력(저널 34개, 고정 저널 14개)이 선택본과 일치. "
+               "최종 실행본임은 증명하지 못함. 재실행하지 않음. 산출물 무결성은 S4_MANIFEST.json 해시로 검증 | 본 결과 변경: 없음\n")
+LOG_NOTES = (f"- {now()} | S4 정정 이력: 4.6 초기 수정본(1079:25, 1080:1)은 고정 저널을 fixed_venue 열로 판정했고 선택본은 PREREG.json의 fixed_venues 14개로 판정함(산출물은 후자). "
+             "04_S4/s4_6_output.txt는 스크립트 경로 오류 메시지(128자)이며 실제 4.6 출력이 아님: 실제 출력은 S4 노트북 셀 01. "
+             "태그 S4-main-2026-10-16, S4-final-2026-10-16(33b3912, 11:07:38)은 S4 산출물(11:10:54 이후 생성) 이전 커밋을 가리켜 삭제 예정 | 본 결과 변경: 없음\n")
+
+# 1) 복구본 저장
+print("[1. 복구본 저장]")
+for tgt, src in PICK.items():
+    p = P1/tgt
+    if p.exists(): print(f"  건너뜀(이미 있음): {tgt}"); continue
+    if not (REC/src).exists(): print(f"  ⛔ 원본 없음: {src}"); continue
+    hdr = (f"# 복구본: {src} (+ 노트북 셀 교차 확인). 2026-10-19 복구. 최초 실행은 2026-10-16 (산출물 시각 이전 세션)\n"
+           f"# 최종 실행본임을 증명하지는 못함: 산출물은 S4_MANIFEST.json 해시로 검증. 재실행하지 않음\n")
+    print(f"  {'저장 예정' if DRY else '저장'}: {tgt} ← {src} ({len(rd(src)):,}자)")
+    if not DRY: p.write_text(hdr + rd(src), encoding="utf-8")
+
+# 2) CHANGELOG 기록(중복 방지)
+print("\n[2. CHANGELOG]")
+for f in [P1/"04_S4/CHANGELOG_S4.md", P1/"09_PA/PA_CHANGELOG.md"]:
+    txt = f.read_text(encoding="utf-8") if f.exists() else ""
+    if MARK in txt: print(f"  이미 기록됨: {f.name}"); continue
+    print(f"  {'추가 예정' if DRY else '추가'}: {f.name}")
+    if not DRY:
+        with f.open("a", encoding="utf-8") as h: h.write(("" if txt.endswith("\n") or not txt else "\n") + LOG_RECOVER + LOG_NOTES)
+
+# 3) 출력 파일 점검: 에러 로그인데 증거처럼 보이는 파일 찾기
+print("\n[3. 04_S4/*_output.txt 점검]")
+for p in sorted(S4.glob("*_output.txt")):
+    t = p.read_text(encoding="utf-8", errors="replace"); err = bool(re.search(r"can't open file|Traceback|No such file|Error", t))
+    print(f"  {p.name}: {len(t):,}자 | {'⛔ 오류 메시지로 보임' if err else '정상 출력으로 보임'} | 첫 줄: {t.strip().splitlines()[0][:90] if t.strip() else '(빈 파일)'}")
+
+# 4) manifest 해시 검증(읽기 전용)
+HEX = re.compile(r"^[0-9a-f]{64}$")
+def collect(o, out, key=None):
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if isinstance(v, str) and HEX.match(v): out.append((k if ("/" in str(k) or "." in str(k)) else key, v))
+            else: collect(v, out, k)
+    elif isinstance(o, list):
+        for v in o:
+            if isinstance(v, dict) and "sha256" in v and any(f in v for f in ("file", "name", "path")): out.append((v.get("file") or v.get("name") or v.get("path"), v["sha256"]))
+            else: collect(v, out, key)
+tot = {"일치": 0, "불일치": [], "파일없음": [], "이름 해석 불가": 0}
+for mf in sorted(P1.glob("0[1-8]_*/*MANIFEST*.json")) + sorted(P1.glob("0[1-8]_*/*_meta*.json")):
+    try: J = json.loads(mf.read_text(encoding="utf-8"))
+    except Exception as e: print("  읽기 실패", mf.name, e); continue
+    pairs = []; collect(J, pairs)
+    for name, h in pairs:
+        if not name: tot["이름 해석 불가"] += 1; continue
+        f = next((c for c in [mf.parent/name, ROOT/name, P1/name] if c.exists() and c.is_file()), None)
+        if f is None: tot["파일없음"].append(f"{mf.name}:{name}"); continue
+        (tot.__setitem__("일치", tot["일치"] + 1) if sha_f(f) == h else tot["불일치"].append(f"{mf.name}:{name}"))
+print("\n[4. manifest 검증]", {k: (len(v) if isinstance(v, list) else v) for k, v in tot.items()})
+for k in ("불일치", "파일없음"):
+    if tot[k]: print(f"  {k}({len(tot[k])}건):", tot[k][:20])
+print("\nDRY=True: 쓰기 없음. 계획이 맞으면 DRY=False로 다시 실행." if DRY else "\n완료. 다음: PA-0 정리 셀의 MODE='commit'(DRY=True 먼저).")
+
+
+[1. 복구본 저장]
+  저장 예정: s4_main.py ← hist_1079_0023.py (12,689자)
+  저장 예정: s4_6_rotation.py ← hist_1080_0004.py (6,628자)
+  저장 예정: s4_6b_floor_check.py ← hist_1080_0006.py (4,278자)
+
+[2. CHANGELOG]
+  추가 예정: CHANGELOG_S4.md
+  추가 예정: PA_CHANGELOG.md
+
+[3. 04_S4/*_output.txt 점검]
+  s4_1_output.txt: 649자 | 정상 출력으로 보임 | 첫 줄: [인접 기간 top-10 Jaccard: 쌍별 중앙값 (전체 / A등급)]
+  s4_6_output.txt: 129자 | ⛔ 오류 메시지로 보임 | 첫 줄: python3: can't open file '/home/yjlee/Research/Minnesota_Transport/paper1/s4_6_rotation.py
+
+[4. manifest 검증] {'일치': 144, '불일치': 0, '파일없음': 0, '이름 해석 불가': 22}
+
+DRY=True: 쓰기 없음. 계획이 맞으면 DRY=False로 다시 실행.
+
+
+
+import json, re
+from pathlib import Path
+P1 = Path.home() / "Research/Minnesota_Transport/paper1"; HEX = re.compile(r"^[0-9a-f]{64}$")
+def walk(o, path, out):
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if isinstance(v, str) and HEX.match(v) and not ("/" in str(k) or "." in str(k)): out.append((path + "/" + str(k)))
+            else: walk(v, path + "/" + str(k), out)
+    elif isinstance(o, list):
+        for i, v in enumerate(o): walk(v, f"{path}[{i}]", out)
+for mf in sorted(P1.glob("0[1-8]_*/*MANIFEST*.json")) + sorted(P1.glob("0[1-8]_*/*_meta*.json")):
+    out = []; walk(json.loads(mf.read_text(encoding="utf-8")), "", out)
+    if out: print(mf.name, out[:6])
+
+S3_MANIFEST.json ['/spec_sha256']
+S4_MANIFEST.json ['/spec_sha256']
+L1_meta.json ['/spec_sha256']
+L2_meta.json ['/spec_sha256', '/output_sha256']
+L3_meta.json ['/spec_sha256', '/output_sha256']
+L4_meta.json ['/spec_sha256', '/output_sha256']
+L5_meta.json ['/spec_sha256', '/manual_meta_sha256', '/manual_decision_sha256', '/output_sha256']
+L5_topic38_49_meta.json ['/label_sha256', '/spec_sha256']
+L7_meta.json ['/spec_sha256', '/output_sha256']
+S4_meta.json ['/spec_sha256']
+S5_meta.json ['/spec_sha256']
+S7_meta.json ['/spec_sha256']
+S7_meta_QUICK.json ['/spec_sha256']
+S8_meta.json ['/spec_sha256']
+
+
+
+import json, re, hashlib
+from pathlib import Path
+P1 = Path.home() / "Research/Minnesota_Transport/paper1"; HEX = re.compile(r"^[0-9a-f]{64}$")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+TARGET = ("output_sha256", "manual_meta_sha256", "manual_decision_sha256", "label_sha256")
+# 1) 대상 해시 수집
+want = []
+for mf in sorted(P1.glob("0[1-8]_*/*_meta*.json")):
+    J = json.loads(mf.read_text(encoding="utf-8"))
+    for k in TARGET:
+        if isinstance(J.get(k), str) and HEX.match(J[k]): want.append((mf, k, J[k]))
+# 2) 해당 폴더(01~08)의 파일 전체 해시 인덱스(체크포인트·oa_raw 제외, 200MB 초과 제외)
+idx = {}
+for f in P1.glob("0[1-8]_*/**/*"):
+    if f.is_file() and ".ipynb_checkpoints" not in f.parts and "oa_raw" not in f.parts and f.stat().st_size < 200e6:
+        idx.setdefault(sha_f(f), []).append(f.relative_to(P1).as_posix())
+# 3) 대조
+ok = miss = 0
+for mf, k, h in want:
+    hit = idx.get(h)
+    print(f"{mf.name:26s} {k:24s} {'일치 → ' + ', '.join(hit[:2]) if hit else '⛔ 같은 해시의 파일 없음'}")
+    ok += bool(hit); miss += not hit
+print(f"\n파일 해시 일치 {ok}건 / 미일치 {miss}건 (대상 {len(want)}건)")
+
+
+
+L2_meta.json               output_sha256            일치 → 03_S3/L2_representative_papers.csv
+L3_meta.json               output_sha256            일치 → 03_S3/L3_topic_metrics.csv
+L4_meta.json               output_sha256            일치 → 03_S3/L4_structure_fingerprint.csv
+L5_meta.json               output_sha256            일치 → 03_S3/L5_topic_flags.csv
+L5_meta.json               manual_meta_sha256       일치 → 03_S3/L5_topic38_49_meta.json
+L5_meta.json               manual_decision_sha256   일치 → 03_S3/L5_topic38_49_decision.csv
+L5_topic38_49_meta.json    label_sha256             일치 → 02_S2/s2_open_topic38_49_manual.csv
+L7_meta.json               output_sha256            일치 → 03_S3/L7_topic_grade.csv
+
+파일 해시 일치 8건 / 미일치 0건 (대상 8건)
+
+
+
+
+
+
+
+from pathlib import Path
+import pandas as pd
+f = Path.home() / "Research/Minnesota_Transport/paper1/09_PA/PA_CHANGELOG.md"
+line = (f"- {pd.Timestamp.now().isoformat(timespec='seconds')} | PA-0 해시 검증: S1~S8 manifest·meta의 파일 해시 152건이 현재 파일과 일치(불일치 0, 파일없음 0). "
+        "규칙 해시(spec_sha256) 14건은 단계별 spec_hash 재계산으로 검증. 코드 복구 3종과 무관하게 산출물 무결성은 해시로 확인됨 | 본 결과 변경: 없음\n")
+t = f.read_text(encoding="utf-8")
+if "PA-0 해시 검증:" not in t:
+    f.write_text(t + ("" if t.endswith("\n") else "\n") + line, encoding="utf-8"); print("추가")
+else: print("이미 있음")
+
+
+
+추가
+
+# -*- coding: utf-8 -*-
+# S5 연결 정보 추출 (읽기 전용). s5_lib/s5_detect에서 PA-A1에 필요한 함수(비용, 벌점, N2 귀무, 변화점)의 시그니처와 소스를 출력.
+import ast, re
+from pathlib import Path
+import pandas as pd
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"
+KEY = re.compile(r"null|trend|n2|cost|penal|pen|segment|dp|detect|break|change|bic|simul|perm|js|hellinger|phi|share", re.I)
+MAXLINES = 45
+
+def show(fn):
+    t = (P1/fn).read_text(encoding="utf-8"); lines = t.splitlines(); tree = ast.parse(t)
+    print(f"\n{'='*20} {fn} ({len(lines)}줄) {'='*20}")
+    print("[최상위 상수]")
+    for n in tree.body:
+        if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) and n.targets[0].id.isupper(): print(f"  {n.targets[0].id} = {ast.unparse(n.value)[:120]}")
+    print("[함수 목록]")
+    funcs = [n for n in tree.body if isinstance(n, ast.FunctionDef)]
+    for n in funcs: print(f"  L{n.lineno:<4} def {n.name}({', '.join(a.arg for a in n.args.args)})")
+    print(f"\n[핵심 후보 함수 소스: 이름이 /{KEY.pattern[:40]}.../ 에 걸리는 것, 각 {MAXLINES}줄까지]")
+    for n in funcs:
+        if KEY.search(n.name):
+            seg = lines[n.lineno-1: n.end_lineno]; print(f"\n--- {n.name} (L{n.lineno}-{n.end_lineno}) ---"); print("\n".join(seg[:MAXLINES]) + ("\n   ...(생략)" if len(seg) > MAXLINES else ""))
+
+for fn in ["s5_lib.py"]: show(fn)
+print(f"\n{'='*20} s5_detect.py: main 흐름 요약 {'='*20}")
+t = (P1/"s5_detect.py").read_text(encoding="utf-8"); L = t.splitlines(); print(f"{len(L)}줄")
+for i, l in enumerate(L, 1):
+    if re.search(r"^\s*(def |class )|N2|null|trend|from s5_lib|import s5_lib|PEN|KMAX|MIN_LEN|min_len|k_max|penalty|\.to_csv", l): print(f"  L{i:<4} {l.strip()[:150]}")
+
+print(f"\n{'='*20} S5 산출 파일 {'='*20}")
+for p in sorted((P1).glob("05_S5/*.csv")):
+    try: d = pd.read_csv(p, nrows=2); print(f"  {p.name}: 열 {list(d.columns)[:14]}")
+    except Exception as e: print("  읽기 실패", p.name, e)
+for p in sorted(P1.glob("05_S5/*_meta*.json")) + sorted(P1.glob("05_S5/*PREREG*.json")): print("  json:", p.name)
+print("\n※ 출력 전체를 붙여 주세요. 길면 '핵심 후보 함수 소스' 부분과 '산출 파일' 부분만이라도 주세요.")
+
+==================== s5_lib.py (164줄) ====================
+[최상위 상수]
+  ROOT = Path.home() / 'Research/Minnesota_Transport'
+  YEARS = np.arange(2000, 2026)
+  SAMPLES = ['all', 'fixed14', 'within']
+[함수 목록]
+  L17   def find_key(o, key)
+  L24   def load_counts()
+  L36   def sample_P(cnt, fixed_v, wbar, kind, tmask)
+  L47   def detrend_P(P, n)
+  L55   def seg_costs(X, w)
+  L66   def segment(X, w, kmax, minlen)
+  L82   def seg_means(X, w, br)
+  L86   def jump(X, w, br)
+  L90   def cost_given(X, w, br)
+  L97   def detect(P, n, pen, kmax, minlen, keep)
+  L105  def uni_bic(v, kmax, minlen)
+  L111  def near(y, ys, tol)
+  L114  def gen_boot(cnt, rng)
+  L119  def gen_N0(cnt, rng)
+  L126  def gen_N1(cnt, rng)
+  L136  def trend_probs(cnt)
+  L149  def gen_N2(cnt, P2, rng)
+  L156  def decomp_break(cnt, a0, a1, b1)
+
+[핵심 후보 함수 소스: 이름이 /null|trend|n2|cost|penal|pen|segment|dp|.../ 에 걸리는 것, 각 45줄까지]
+
+--- detrend_P (L47-52) ---
+def detrend_P(P, n):
+    w = n.astype(float); x = YEARS - np.average(YEARS, weights=w)
+    pbar = (w[:, None] * P).sum(0) / w.sum()
+    sl = ((w * x)[:, None] * (P - pbar)).sum(0) / (w * x * x).sum()
+    Q = np.clip(P - np.outer(x, sl), 0, None); s = Q.sum(1, keepdims=True)
+    return np.divide(Q, s, out=np.zeros_like(Q), where=s > 0)
+
+--- seg_costs (L55-64) ---
+def seg_costs(X, w):
+    T = len(w); S0_ = np.concatenate([[0], np.cumsum(w)])
+    S1 = np.vstack([np.zeros(X.shape[1]), np.cumsum(w[:, None] * X, 0)])
+    S2 = np.concatenate([[0], np.cumsum(w * (X ** 2).sum(1))])
+    C = np.full((T + 1, T + 1), np.inf)
+    for a in range(T):
+        b = np.arange(a + 1, T + 1); s0 = S0_[b] - S0_[a]; s1 = S1[b] - S1[a]; s2 = S2[b] - S2[a]
+        with np.errstate(divide="ignore", invalid="ignore"): c = s2 - (s1 ** 2).sum(1) / s0
+        C[a, b] = np.maximum(np.where(s0 > 0, c, 0.0), 0.0)
+    return C
+
+--- segment (L66-80) ---
+def segment(X, w, kmax=6, minlen=3):
+    T = len(w); C = seg_costs(X, w)
+    best = np.full((kmax + 1, T + 1), np.inf); arg = np.zeros((kmax + 1, T + 1), int)
+    for b in range(minlen, T + 1): best[1, b] = C[0, b]
+    for k in range(2, kmax + 1):
+        for b in range(k * minlen, T + 1):
+            a = np.arange((k - 1) * minlen, b - minlen + 1); v = best[k - 1, a] + C[a, b]
+            i = int(np.argmin(v)); best[k, b] = v[i]; arg[k, b] = a[i]
+    res = {}
+    for k in range(1, kmax + 1):
+        if not np.isfinite(best[k, T]): continue
+        br, b = [], T
+        for kk in range(k, 1, -1): a = arg[kk, b]; br.append(int(a)); b = a
+        res[k] = (float(best[k, T]), sorted(br))
+    return res
+
+--- cost_given (L90-95) ---
+def cost_given(X, w, br):
+    e = [0] + list(br) + [len(w)]; tot = 0.0
+    for a, b in zip(e[:-1], e[1:]):
+        if w[a:b].sum() == 0: continue
+        m = np.average(X[a:b], axis=0, weights=w[a:b]); tot += float((w[a:b] * ((X[a:b] - m) ** 2).sum(1)).sum())
+    return tot
+
+--- detect (L97-103) ---
+def detect(P, n, pen, kmax=6, minlen=3, keep=None):
+    X, w = np.sqrt(P), 4.0 * n
+    if keep is not None: X, w = X[keep], w[keep]
+    res = segment(X, w, kmax, minlen); k = min(res, key=lambda kk: res[kk][0] + pen * kk)
+    c1, ck = res[1][0], res[k][0]; br = res[k][1]
+    return dict(k=k, br=br, cost1=c1, costk=ck, R=(1 - ck / c1) if c1 > 0 else 0.0, jump=jump(X, w, br),
+                curve={kk: res[kk][0] for kk in res}, X=X, w=w)
+
+--- uni_bic (L105-109) ---
+def uni_bic(v, kmax=6, minlen=3):
+    v = np.asarray(v, float); T = len(v); X = ((v - v.mean()) / v.std())[:, None]
+    res = segment(X, np.ones(T), kmax, minlen)
+    bic = {k: T * np.log(max(res[k][0], 1e-9) / T) + 2 * k * np.log(T) for k in res}
+    return res[min(bic, key=bic.get)][1]
+
+--- trend_probs (L136-147) ---
+def trend_probs(cnt):   # 저널x토픽별 연도 선형 추세(가중 OLS) 적합 확률. 0 미만 절단 후 재정규화
+    T, V, K = cnt.shape; n = cnt.sum(2).astype(float); P2 = np.zeros((T, V, K)); x = YEARS - YEARS.mean()
+    for v in range(V):
+        ok = n[:, v] > 0
+        if ok.sum() == 0: continue
+        s = cnt[ok, v] / n[ok, v][:, None]
+        if ok.sum() < 3: P2[ok, v] = s; continue
+        X = np.c_[np.ones(ok.sum()), x[ok]]; W = n[ok, v]
+        beta = np.linalg.solve(X.T @ (W[:, None] * X) + 1e-9 * np.eye(2), X.T @ (W[:, None] * s))
+        f = np.clip(X @ beta, 0, None); fs = f.sum(1, keepdims=True)
+        P2[ok, v] = np.where(fs > 0, f / np.where(fs > 0, fs, 1), s)
+    return P2
+
+--- gen_N2 (L149-153) ---
+def gen_N2(cnt, P2, rng):
+    out = np.zeros(cnt.shape, dtype=np.int64); n = cnt.sum(2)
+    for y, v in zip(*np.nonzero(n)):
+        p = P2[y, v]; out[y, v] = rng.multinomial(int(n[y, v]), p / p.sum())
+    return out
+
+--- decomp_break (L156-164) ---
+def decomp_break(cnt, a0, a1, b1):
+    def mats(lo, hi):
+        c = cnt[lo:hi].sum(0).astype(float); nj = c.sum(1); w = nj / nj.sum()
+        return w, np.divide(c, nj[:, None], out=np.zeros(c.shape), where=nj[:, None] > 0)
+    w0, s0 = mats(a0, a1); w1, s1 = mats(a1, b1)
+    within = (((w0 + w1) / 2)[:, None] * (s1 - s0)).sum(0); between = (((s0 + s1) / 2) * (w1 - w0)[:, None]).sum(0)
+    tot = w1 @ s1 - w0 @ s0
+    assert abs(within + between - tot).max() < 1e-9, "불변식 실패: 내+간 != 총변화"
+    return within, between, tot
+
+==================== s5_detect.py: main 흐름 요약 ====================
+202줄
+  L7    from s5_lib import *
+  L21   KMAX, MINLEN, TOL = D["k_max"], D["min_len"], 1
+  L22   B_BOOT, B_NULL, B_SPLIT, B_CIRC = (20, 20, 10, 200) if QUICK else (spec["bootstrap"]["B"], spec["nulls"]["B"], spec["split_half"]["B"], spec["events"]
+  L23   ALPHA = spec["nulls"]["alpha"]
+  L26   def run_P(P, n, s, c=C0, k=K, keep=None):
+  L27   d = detect(P, n, pen(s, c, k), KMAX, MINLEN, keep)
+  L30   def run(c_arr, s, c=C0, tmask=None, keep=None, post=None):
+  L46   v = Y[(Y["sample"] == ("fixed" if s == "fixed14" else s))].sort_values("year")[col].values; assert len(v) == T, (s, len(v)); br = [int(YEARS[b]) for b
+  L64   # ---------- 3. 귀무 N0, N1, N2 ----------
+  L65   P2 = trend_probs(cnt); GEN = {"N0": gen_N0, "N1": gen_N1, "N2": lambda c_, r_: gen_N2(c_, P2, r_)}; nr_ = []
+  L70   d = run(cc, s); nr_.append(dict(null=nm, rep=b, sample=s, k=d["k"], R=d["R"], jump=d["jump"], years=d["years"]))
+  L75   sub = NL[(NL["null"] == nm) & (NL["sample"] == s)]; r = dict(null=nm, sample=s, obs_k=obs[s]["k"], obs_R=round(obs[s]["R"], 4), obs_jump=round(obs[s][
+  L77   r[f"null_med_{st}"] = round(float(sub[st].median()), 4); r[f"p_{st}"] = round((1 + float((sub[st] >= ov).sum())) / (1 + len(sub)), 4)
+  L80   PASS = {s: bool(PV[(PV["sample"] == s) & (PV["null"].isin(["N1", "N2"]))].p_R.max() < ALPHA) for s in SAM}
+  L81   print("귀무 통과(N1·N2 모두 R p<%.2f):" % ALPHA, PASS)
+  L82   n1hit = {(s, y): float(np.mean([near(y, r_) for r_ in NL[(NL["null"] == "N1") & (NL["sample"] == s)].years])) for s in SAM for y in obs[s]["years"]}
+  L104  variants.append(("detrended", s, run(cnt, s, post=detrend_P)))
+  L129  def evset(nm):
+  L139  def evstat(brs_, ev_):
+  L152  ea.append(dict(set=nm, sample=s, test="breaks_near_event(i)", n_events=len(ey), coverage=cover, obs=a, null_mean=np.nanmean(sims[:, 0]) if ok else np.
+  L153  ea.append(dict(set=nm, sample=s, test="events_followed_by_break(ii)", n_events=len(ey), coverage=cover, obs=b_, null_mean=np.nanmean(sims[:, 1]) if ok
+  L168  def cosv(u):
+  L172  cs.append(dict(set=nm, break_year=y, venue=v, event_year=e, cosine=round(o, 3), null_pct=round(float((nl < o).mean()), 3) if len(nl) and not np.isnan(
+  L192  S5.mkdir(parents=True, exist_ok=True); sv = lambda d, f: d.to_csv(S5 / f, index=False, encoding="utf-8-sig")
+  L195  sv(PV, f"regime_nulls{tag_}.csv"); sv(NL.astype({"years": str}), f"regime_nulls_reps{tag_}.csv"); sv(SH, f"split_half{tag_}.csv"); sv(RB.astype(str), 
+  L197  meta = dict(spec_sha256=spec["sha256"], at=now(), quick=QUICK, B=dict(boot=B_BOOT, null=B_NULL, split=B_SPLIT, circ=B_CIRC), null_pass=PASS, obs_break
+
+==================== S5 산출 파일 ====================
+  Agrade_break_positions.csv: 열 ['sample', 'obs', 'A_only', 'same_within_1y']
+  artifact_exclusion_redetect.csv: 열 ['variant', 'sample', 'k', 'breaks', 'obs_breaks', 'obs_recovered', 'new_breaks', 'R', 'jump_ratio_vs_obs']
+  event_alignment.csv: 열 ['set', 'sample', 'test', 'n_events', 'coverage', 'obs', 'null_mean', 'p', 'break_year', 'venue', 'event_year', 'cosine', 'null_pct', 'n_null']
+  regime_break_bootstrap.csv: 열 ['sample', 'break_year', 'hit_pm1', 'lo90', 'hi90', 'k_dist']
+  regime_breaks.csv: 열 ['sample', 'c', 'k', 'breaks', 'R', 'jump', 'curve', 'n_boot_rows']
+  regime_nulls.csv: 열 ['null', 'sample', 'obs_k', 'obs_R', 'obs_jump', 'null_med_k', 'p_k', 'null_med_R', 'p_R', 'null_med_jump', 'p_jump']
+  regime_nulls_reps.csv: 열 ['null', 'rep', 'sample', 'k', 'R', 'jump', 'years']
+  regime_types.csv: 열 ['break_year', 'in_fixed14', 'in_within', 'event_match', 'entry_match', 'between_share', 'n1_hit_rate', 'artifact_candidate', 'boot_hit', 'type']
+  regime_univariate.csv: 열 ['sample', 'series', 'breaks', 'matches_multivariate']
+  segment_description.csv: 열 ['sample', 'seg', 'n_years', 'n_papers', 'eff_topics', 'hhi', 'd3_share']
+  segment_top_topics.csv: 열 ['sample', 'seg', 'kind', 'rank', 'topic', 'share', 'name', 'between', 'within', 'grade_A']
+  segment_transitions_Agrade.csv: 열 ['sample', 'transition', 'js_all', 'js_Aonly', 'js_ratio_A_vs_all', 'A_within_30pct', 'between_share_abs']
+  split_half.csv: 열 ['sample', 'repro_mean', 'n_reps_with_breaks', 'pass_ge_0_50', 'per_break_joint', 'crossfit_R_B_median']
+  json: S5_meta.json
+  json: S5_0_PREREG.json
+
+※ 출력 전체를 붙여 주세요. 길면 '핵심 후보 함수 소스' 부분과 '산출 파일' 부분만이라도 주세요.
+
+
+
+
+# -*- coding: utf-8 -*-
+# S5 연결용 추가 정보 추출 (읽기 전용, 파일 수정 없음)
+import ast, json
+from pathlib import Path
+import numpy as np, pandas as pd
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; S5 = P1/"05_S5"
+pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30)
+
+# 1) s5_lib 함수 소스 (핵심 3종 + 보조)
+t = (P1/"s5_lib.py").read_text(encoding="utf-8"); L = t.splitlines()
+for n in ast.parse(t).body:
+    if isinstance(n, ast.FunctionDef) and n.name in ("find_key", "load_counts", "sample_P", "near", "gen_N0", "gen_N1"):
+        print(f"\n--- s5_lib.{n.name} (L{n.lineno}-{n.end_lineno}) ---"); print("\n".join(L[n.lineno-1:n.end_lineno]))
+
+# 2) s5_detect 앞부분: 설정, pen, run_P, run, 관측 탐지
+D_ = (P1/"s5_detect.py").read_text(encoding="utf-8").splitlines()
+print("\n--- s5_detect.py L1-64 ---"); print("\n".join(f"L{i+1:<3} {l[:200]}" for i, l in enumerate(D_[:64])))
+print("\n--- s5_detect.py L64-80 (귀무 실행, p 계산) ---"); print("\n".join(f"L{i+65:<3} {l[:240]}" for i, l in enumerate(D_[64:80])))
+
+# 3) 동결 규칙의 탐지·귀무 항목
+pre = json.loads((S5/"S5_0_PREREG.json").read_text(encoding="utf-8"))
+print("\n--- S5_0_PREREG.json 최상위 키 ---", list(pre.keys()))
+for k in ("window", "detect", "detection", "nulls", "bootstrap", "penalty", "samples"):
+    if k in pre: print(f"[{k}]", json.dumps(pre[k], ensure_ascii=False)[:700])
+
+# 4) 산출 파일: 관측 변화점, 귀무 요약, N2 반복 분포
+print("\n--- regime_breaks.csv ---\n", pd.read_csv(S5/"regime_breaks.csv").drop(columns=["curve"], errors="ignore").to_string(index=False))
+print("\n--- regime_nulls.csv ---\n", pd.read_csv(S5/"regime_nulls.csv").to_string(index=False))
+R = pd.read_csv(S5/"regime_nulls_reps.csv"); n2 = R[R["null"] == "N2"]
+print("\n--- N2 반복 분포 (regime_nulls_reps.csv) ---")
+print(n2.groupby("sample").R.describe(percentiles=[.5, .95]).round(4).to_string())
+print("N2 반복 수:", n2.groupby("sample").size().to_dict(), "| 반복당 k 분포:", n2.groupby("sample").k.value_counts().unstack(fill_value=0).to_dict())
+meta = json.loads((S5/"S5_meta.json").read_text(encoding="utf-8")); print("\n--- S5_meta.json ---", json.dumps({k: meta[k] for k in meta if k in ("B", "null_pass", "obs_breaks", "quick")}, ensure_ascii=False)[:600])
+print("\n※ 전체 출력을 붙여 주세요(길면 1~3번 소스와 4번 표는 꼭).")
+
+
+--- s5_lib.find_key (L17-22) ---
+def find_key(o, key):
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if k == key: return v
+            r = find_key(v, key)
+            if r is not None: return r
+
+--- s5_lib.load_counts (L24-33) ---
+def load_counts():
+    cnt = np.rint(np.load(S4 / "yearly_venue_topic_counts.npy")).astype(np.int64)      # (년, 저널, 토픽)
+    venues = pd.read_csv(S4 / "venues_order.csv").venue.astype(str).values
+    topics = pd.read_csv(S4 / "topics_order.csv").topic.astype(int).values
+    PRE = json.loads((S0 / "PREREG.json").read_text(encoding="utf-8"))
+    fixed = set(find_key(PRE, "fixed_venues")); fixed_v = np.array([v in fixed for v in venues])
+    assert cnt.shape == (len(YEARS), len(venues), len(topics)), cnt.shape
+    assert int(fixed_v.sum()) == 14, int(fixed_v.sum())
+    assert int(cnt.sum()) == 76984, int(cnt.sum())
+    return cnt, venues, topics, fixed_v
+
+--- s5_lib.sample_P (L36-45) ---
+def sample_P(cnt, fixed_v, wbar, kind, tmask=None):
+    c = cnt if tmask is None else cnt[:, :, tmask]
+    if kind == "within":
+        nj = c.sum(2); ok = nj > 0
+        sj = np.divide(c, nj[:, :, None], out=np.zeros(c.shape), where=ok[:, :, None])
+        v = (np.where(ok, wbar[None, :], 0.0)[:, :, None] * sj).sum(1); tot = v.sum(1, keepdims=True)
+        return np.divide(v, tot, out=np.zeros_like(v), where=tot > 0), c.sum((1, 2))
+    cy = c.sum(1) if kind == "all" else c[:, fixed_v, :].sum(1)
+    n = cy.sum(1)
+    return np.divide(cy, n[:, None], out=np.zeros(cy.shape), where=n[:, None] > 0), n
+
+--- s5_lib.near (L111-111) ---
+def near(y, ys, tol=1): return any(abs(int(y) - int(z)) <= tol for z in ys)
+
+--- s5_lib.gen_N0 (L119-124) ---
+def gen_N0(cnt, rng):   # 구조 전무: 모든 논문을 풀에 넣고 셀 크기만 유지해 무작위 배분
+    pool = cnt.sum((0, 1)).astype(np.int64); n = cnt.sum(2); out = np.zeros(cnt.shape, dtype=np.int64)
+    cells = list(zip(*np.nonzero(n)))
+    for i in rng.permutation(len(cells)):
+        y, v = cells[i]; d = rng.multivariate_hypergeometric(pool, int(n[y, v])); out[y, v] = d; pool = pool - d
+    return out
+
+--- s5_lib.gen_N1 (L126-134) ---
+def gen_N1(cnt, rng):   # 저널 안에서 연도 라벨만 섞기: 저널 구성(규모)은 유지, 저널 내 시간 구조는 제거
+    T, V, K = cnt.shape; out = np.zeros(cnt.shape, dtype=np.int64)
+    for v in range(V):
+        pool = cnt[:, v, :].sum(0).astype(np.int64)
+        for y in rng.permutation(T):
+            m = int(cnt[y, v].sum())
+            if m == 0: continue
+            d = rng.multivariate_hypergeometric(pool, m); out[y, v] = d; pool = pool - d
+    return out
+
+--- s5_detect.py L1-64 ---
+L1   # -*- coding: utf-8 -*-
+L2   # s5_detect.py: S5 본 계산(동결 규칙 S5_0_PREREG.json 사용). 순서: 관측 탐지 -> 부트스트랩 -> 귀무 -> 반분 -> 강건성 -> 사건 대조 -> 유형 분류
+L3   # 사용: 먼저 QUICK=True로 오류 점검, 이후 QUICK=False. 결과를 보고 규칙을 바꾸지 않는다.
+L4   import sys, json, warnings
+L5   from pathlib import Path
+L6   sys.path.insert(0, str(Path(__file__).resolve().parent))
+L7   from s5_lib import *
+L8   warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30)
+L9   QUICK = False
+L10  
+L11  # ---------- 0. 동결 검증 ----------
+L12  spec = json.loads((S5 / "S5_0_PREREG.json").read_text(encoding="utf-8"))
+L13  core = {k: v for k, v in spec.items() if k not in ("created", "sha256", "reference_hashes_at_freeze")}
+L14  if sha_b(json.dumps(core, sort_keys=True, ensure_ascii=False).encode()) != spec["sha256"]: raise SystemExit("⛔ 동결 해시 불일치")
+L15  for f, h in spec["reference_hashes_at_freeze"].items():
+L16      if sha_f(ROOT / f) != h: raise SystemExit(f"⛔ 참조 파일 {f} 해시가 동결 시점과 다름")
+L17  print("동결 검증 통과", spec["sha256"][:12])
+L18  rng = np.random.default_rng(spec["seed"])
+L19  cnt, venues, topics, fixed_v = load_counts(); wbar = cnt.sum((0, 2)) / cnt.sum()
+L20  T, K = len(YEARS), len(topics); SAM = spec["samples"]; D = spec["detection"]; PHI = {k: v["phi"] for k, v in D["phi"].items()}; CG, C0 = D["c_grid"], D["c_primary"]
+L21  KMAX, MINLEN, TOL = D["k_max"], D["min_len"], 1
+L22  B_BOOT, B_NULL, B_SPLIT, B_CIRC = (20, 20, 10, 200) if QUICK else (spec["bootstrap"]["B"], spec["nulls"]["B"], spec["split_half"]["B"], spec["events"]["circ_B"])
+L23  ALPHA = spec["nulls"]["alpha"]
+L24  pen = lambda s, c, k=K: c * PHI[s] * (k - 1) * np.log(T)
+L25  
+L26  def run_P(P, n, s, c=C0, k=K, keep=None):
+L27      d = detect(P, n, pen(s, c, k), KMAX, MINLEN, keep)
+L28      yrs = YEARS if keep is None else YEARS[keep]
+L29      d["years"] = [int(yrs[b]) for b in d["br"]]; return d
+L30  def run(c_arr, s, c=C0, tmask=None, keep=None, post=None):
+L31      P, n = sample_P(c_arr, fixed_v, wbar, s, tmask)
+L32      if post: P = post(P, n)
+L33      return run_P(P, n, s, c, K if tmask is None else int(tmask.sum()), keep)
+L34  
+L35  # ---------- 1. 관측 탐지 ----------
+L36  obs, rows = {}, []
+L37  for s in SAM:
+L38      for c in CG:
+L39          d = run(cnt, s, c); rows.append(dict(sample=s, c=c, k=d["k"], breaks=d["years"], R=round(d["R"], 4), jump=round(d["jump"], 4),
+L40                                             curve=json.dumps({k: round(v, 1) for k, v in d["curve"].items()})))
+L41          if c == C0: obs[s] = d
+L42  OBS = pd.DataFrame(rows); print("\n[관측 변화점]\n", OBS.drop(columns="curve").to_string(index=False))
+L43  Y = pd.read_csv(S4 / "yearly_series_for_S5.csv"); uni = []
+L44  for s in SAM:
+L45      for col in ["eff_topics", "hhi", "d3_share"]:
+L46          v = Y[(Y["sample"] == ("fixed" if s == "fixed14" else s))].sort_values("year")[col].values; assert len(v) == T, (s, len(v)); br = [int(YEARS[b]) for b in uni_bic(v, KMAX, MINLEN)]
+L47          uni.append(dict(sample=s, series=col, breaks=br, matches_multivariate=[near(y, obs[s]["years"]) for y in br]))
+L48  UNI = pd.DataFrame(uni); print("\n[단변량 교차 확인]\n", UNI.to_string(index=False))
+L49  
+L50  # ---------- 2. 부트스트랩 ----------
+L51  BR = {s: [] for s in SAM}
+L52  for b in range(B_BOOT):
+L53      cb = gen_boot(cnt, rng)
+L54      for s in SAM: BR[s].append(run(cb, s)["years"])
+L55  brs = []
+L56  for s in SAM:
+L57      for y in obs[s]["years"]:
+L58          nr = [min([z for z in b if abs(z - y) <= 3], key=lambda z: abs(z - y)) for b in BR[s] if any(abs(z - y) <= 3 for z in b)]
+L59          lo, hi = (np.percentile(nr, [5, 95]) if nr else (np.nan, np.nan))
+L60          brs.append(dict(sample=s, break_year=y, hit_pm1=round(float(np.mean([near(y, b) for b in BR[s]])), 3), lo90=lo, hi90=hi,
+L61                          k_dist=json.dumps(pd.Series([len(b) + 1 for b in BR[s]]).value_counts().sort_index().to_dict())))
+L62  BRS = pd.DataFrame(brs); print("\n[부트스트랩]\n", BRS.to_string(index=False))
+L63  
+L64  # ---------- 3. 귀무 N0, N1, N2 ----------
+
+--- s5_detect.py L64-80 (귀무 실행, p 계산) ---
+L65  P2 = trend_probs(cnt); GEN = {"N0": gen_N0, "N1": gen_N1, "N2": lambda c_, r_: gen_N2(c_, P2, r_)}; nr_ = []
+L66  for nm, g in GEN.items():
+L67      for b in range(B_NULL):
+L68          cc = g(cnt, rng)
+L69          for s in SAM:
+L70              d = run(cc, s); nr_.append(dict(null=nm, rep=b, sample=s, k=d["k"], R=d["R"], jump=d["jump"], years=d["years"]))
+L71      print(f"{nm} 완료")
+L72  NL = pd.DataFrame(nr_); ps = []
+L73  for nm in GEN:
+L74      for s in SAM:
+L75          sub = NL[(NL["null"] == nm) & (NL["sample"] == s)]; r = dict(null=nm, sample=s, obs_k=obs[s]["k"], obs_R=round(obs[s]["R"], 4), obs_jump=round(obs[s]["jump"], 4))
+L76          for st, ov in [("k", obs[s]["k"]), ("R", obs[s]["R"]), ("jump", obs[s]["jump"])]:
+L77              r[f"null_med_{st}"] = round(float(sub[st].median()), 4); r[f"p_{st}"] = round((1 + float((sub[st] >= ov).sum())) / (1 + len(sub)), 4)
+L78          ps.append(r)
+L79  PV = pd.DataFrame(ps); print("\n[귀무 대비]\n", PV.to_string(index=False))
+L80  PASS = {s: bool(PV[(PV["sample"] == s) & (PV["null"].isin(["N1", "N2"]))].p_R.max() < ALPHA) for s in SAM}
+
+--- S5_0_PREREG.json 최상위 키 --- ['version', 'seed', 'decision_status', 'principle', 'window', 'samples', 'fixed_venues', 'detection', 'bootstrap', 'nulls', 'split_half', 'robust', 'events', 'typology', 'geography_renewal', 'caveats', 'fallback', 'created', 'sha256', 'reference_hashes_at_freeze']
+[window] [2000, 2025]
+[detection] {"transform": "x=sqrt(연도별 토픽 비중)", "weight": "w_t=4*n_t (within 표본은 n_t=전체 논문 수)", "method": "인접 연도 제약 군집화(동적계획)", "min_len": 3, "k_max": 6, "penalty": "pen_per_segment = c*phi_s*(K-1)*log(T), 선택 k = argmin(cost_k + pen*k)", "c_primary": 1.0, "c_grid": [0.5, 1.0, 2.0], "phi": {"all": {"N0": 1.0589, "N1": 4.186, "phi": 4.186}, "fixed14": {"N0": 1.0593, "N1": 2.5313, "phi": 2.5313}, "within": {"N0": 1.5902, "N1": 2.413, "phi": 2.413}}, "phi_rule": "max(1, N1 k=1 비용 중앙값/((T-1)(K-1))), s5_phi.py B=300", "univariate": "주제 유효수, HHI, D3 점유율 각각 BIC 분할(교차 확인용, 판정 아님)"}
+[nulls] {"B": 500, "N0": "셀 크기만 유지하고 모든 논문을 무작위 배분(구조 전무)", "N1": "저널 안에서 연도 라벨 섞기(저널 규모 유지, 저널 내 시간 구조 제거)", "N2": "저널x토픽별 선형 추세(가중 OLS, 0 절단) + 관측 셀 크기 다항 표집(저널 구성은 관측 그대로)", "stats": ["k_sel", "R_ksel=1-cost_k/cost_1", "jump=선택 변화점 최대 Hellinger 점프"], "primary_stat": "R_ksel", "alpha": 0.05, "p": "(1+#{null>=obs})/(1+B)", "pass_rule": "N1과 N2 모두에서 R_ksel p<0.05 (N0는 참고)", "deviation_from_plan": "계획서의 '주제 라벨을 저널x연도 셀 안에서 섞기'는 셀 내 개수가 불변이라 무의미해 N1로 대체"}
+[bootstrap] {"B": 500, "unit": "연도x저널 셀 내 다항 재표집, 매번 선택 절차 전체 반복", "report": "변화점별 +-1년 재현율, 가까운 변화점의 5~95% 구간"}
+[samples] ["all", "fixed14", "within"]
+
+--- regime_breaks.csv ---
+  sample   c  k                         breaks      R   jump  n_boot_rows
+    all 0.5  5       [2008, 2015, 2020, 2023] 0.8432 0.2138            2
+    all 1.0  3                   [2012, 2020] 0.7595 0.2927            2
+    all 2.0  3                   [2012, 2020] 0.7595 0.2927            2
+fixed14 0.5  5       [2008, 2014, 2019, 2022] 0.8063 0.1900            3
+fixed14 1.0  4             [2008, 2015, 2020] 0.7755 0.2335            3
+fixed14 2.0  3                   [2012, 2020] 0.7242 0.2611            3
+ within 0.5  6 [2006, 2010, 2015, 2020, 2023] 0.7593 0.1895            3
+ within 1.0  4             [2009, 2015, 2020] 0.7033 0.1929            3
+ within 2.0  3                   [2015, 2020] 0.6536 0.2324            3
+
+--- regime_nulls.csv ---
+ null  sample  obs_k  obs_R  obs_jump  null_med_k    p_k  null_med_R    p_R  null_med_jump  p_jump
+  N0     all      3 0.7595    0.2927         1.0 0.0020      0.0000 0.0020         0.0000  0.0020
+  N0 fixed14      4 0.7755    0.2335         1.0 0.0020      0.0000 0.0020         0.0000  0.0020
+  N0  within      4 0.7033    0.1929         1.0 0.0020      0.0000 0.0020         0.0000  0.0020
+  N1     all      3 0.7595    0.2927         2.0 0.4750      0.5479 0.0020         0.2302  0.0020
+  N1 fixed14      4 0.7755    0.2335         2.0 0.0020      0.4261 0.0020         0.1920  0.0020
+  N1  within      4 0.7033    0.1929         2.0 0.0020      0.2873 0.0020         0.1409  0.0020
+  N2     all      3 0.7595    0.2927         3.0 1.0000      0.7657 0.9441         0.2763  0.0040
+  N2 fixed14      4 0.7755    0.2335         3.0 0.3992      0.7428 0.3992         0.2643  0.6028
+  N2  within      4 0.7033    0.1929         4.0 0.9980      0.7073 0.6966         0.1963  0.6866
+
+--- N2 반복 분포 (regime_nulls_reps.csv) ---
+         count    mean     std     min     50%     95%     max
+sample                                                        
+all      500.0  0.7658  0.0039  0.7533  0.7657  0.7723  0.7757
+fixed14  500.0  0.7597  0.0265  0.7272  0.7428  0.7965  0.8018
+within   500.0  0.7069  0.0078  0.6354  0.7073  0.7181  0.7301
+N2 반복 수: {'all': 500, 'fixed14': 500, 'within': 500} | 반복당 k 분포: {3: {'all': 500, 'fixed14': 301, 'within': 1}, 4: {'all': 0, 'fixed14': 199, 'within': 499}}
+
+--- S5_meta.json --- {"quick": false, "B": {"boot": 500, "null": 500, "split": 200, "circ": 2000}, "null_pass": {"all": false, "fixed14": false, "within": false}, "obs_breaks": {"all": [2012, 2020], "fixed14": [2008, 2015, 2020], "within": [2009, 2015, 2020]}}
+
+※ 전체 출력을 붙여 주세요(길면 1~3번 소스와 4번 표는 꼭).
+
+# -*- coding: utf-8 -*-
+# PA-A1 v2: S5 원본 탐지기(s5_lib.detect)·N2 귀무 반복분포(regime_nulls_reps.csv)에 연결. 미실행 코드.
+# MODE: "freeze2"(v2 계획 동결, 결과 미실행) -> "tag2"(커밋·태그) -> "a1"(검정력 곡선, QUICK=True 먼저)
+# v1(PA_0_PLAN.json)은 건드리지 않고 PA_0_PLAN_v2.json을 새로 만든다. S0~S8 판정 불변. 모든 산출물 [Post-hoc].
+import sys, json, hashlib, subprocess, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 40); pd.set_option("display.max_rows", 200)
+
+MODE = "freeze2"      # "freeze2" | "tag2" | "a1"
+QUICK = True          # a1: True면 검정력 B=40(파일명 _QUICK), False면 동결값 B=200
+
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; PA = P1/"09_PA"; S5 = P1/"05_S5"; S4 = P1/"04_S4"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_b = lambda b: hashlib.sha256(b).hexdigest(); sha_f = lambda p: sha_b(Path(p).read_bytes())
+git = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+class Halt(Exception): pass
+spec_hash = lambda s: sha_b(json.dumps({k: v for k, v in s.items() if k not in ("sha256", "created", "refs")}, sort_keys=True, ensure_ascii=False).encode())
+V1P, V2P = PA/"PA_0_PLAN.json", PA/"PA_0_PLAN_v2.json"
+
+PA_A1_V2 = dict(
+    window=[2000, 2025], samples=["all", "fixed14", "within"], delta_x=[0.5, 1, 2, 3], size_check_delta=0, t_star=[2008, 2012, 2015, 2020],
+    B_power=200, alpha=0.05,
+    detector="s5_lib.detect(P, n, pen, kmax=6, minlen=3) 그대로. pen = c*phi_s*(K-1)*log(T), c=1.0, phi_s는 S5_0_PREREG.json의 detection.phi. 표본은 s5_lib.sample_P(all, fixed14, within)",
+    null="S5 N2 반복 분포(regime_nulls_reps.csv, null=N2, 표본별 B=500)를 그대로 사용. 판정은 S5와 같은 p=(1+#{null_R>=R})/(1+500) < 0.05 (재시뮬레이션 없음)",
+    baseline="s5_lib.trend_probs(cnt)의 N2 추세 확률(저널x토픽 선형 추세)에 점프를 삽입. 관측 셀 크기, gen_N2로 다항 표집",
+    injection="t* 이후(t>=t*) 모든 저널의 토픽 확률에 a*d를 더하고 0 절단 후 재정규화. d = 'all' 표본 관측 비중의 (2020 이후 평균 - 이전 평균). a는 'all' 표본에서 이등분법으로 정해 세 표본에 같은 계수를 씀",
+    jump_def="J(t)=||가중평균(sqrt P)[t,t+3) - 가중평균(sqrt P)[t-3,t)||/sqrt(2) (가중치 4n, Hellinger 거리). 목표: J(주입)-J(N2 추세 기저)=delta*J_obs(2020, 'all', 관측). 표본별 실현 비율을 함께 보고",
+    size_check="delta=0(점프 없음)에서 N2 반복 R의 기각률이 약 0.05인지 확인(검정 크기 점검)",
+    secondary="변화점 위치 회수: 선택 변화점 중 t*±1년 이내가 있는 비율",
+    reading="delta=1에서 t*별 검정력의 최솟값>=0.8: '이 크기의 점프가 있었다면 탐지했을 것이므로 N2 비통과는 연속 변화 증거'로 강화 / 중앙값<0.5: '체제 전환 여부 판정 불가(검정력 부족)'로 리프레이밍 / 그 사이: 어느 쪽도 쓰지 않고 곡선만 보고",
+    reproduce_check="관측 R이 regime_nulls.csv의 obs_R(0.7595, 0.7755, 0.7033)과 0.001 이내로 재현되지 않으면 중단",
+    bic_compare="관측 비중의 Hellinger 좌표 상위 5 PC에서 구간별 상수 대 구간별 선형, min_len 3, k<=6, BIC")
+
+def build_v2():
+    if not V1P.exists(): raise Halt("v1 계획(PA_0_PLAN.json)이 없습니다")
+    v1 = json.loads(V1P.read_text(encoding="utf-8"))
+    if v1["sha256"] != spec_hash(v1): raise Halt("v1 해시 불일치")
+    p = {k: v for k, v in v1.items() if k not in ("sha256", "created", "refs")}
+    p.update(version=2, supersedes_sha256=v1["sha256"], pa_a1=PA_A1_V2,
+             decision_status="v1 동결 후 PA-A1 실행 전에, S5 원본 탐지기·구간(2000~2025)·N2 반복분포로 교체. PA-A1 검정력·BIC 결과는 미열람. 단, S5의 N2 반복 분포(요약 통계)와 s5_lib 소스는 열람한 상태. 나머지 PA 항목·규칙은 v1과 동일.",
+             change_reason="v1의 PA-A1은 자체 대체 탐지기(2007~2025)였고 S5와 통계가 달라 '같은 CCTV로 시험'이 되지 않음.")
+    return p, v1
+
+def freeze2():
+    p, v1 = build_v2(); h = spec_hash(p); print("PA-0 v2 해시(예정)", h[:12], "| v1", v1["sha256"][:12])
+    if V2P.exists(): print("이미 동결:", "동일" if json.loads(V2P.read_text(encoding="utf-8"))["sha256"] == h else "⛔ 다름"); return
+    refs = {f.name: sha_f(f) for f in [V1P, S5/"S5_0_PREREG.json", S5/"regime_nulls_reps.csv", S5/"regime_nulls.csv", P1/"s5_lib.py", P1/"s5_detect.py", S4/"yearly_venue_topic_counts.npy"] if f.exists()}
+    V2P.write_text(json.dumps(dict(p, created=now(), sha256=h, refs=refs), ensure_ascii=False, indent=1), encoding="utf-8")
+    with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f:
+        f.write(f"- {now()} | PA-0 v2 동결(해시 {h[:12]}, v1 {v1['sha256'][:12]} 대체 대상은 PA-A1만): 탐지기를 S5 원본(s5_lib.detect), 구간을 2000~2025, 귀무 기준을 S5 N2 반복분포로 교체, 검정 크기 점검(delta=0) 추가. 사유: v1 대체 탐지기가 S5와 달랐음. PA-A1 결과 미열람 | 본 결과 변경 여부: 없음\n")
+    print("저장: PA_0_PLAN_v2.json | refs", list(refs))
+
+def tag2():
+    if not V2P.exists(): raise Halt("먼저 freeze2")
+    t = f"PA-0-plan-v2-{pd.Timestamp.now().strftime('%Y-%m-%d')}"
+    if git("tag", "-l", t).stdout.strip(): print("이미 있음:", t); return
+    r = git("add", "--", "paper1/09_PA"); print("add", r.returncode, r.stderr.strip())
+    r = git("commit", "-m", "PA-0 plan v2 (PA-A1 detector -> S5 original, before execution)"); print("commit", r.returncode, (r.stdout + r.stderr)[:200])
+    r = git("tag", "-a", t, "-m", "PA-0 plan v2"); print("tag", r.returncode, r.stderr.strip())
+
+# ------------------------------ PA-A1 본 계산 ------------------------------
+def a1():
+    if not V2P.exists(): raise Halt("먼저 freeze2와 tag2")
+    p, _ = build_v2(); sp = json.loads(V2P.read_text(encoding="utf-8"))
+    if sp["sha256"] != spec_hash(sp) or sp["sha256"] != spec_hash(p): raise Halt("동결 파일과 현재 계획이 다릅니다(사후 변경 금지)")
+    if not git("tag", "-l", "PA-0-plan-v2-*").stdout.strip(): raise Halt("tag2를 먼저 실행하세요(동결 태그 없음)")
+    sys.path.insert(0, str(P1)); import s5_lib as L
+    cfg = PA_A1_V2; sfx = "_QUICK" if QUICK else ""; Bp = 40 if QUICK else cfg["B_power"]; rng = np.random.default_rng(int(p["seed"]))
+    s5 = json.loads((S5/"S5_0_PREREG.json").read_text(encoding="utf-8")); D = s5["detection"]; PHI = {k: v["phi"] for k, v in D["phi"].items()}; C0, KMAX, MINLEN = D["c_primary"], D["k_max"], D["min_len"]
+    cnt, venues, topics, fixed_v = L.load_counts(); wbar = cnt.sum((0, 2))/cnt.sum(); T, K = len(L.YEARS), len(topics); YEARS = np.asarray(L.YEARS); SAM = cfg["samples"]
+    pen = lambda s: C0*PHI[s]*(K-1)*np.log(T)
+    def detect_s(c_arr, s):
+        P, n = L.sample_P(c_arr, fixed_v, wbar, s); d = L.detect(P, n, pen(s), KMAX, MINLEN); return d, P, n
+    # 1) 관측 재현 점검 + N2 기준선
+    NR = pd.read_csv(S5/"regime_nulls_reps.csv"); N2 = {s: NR[(NR["null"] == "N2") & (NR["sample"] == s)].R.values for s in SAM}; OBSR = pd.read_csv(S5/"regime_nulls.csv"); info = []
+    p_of = lambda s, R: (1 + float((N2[s] >= R).sum()))/(1 + len(N2[s]))
+    for s in SAM:
+        d, P, n = detect_s(cnt, s); ref = float(OBSR[(OBSR["null"] == "N2") & (OBSR["sample"] == s)].obs_R.iloc[0])
+        if abs(d["R"] - ref) > 1e-3: raise Halt(f"S5 관측 R 재현 실패({s}): {d['R']:.4f} vs {ref:.4f}. 탐지기 연결이 S5와 다름")
+        info.append(dict(sample=s, obs_R=d["R"], obs_k=d["k"], obs_breaks=[int(YEARS[b]) for b in d["br"]], N2_B=len(N2[s]), N2_q95=float(np.quantile(N2[s], .95)), p_N2=p_of(s, d["R"])))
+    print("[관측 재현 OK: S5와 R 일치]\n", pd.DataFrame(info).round(4).to_string(index=False))
+    # 2) 점프 정의, 방향, 기저
+    def J(P, n, it):
+        X, w = np.sqrt(P), 4.0*n; a, b = slice(max(0, it-3), it), slice(it, it+3)
+        m = lambda sl: np.average(X[sl], axis=0, weights=w[sl]) if w[sl].sum() > 0 else X[sl].mean(0)
+        return float(np.linalg.norm(m(b) - m(a))/np.sqrt(2))
+    i20 = int(np.where(YEARS == 2020)[0][0]); Pall, nall = L.sample_P(cnt, fixed_v, wbar, "all")
+    Jobs = {s: J(*L.sample_P(cnt, fixed_v, wbar, s), i20) for s in SAM}; d_vec = Pall[i20:].mean(0) - Pall[:i20].mean(0)
+    P2 = L.trend_probs(cnt); n_cell = cnt.sum(2).astype(float); print("\n관측 2020 점프(Hellinger, 3년 창):", {k: round(v, 4) for k, v in Jobs.items()})
+    def inject(a, it):
+        Q = P2.copy(); Q[it:] = np.clip(Q[it:] + a*d_vec[None, None, :], 1e-9, None); return Q/Q.sum(2, keepdims=True)
+    def jump_exp(Q, s, it): return J(*L.sample_P(Q*n_cell[:, :, None], fixed_v, wbar, s), it)
+    # 3) 검정 크기 점검(delta=0)
+    rows = []
+    def run_reps(Q, tag, ts, dx, a, jt):
+        hits = {s: [] for s in SAM}; rej = {s: [] for s in SAM}; Rs = {s: [] for s in SAM}
+        for _ in range(Bp):
+            cc = L.gen_N2(cnt, Q, rng)
+            for s in SAM:
+                d, _, _ = detect_s(cc, s); R = d["R"]; Rs[s].append(R); rej[s].append(p_of(s, R) < cfg["alpha"]); hits[s].append(any(abs(int(YEARS[b]) - ts) <= 1 for b in d["br"]) if ts else np.nan)
+        for s in SAM: rows.append(dict(kind=tag, sample=s, t_star=ts, delta_x=dx, a=a, power=float(np.mean(rej[s])), R_mean=float(np.mean(Rs[s])), hit_near_tstar=float(np.nanmean(hits[s])) if ts else np.nan,
+                                       J_extra_ratio=jt[s] if jt else np.nan))
+    run_reps(P2, "size_check", 0, 0, 0.0, None); print("\n[검정 크기 점검 delta=0: 기각률(약 0.05여야 함)]", {r["sample"]: round(r["power"], 3) for r in rows})
+    # 4) 검정력 곡선
+    for ts in cfg["t_star"]:
+        it = int(np.where(YEARS == ts)[0][0]); base = {s: jump_exp(P2, s, it) for s in SAM}
+        for dx in cfg["delta_x"]:
+            target = dx*Jobs["all"]; lo, hi = 0.0, 1.0/np.abs(d_vec).max()
+            for _ in range(6):
+                if jump_exp(inject(hi, it), "all", it) - base["all"] >= target: break
+                hi *= 2
+            else:
+                for s in SAM: rows.append(dict(kind="power", sample=s, t_star=ts, delta_x=dx, power=np.nan)); continue
+            for _ in range(40):
+                mid = (lo + hi)/2; lo, hi = (mid, hi) if jump_exp(inject(mid, it), "all", it) - base["all"] < target else (lo, mid)
+            Q = inject(hi, it); jt = {s: (jump_exp(Q, s, it) - base[s])/Jobs[s] for s in SAM}; run_reps(Q, "power", ts, dx, hi, jt)
+        print(f"  t*={ts} 완료")
+    PW = pd.DataFrame(rows); pw = PW[PW.kind == "power"]
+    print("\n[Post-hoc] PA-A1 검정력(S5 N2 기준, 행: 표본 x t*, 열: delta x 관측 2020 점프)\n", pw.pivot_table(index=["sample", "t_star"], columns="delta_x", values="power").round(2).to_string())
+    print("\n[표본별 실현 점프 비율(delta=1, 'all'에서 맞춘 계수)]\n", pw[pw.delta_x == 1].pivot_table(index="sample", columns="t_star", values="J_extra_ratio").round(2).to_string())
+    one = pw[pw.delta_x == 1].groupby("sample").power.agg(["min", "median"]).round(2); print("\n[delta=1 요약]\n", one.to_string())
+    for s, r in one.iterrows(): print(f"  {s}: 사전 판독 → " + ("강화(연속 변화 증거)" if r["min"] >= 0.8 else ("리프레이밍(판정 불가)" if r["median"] < 0.5 else "곡선으로만 보고")))
+    # 5) 구간별 상수 대 선형 BIC (관측, 상위 5 PC)
+    bic = []
+    for s in SAM:
+        P, n = L.sample_P(cnt, fixed_v, wbar, s); Z = np.sqrt(P); Z = Z - Z.mean(0); U, sv, Vt = np.linalg.svd(Z, full_matrices=False); Y = (U*sv)[:, :5]; N = Y.size
+        def seg_rss(lin):
+            R = np.full((T+1, T+1), np.inf)
+            for a_ in range(T+1):
+                for b_ in range(a_ + MINLEN, T+1):
+                    y = Y[a_:b_]; x = np.arange(b_ - a_); A = np.c_[np.ones_like(x), x] if lin else np.ones((len(x), 1)); R[a_, b_] = ((y - A @ np.linalg.lstsq(A, y, rcond=None)[0])**2).sum()
+            best = np.full((KMAX+1, T+1), np.inf); best[0, 0] = 0
+            for k in range(1, KMAX+1): best[k] = np.min(best[k-1][:, None] + R, axis=0)
+            return best[:, T]
+        for name, lin in [("constant", False), ("linear", True)]:
+            rs = seg_rss(lin)
+            for k in range(1, KMAX+1):
+                if np.isfinite(rs[k]): bic.append(dict(sample=s, model=name, k=k, rss=rs[k], bic=N*np.log(rs[k]/N + 1e-12) + (k*5*(2 if lin else 1) + (k-1))*np.log(N)))
+    BC = pd.DataFrame(bic); print("\n[Post-hoc] BIC 최솟값(표본별 상수 대 선형)\n", BC.loc[BC.groupby(["sample", "model"]).bic.idxmin()].round(1).to_string(index=False))
+    PW.to_csv(PA/f"PA_A1_v2_power_curve{sfx}.csv", index=False, encoding="utf-8-sig"); pd.DataFrame(info).to_csv(PA/f"PA_A1_v2_observed{sfx}.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/f"PA_A1_v2_bic{sfx}.csv", index=False, encoding="utf-8-sig")
+    print("\n※ 표본별 실현 점프 비율이 1에서 크게 벗어나면 'delta 배'의 의미가 표본마다 다름. 사전 판독은 코드로 옮긴 것이고 경계 사례는 곡선을 보고 판단. S0~S8 판정은 바꾸지 않음.")
+    if not QUICK:
+        with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f: f.write(f"- {now()} | PA-A1(v2) | 목적: N2 검정력 곡선 | 정의: PA_0_PLAN_v2 {sp['sha256'][:12]} | 결과: PA_A1_v2_*.csv | 본 결과 변경 여부: 없음\n")
+
+try: {"freeze2": freeze2, "tag2": tag2, "a1": a1}[MODE]()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+PA-0 v2 해시(예정) a98f9697fa67 | v1 4178cadadec9
+저장: PA_0_PLAN_v2.json | refs ['PA_0_PLAN.json', 'S5_0_PREREG.json', 'regime_nulls_reps.csv', 'regime_nulls.csv', 's5_lib.py', 's5_detect.py', 'yearly_venue_topic_counts.npy']
+
+
+# # PA(사후 교정분석) 진행 정리: 2026-10-19 기준
+
+# ## 1. 한눈에 보기
+
+# | 구분 | 상태 |
+# |---|---|
+# | 지침서 PA-0 (재현성 정리) | **부분 완료** (검증·계획은 끝, 파일 변경은 대부분 남음) |
+# | PA-0.5 (`PA_0_PLAN` 동결) | **v1 완료·태그됨, v2 동결 완료·태그 전** |
+# | PA-A1 (N2 검정력 곡선) | 코드 준비됨, **미실행** |
+# | 나머지 PA 12개 | 미시작 |
+
+# 지금 가장 가까운 다음 한 걸음은 `MODE="tag2"` 실행입니다.
+
+# ## 2. 지금까지 한 일
+
+# ### 2-1. 사후분석 계획 동결 (PA-0.5)
+# - **v1** (`PA_0_PLAN.json`): 해시 `4178cadadec9`, 커밋 `738a423`, 태그 `PA-0-plan-2026-10-19`. 사후분석 14개 항목, 핵심 주장용 PA(A1, A2, B2), 판독 규칙을 실행 전에 고정했습니다.
+# - **v2** (`PA_0_PLAN_v2.json`): 해시 **`a98f9697fa67`**, v1 해시를 `supersedes_sha256`에 기록했습니다. 바뀐 것은 PA-A1뿐입니다.
+#   - 탐지기를 제 대체 구현에서 **S5 원본**(`s5_lib.detect`, 벌점 `c·φ·(K−1)·log T`)으로 교체했습니다.
+#   - 분석 구간을 2007~2025에서 S5와 같은 **2000~2025**로 맞췄습니다.
+#   - 귀무 기준선을 `regime_nulls_reps.csv`의 **N2 반복 500회**로 바꿨습니다.
+#   - 검정 크기 점검(δ=0)과 관측 R 재현 점검(0.001 이내)을 추가했습니다.
+# - **재동결 사유:** v1 탐지기가 S5와 달라 "같은 CCTV로 시험"이 되지 않았기 때문입니다. 이 사유와 "PA-A1 결과 미열람"이 `PA_CHANGELOG.md`에 기록됐습니다. 다만 `s5_lib` 소스와 N2 반복분포 요약은 열람한 뒤였다는 점도 계획서에 적어 두었습니다.
+
+# ### 2-2. 재현성 점검(PA-0)에서 확인된 것
+# - **해시 검증:** S1~S8 manifest의 파일 해시 **152건 모두 일치**, 불일치·파일없음 0건입니다. 규칙 해시(`spec_sha256`) 14건은 각 단계의 `spec_hash`로 이미 검증됐습니다. 검증 기록은 `PA_CHANGELOG.md`에 한 줄 추가했습니다.
+# - **S4 코드:** 별도 `.py`로 저장된 적이 없어 IPython 히스토리와 노트북 셀에서 복구 후보를 확정했습니다(`s4_main` ← 히스토리 1079:23, `s4_6_rotation` ← 1080:4, `s4_6b_floor_check` ← 1080:6). 노트북 셀과 코드가 동일하고, 노트북 출력("저널 34개, 고정 저널 14개")이 선택본과 맞았습니다. 최종 실행본임은 증명하지 못한다고 CHANGELOG에 적도록 했습니다.
+# - **잘못된 태그:** `S4-main`, `S4-final`은 S3 CHANGELOG 커밋(`33b3912`, 11:07:38)을 가리켰고, S4 산출물은 11:10:54 이후 생성됐습니다. 즉 그 태그에는 S4 산출물이 담길 수 없었습니다.
+# - **오류 로그 발견:** `04_S4/s4_6_output.txt`(129자)는 실제 출력이 아니라 경로 오류 메시지입니다. 실제 4.6 출력은 노트북 셀 01에만 있습니다.
+# - **S5 연결 정보 확보:** `s5_lib`, `s5_detect`, S5 동결 규칙, N2 반복분포를 확인했습니다. N2 반복 R은 매우 좁게 분포합니다(all 표준편차 0.004, 95% 0.7723). 관측 R 0.7595는 N2 중앙값(0.7657)보다 낮아 p=0.94가 나왔습니다.
+
+# ## 3. 아직 안 한 일 (PA-0 마무리)
+
+# 지침서 PA-0 표 5개 항목 기준입니다.
+
+# | 항목 | 상태 | 해야 할 일 |
+# |---|---|---|
+# | S4 코드 3종 저장 | **미확인** | 복구·기록 셀을 `DRY=False`로 실행했는지 확인. `ls paper1/s4_*.py`에 3개가 있으면 완료 |
+# | 잘못된 태그 정리 | **미실행** | PA-0 정리 셀 `MODE="commit"`을 `DRY=True`로 계획 확인 후 `DRY=False` |
+# | 미추적 파일 추적 | **미실행** | 위 `commit`에 포함. 끝나면 `git status --short paper1/`에 `??`가 없어야 함 |
+# | 푸시와 백업 | **미실행** | `git push --follow-tags` 직접 실행(원격 비공개 확인), `oa_raw_20261013.tar.gz`를 저장소 밖으로 복사 |
+# | 전체 manifest 통합 | **코드도 아직 없음** | `paper1/MASTER_MANIFEST.csv` 한 장 생성 코드 필요 |
+
+# 원격 `origin`에는 `s0-frozen` 태그 2개뿐이고, S1~S8과 PA-0 동결 태그는 모두 로컬에만 있습니다. 푸시가 가장 급합니다. `.gitignore`에는 `oa_raw/`, `_backup_before_income_tv/`, `archive/*.tar.gz`가 들어 있고, `.ipynb_checkpoints/`와 `_recovered_s4/`는 아직 추가가 필요합니다.
+
+# ## 4. 앞으로 할 일 (순서)
+
+# ### 단계 A. 지금 바로
+# 1. **`MODE="tag2"` 실행:** v2 동결을 커밋하고 `PA-0-plan-v2-2026-10-19` 태그를 찍습니다. `a1`은 이 태그가 없으면 중단되도록 막아 두었습니다.
+# 2. PA-0 마무리: 위 3번의 미완 항목을 순서대로 처리합니다.
+
+# ### 단계 B. PA-A1 (핵심 주장의 방어선)
+# 1. **`a1`을 `QUICK=True`로 시험 실행.** 확인할 것은 다음 둘입니다.
+#    - "관측 재현 OK" (S5 관측 R과 0.001 이내 일치)
+#    - δ=0 기각률 (약 0.05여야 함, B=40이면 0~0.15 정도). 크게 어긋나면 본 실행을 멈추고 출력을 붙여 주세요.
+# 2. `QUICK=False`로 본 실행(B=200).
+# 3. **결과 판독 (동결된 규칙):**
+#    - δ=1에서 t*별 검정력 최솟값이 0.8 이상이면 "이 크기의 점프가 있었다면 탐지했을 것이므로 N2 비통과는 연속 변화의 증거"로 **강화**.
+#    - 중앙값이 0.5 미만이면 "체제 전환 부재"가 아니라 **"체제 전환 여부 판정 불가(검정력 부족)"** 로 리프레이밍.
+#    - 그 사이면 어느 쪽도 쓰지 않고 곡선만 보고.
+# 4. 구간별 상수 대 선형 BIC 비교 결과도 함께 확인합니다.
+# 5. PA-B1 문구를 확정하고 제목에서 **"체제 전환"을 뺄지** 결정합니다.
+
+# ### 단계 C. 핵심 주장용 나머지 두 PA
+# | PA | 내용 | 필요한 것 |
+# |---|---|---|
+# | **PA-B2** | 2020 변화점이 표본 크기·저널 구성의 아티팩트인지 분리(연도당 3,800편 하향 추출 B=200, 2020 점프 구성 토픽 상위 10) | A1 결과, `s5_lib` 재사용 |
+# | **PA-A2** | S6 신규 진입 우세의 구성 방어(ID 기반 대조, 진입 정의 2종, 부트스트랩 편향 보정) | `s6_lib.py`, `s6_run.py` 함수 정보(**아직 못 봄**) |
+
+# ### 단계 D. 정합성·약점 리프레이밍
+# - **PA-C1, C2:** S6×S7 교차(중국 소속 신규 저자 제외 분해), S7 국가 몫을 임베딩 보유 논문만으로 재계산.
+# - **PA-B3, B4, B5, B7:** 신생 핵심 집합, F1+F3 이분 등급, S4 안정성 Wilson 구간(약 [0.56, 0.81]), 결측 경계 분석. B3의 D1' 재구성은 **F6 생성 코드 위치**가 필요합니다.
+# - **PA-A3, B9, B8:** S7 국가 미상 교정·균등 4구간·중국 제외 HHI, 소득군 내 상관, 미달 4도메인 부록 정렬.
+# - **PA-B6:** ORCID 기반 소표본과 수작업 50쌍. 인력이 필요해서 병렬로 진행하세요.
+# - **PA-A4:** 동결·CHANGELOG 체계를 부록 표 한 장으로 정리(분석 아님).
+
+# ### 단계 E. 마무리
+# - 모든 PA 표와 그림 제목에 `[Post-hoc]` 표지.
+# - 기각된 PA 목록을 부록에 수록.
+# - "Post-hoc analyses were specified after inspecting the primary results and are reported as exploratory; no pre-registered decision rule was altered." 문구를 영문 원고에 포함.
+# - S0~S8 통과·실패 판정은 PA 결과로 바꾸지 않습니다.
+
+# ## 5. 지금 확인이 필요한 질문
+
+# 1. **PA-B6, B8-2의 수작업 인력:** 수작업 50쌍과 새 표본 25편 코딩을 할 시간이 있는지 알려 주세요.
+# 2. **우선순위:** A1 → A2 → B2로 가도 되는지, 다른 약점을 먼저 다루고 싶은지 알려 주세요.
+# 3. **다음 코드용 정보:** PA-A2에는 `s6_lib.py`·`s6_run.py`의 함수 목록과 신규·지속 판별 코드, B3에는 F6 생성 코드 위치가 필요합니다.
+
+# ## 6. 주의할 점
+# - **이중 동결을 기억하세요.** PA-A1의 결과를 본 뒤에는 정의나 임계값을 바꿀 수 없습니다. 바꿔야 한다면 v3로 분리하고 사유를 남겨야 하는데, 이 경우 "결과를 보기 전"이라는 주장은 약해집니다.
+# - **검정력이 높게 나와도 단정하지 마세요.** 삽입한 점프의 모양(2020 이후 평균 − 이전 평균 방향)에 대한 검정력입니다. 다른 모양의 변화에 대한 검정력은 아닙니다.
+# - **해석은 "함께 움직인다"까지**입니다. 연속 변화와 체제 전환 모두 인과 주장이 아닙니다.
+
+# `tag2` 출력과 `a1` 시험 실행 출력을 붙여 주시면 다음 단계(PA-B2, PA-A2 코드)로 넘어가겠습니다.
+
+
+# # 평가: 논문 1 사후 교정분석(PA) 체계
+
+# 전반적으로 방법론적 규율이 매우 높은 작업입니다. 다만 몇 가지는 "투명성"이라는 강점이 실제로는 약해지는 지점이니, 투고 전에 짚어 두는 편이 좋습니다.
+
+# ## 1. 강점
+
+# **동결·기록 체계가 실제로 작동합니다.** 사후분석을 "PA-" 번호로 분리하고, 실행 전에 계획을 해시·태그로 고정하며, 기각된 PA도 보고하고 S0~S8 판정을 바꾸지 않는다는 원칙은 사후분석 설계의 모범에 가깝습니다. 특히 다음이 좋습니다.
+
+# - v1 → v2 재동결 시 사유("같은 CCTV로 시험이 아님")와 "s5_lib 소스와 N2 요약은 열람한 상태"라는 불리한 사실까지 계획서에 적은 점
+# - 관측 R 재현 점검(0.001 이내, 불일치 시 중단)과 δ=0 검정 크기 점검. 검정력 분석에서 가장 흔히 빠지는 두 장치입니다.
+# - 판독 규칙(≥0.8 강화 / <0.5 판정 불가 / 사이는 곡선만)을 실행 전에 못 박은 점
+# - manifest 해시 152건 일치 검증, 복구 코드를 "최종 실행본임은 증명 못 함"이라고 솔직히 기록한 점
+# - 오류 로그(`s4_6_output.txt` 129자)를 증거로 오인하지 않고 찾아낸 점
+
+# **PA-A1의 문제 설정이 정확합니다.** "체제 전환 없음"이 N2 비통과라는 부정적 증거에만 기대고 있고, 검정력 부족과 점프 부재를 구분하지 못한다는 진단은 핵심을 짚습니다.
+
+# ## 2. 주요 우려
+
+# **(1) N2 귀무가 이미 "잘 맞는" 귀무일 가능성: 검정력 곡선 해석의 핵심 위험**
+# 첨부된 N2 반복 분포를 보면 `all` 표본에서 N2의 R 표준편차가 0.004, 95% 분위수가 0.7723으로 매우 좁고, 관측 R(0.7595)은 N2 중앙값(0.7657)보다 낮습니다. 저널×토픽별 선형 추세 150×34개를 적합한 귀무는 자유도가 매우 커서, 관측 구조를 거의 그대로 재현하도록 과적합된 귀무일 수 있습니다. 두 가지 귀결이 있습니다.
+# - N2 비통과는 "점프가 없다"보다 "귀무가 관측 자료를 이미 흡수한다"에 가깝고, 이는 검정력 곡선이 높게 나와도 "연속 변화의 증거"로 읽기 어렵다는 뜻입니다. 높게 나오면 오히려 N2가 점프에 민감하다는 확인일 뿐입니다.
+# - 반대로 `fixed14`(N2 R 최대 0.80, 표준편차 0.027)와 `within`은 분포 형태가 달라 표본별로 검정력이 크게 다를 것입니다. 사전 판독 규칙이 표본별로 따로 적용되므로 결과가 갈릴 가능성이 큽니다.
+
+# **(2) 주입 점프가 단일 모양(방향 d)에 한정**
+# `d`는 'all' 표본의 2020 전후 평균 차이이고, 그 계수를 세 표본에 동일하게 씁니다. 표본별 실현 점프 비율이 1에서 벗어나면 "δ배"의 의미가 표본마다 달라집니다(계획서가 이를 인정하고 비율을 보고하도록 한 점은 좋음). 더 근본적으로, 이 방향은 "관측된 2020 점프 모양"이라서 *다른 모양의 점프*(특정 저널 한정, 소수 토픽 급변 등)에 대한 검정력은 알 수 없습니다. 이미 주의사항에 적으셨으니, 논문 본문에서는 "관측 형태의 점프에 대한 검정력"으로 한정해 쓰세요.
+
+# **(3) δ=1이 "작은" 점프가 아닐 수 있음**
+# 관측 2020 점프는 JS 0.29(all)로 큽니다. 1배에서 검정력이 높은 것은 당연하고, 체제 전환 부재 주장에 의미 있는 것은 더 작은 점프(0.25~0.5배)에서의 검정력입니다. 격자가 0.5부터 시작하므로 0.25 정도를 추가하는 것을 고려하되, 이미 동결했으므로 v3 대신 "탐색적 확장"으로 따로 표기하는 방식이 낫습니다.
+
+# **(4) 판독 규칙의 min/median 혼용**
+# "t*별 최솟값 ≥0.8" 대 "중앙값 <0.5"는 비대칭입니다. t*=2008처럼 연초·말단에 가까운 지점은 구조적으로 검정력이 낮아(최소 구간 3년, 점프 후 3년 창) 최솟값 기준이 거의 항상 실패하고, 중앙값 기준은 쉽게 걸립니다. 결과가 "곡선만 보고"로 수렴할 가능성이 높으며, 그 자체는 정직한 결론입니다. 다만 B1 문구를 미리 그렇게 준비해 두세요.
+
+# **(5) 사후 동결의 정직성 한계**
+# v2 재동결은 s5_lib 소스와 N2 분포를 본 뒤 이뤄졌습니다. 기록은 충분하지만, 본문에서는 "사전등록"이 아니라 "결과 미열람 상태에서의 사후 명세"라고 표현하는 편이 안전합니다. 또 PA-A1 코드 안에 `QUICK` 시험 실행이 있는데, QUICK 결과를 본 뒤 설정을 바꾸면 v3 사유가 됩니다. QUICK은 오류 점검용으로만 쓰고 결과 해석은 하지 않겠다는 규칙을 PA_CHANGELOG에 한 줄 적어 두세요.
+
+# **(6) 다중성과 핵심 PA 수 불일치**
+# 지침서 0절(A1, A2, B1)과 우선순위 절(A1, A2, B2)이 달랐고, 계획서에서 이를 인지해 A1·A2·B2로 정리한 것은 좋은 처리입니다. 다만 B1이 A1 결과로 정해지는 문구 작업이라 실질적으로 핵심 주장은 4개에 걸칩니다. "3개 이하" 원칙은 형식상 유지되지만 본문에서 B1을 숨기지 마세요.
+
+# ## 3. 재현성 정리(PA-0)에 대해
+
+# - **태그 문제 진단은 정확합니다.** S4 태그가 11:07 커밋을 가리키고 산출물은 11:10 이후 생성이므로, 태그를 삭제·재태그하되 CHANGELOG에 정정을 남기는 계획이 옳습니다. 다만 *산출물 시각이 커밋보다 늦다*는 사실 자체가 "S4 결과가 동결 전에 열람·변경되지 않았다"는 증명이 아니므로, 부록 표에서 "산출물 최초 커밋일 ≠ 생성일"이라고 명시하신 점이 중요합니다.
+# - **S4 코드 복구**는 후보 선별 규칙("산출물 시각 이전 세션 중 가장 늦은 것")이 추정임을 계속 밝히세요. 특히 `s4_main.py`는 후보가 1개(1079:23)뿐이지만, 히스토리 1080:3이 `topic_quadrants.csv`·`S4_meta.json`을 포함한 수정본이고 산출물 시각(11:10)보다 *늦은* 세션(11:22)이라 배제된 것입니다. 이후 수정 이력이 산출물에 반영됐을 가능성은 낮지만, 두 코드의 diff를 한 번 부록에 남기면 더 안전합니다.
+# - 해시 검증에서 "이름 해석 불가 22건"이 `spec_sha256`, `output_sha256` 등 키 이름이었고 이후 파일 해시 8건으로 별도 대조해 모두 일치한 점은 잘 마무리됐습니다. 다만 `spec_sha256` 14건은 "각 단계 spec_hash로 이미 검증"이라고만 적혀 있으니, 실제 재계산 출력이 로그에 남아 있는지 확인하세요.
+# - 원격에는 `s0-frozen` 태그 2개뿐이고 이후 모든 동결 태그가 로컬에만 있습니다. **푸시가 가장 급합니다.** 외부 타임스탬프(원격 push 시각)가 없으면 동결의 시점 증명력이 약합니다. 가능하면 Zenodo나 OSF 같은 외부 보관도 고려하세요.
+
+# ## 4. 코드 수준 지적
+
+# - `a1()`의 `for ... else` 구문: 목표 점프에 도달하지 못했을 때 `continue`가 안쪽 `for s in SAM` 루프에 걸려 바깥 루프 흐름을 의도대로 건너뛰지 않습니다. 이후 `Q = inject(hi, it)`가 그대로 실행되어 도달 불가 조건에서도 계산을 돌릴 수 있습니다. 실행 전 수정 필요합니다(오류 수정이므로 동결 사양 변경은 아님, CHANGELOG에는 기록).
+# - 이분법 상한 확장(`hi *= 2`, 최대 6회)은 합리적이나, 점프는 0 절단과 재정규화 때문에 `a`에 대해 비단조일 수 있습니다. 40회 이분법이 수렴했는지(주입 점프 vs 목표) 사후 확인을 출력에 포함하세요.
+# - BIC 비교의 자유도(`k*5*(2 if lin else 1) + (k-1)`)와 `N = Y.size`는 PC 좌표를 독립 관측으로 취급합니다. 연도 시계열은 자기상관이 강해 BIC가 과분할 쪽으로 기울 수 있습니다. 결과를 "직접 증거"로 쓰기보다 보조 지표로 두세요. 또 상수 모형과 선형 모형은 구간 경계에서 연속성을 강제하지 않아 선형 구간 모형이 불연속 점프를 흡수할 수 있으니, 연속 piecewise-linear(꺾은선) 모형을 별도로 두는 것이 "연속 변화"라는 주장에 더 직접적입니다.
+# - N2 기준선과 주입 후 표본추출(`gen_N2`)은 관측 셀 크기를 유지하므로 표본 크기 아티팩트(B2)와는 별개입니다. B2의 하향 추출은 셀 크기 자체를 바꿔야 해서 코드 재사용이 제한적입니다.
+
+# ## 5. 서사·프레이밍
+
+# - 제목에서 "체제 전환"을 빼는 방향은 타당합니다. 다만 A1 결과가 "판정 불가"로 나오면 "연속적 재배치"라는 긍정 주장도 약해지므로, "점프보다 연속 재배치로 서술하는 편이 자료에 부합"이라는 완화된 문구가 유지돼야 합니다. 현재 B1의 After 문구는 이 점에서 적절합니다.
+# - "신규 진입 주도"를 새 중심 기여로 삼으려면 PA-A2가 중요하지만, 그 결과가 사후분석이라는 점이 약점입니다. S6 자체가 사전등록 분석이므로, "사전 명시 결과 + PA로 강건성 확인" 구조를 본문에서 분명히 하세요.
+# - 부록 표(A4)는 "완전 비열람이 아님"을 강점으로 바꾸는 장치이므로, 정직함이 곧 신뢰입니다. 열람한 항목은 빠짐없이 적으세요.
+
+# ## 6. 다음 단계 제안
+
+# 1. `tag2` 실행 후 즉시 원격 푸시(`--follow-tags`). 이후 `a1` 실행.
+# 2. `a1` 실행 전 위 `for/else` 버그 수정을 CHANGELOG에 기록.
+# 3. QUICK 실행은 오류 확인과 "관측 재현 OK", δ=0 기각률만 확인하고 곡선은 해석하지 않기.
+# 4. 본 실행 후 결과가 "곡선만 보고"로 나와도 실패가 아닙니다. 그 경우 B1을 "판정 불가와 연속 재배치 서술의 병기"로 정리하면 됩니다.
+# 5. PA-A2 진행 전 `s6_lib.py`, `s6_run.py`의 신규·지속 판별 함수 목록을 확보하세요.
+
+# 총평: 절차적 엄밀성은 상위권입니다. 가장 큰 실질 위험은 절차가 아니라 **N2 귀무의 성격(과적합 가능성)과 검정력 해석의 범위**이므로, 본문에서 "관측 형태 점프에 대한 검정력"으로 한정해 쓰는 것을 권합니다.
+
+
+# -*- coding: utf-8 -*-
+# PA-A1 v2 실행본 (패치판). 미실행 코드.
+# MODE: "freeze2" -> "tag2" -> "a1"(동결 사양 그대로) -> "explore"(동결 밖 탐색적 확장, 별도 표기)
+# 패치 내용 (동결 사양 PA_A1_V2 딕셔너리는 원본과 동일 -> spec 해시 불변):
+#   P1. for/else + continue 버그 수정: 목표 점프 도달 불가 시 해당 (t*, delta) 전체를 NaN 처리하고 건너뜀
+#   P2. 이분법 수렴 점검: 실현 점프 / 목표 비율을 기록하고 2% 초과 이탈이면 flag
+#   P3. QUICK 모드는 오류 점검 전용: 재현 OK와 delta=0 기각률만 출력, 곡선·판독 규칙 출력 안 함
+#   P4. explore 모드(동결 밖, [Post-hoc][Exploratory]): delta=0.25 추가, 연속 꺾은선(piecewise-linear) BIC
+# 이 파일의 변경은 CHANGELOG에 '코드 오류 수정(사양 불변)'으로 기록할 것.
+import sys, json, hashlib, subprocess, warnings, itertools
+from pathlib import Path
+import numpy as np, pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 40); pd.set_option("display.max_rows", 200)
+
+MODE = "tag2"      # "freeze2" | "tag2" | "a1" | "explore"
+QUICK = True          # True: 검정력 B=40, 오류 점검 전용(곡선 해석 금지)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; PA = P1/"09_PA"; S5 = P1/"05_S5"; S4 = P1/"04_S4"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_b = lambda b: hashlib.sha256(b).hexdigest(); sha_f = lambda p: sha_b(Path(p).read_bytes())
+git = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+class Halt(Exception): pass
+spec_hash = lambda s: sha_b(json.dumps({k: v for k, v in s.items() if k not in ("sha256", "created", "refs")}, sort_keys=True, ensure_ascii=False).encode())
+V1P, V2P = PA/"PA_0_PLAN.json", PA/"PA_0_PLAN_v2.json"
+
+# ---- 동결 사양: 원본과 글자 단위로 동일해야 함 (수정 금지) ----
+PA_A1_V2 = dict(
+    window=[2000, 2025], samples=["all", "fixed14", "within"], delta_x=[0.5, 1, 2, 3], size_check_delta=0, t_star=[2008, 2012, 2015, 2020],
+    B_power=200, alpha=0.05,
+    detector="s5_lib.detect(P, n, pen, kmax=6, minlen=3) 그대로. pen = c*phi_s*(K-1)*log(T), c=1.0, phi_s는 S5_0_PREREG.json의 detection.phi. 표본은 s5_lib.sample_P(all, fixed14, within)",
+    null="S5 N2 반복 분포(regime_nulls_reps.csv, null=N2, 표본별 B=500)를 그대로 사용. 판정은 S5와 같은 p=(1+#{null_R>=R})/(1+500) < 0.05 (재시뮬레이션 없음)",
+    baseline="s5_lib.trend_probs(cnt)의 N2 추세 확률(저널x토픽 선형 추세)에 점프를 삽입. 관측 셀 크기, gen_N2로 다항 표집",
+    injection="t* 이후(t>=t*) 모든 저널의 토픽 확률에 a*d를 더하고 0 절단 후 재정규화. d = 'all' 표본 관측 비중의 (2020 이후 평균 - 이전 평균). a는 'all' 표본에서 이등분법으로 정해 세 표본에 같은 계수를 씀",
+    jump_def="J(t)=||가중평균(sqrt P)[t,t+3) - 가중평균(sqrt P)[t-3,t)||/sqrt(2) (가중치 4n, Hellinger 거리). 목표: J(주입)-J(N2 추세 기저)=delta*J_obs(2020, 'all', 관측). 표본별 실현 비율을 함께 보고",
+    size_check="delta=0(점프 없음)에서 N2 반복 R의 기각률이 약 0.05인지 확인(검정 크기 점검)",
+    secondary="변화점 위치 회수: 선택 변화점 중 t*±1년 이내가 있는 비율",
+    reading="delta=1에서 t*별 검정력의 최솟값>=0.8: '이 크기의 점프가 있었다면 탐지했을 것이므로 N2 비통과는 연속 변화 증거'로 강화 / 중앙값<0.5: '체제 전환 여부 판정 불가(검정력 부족)'로 리프레이밍 / 그 사이: 어느 쪽도 쓰지 않고 곡선만 보고",
+    reproduce_check="관측 R이 regime_nulls.csv의 obs_R(0.7595, 0.7755, 0.7033)과 0.001 이내로 재현되지 않으면 중단",
+    bic_compare="관측 비중의 Hellinger 좌표 상위 5 PC에서 구간별 상수 대 구간별 선형, min_len 3, k<=6, BIC")
+
+def build_v2():
+    if not V1P.exists(): raise Halt("v1 계획(PA_0_PLAN.json)이 없습니다")
+    v1 = json.loads(V1P.read_text(encoding="utf-8"))
+    if v1["sha256"] != spec_hash(v1): raise Halt("v1 해시 불일치")
+    p = {k: v for k, v in v1.items() if k not in ("sha256", "created", "refs")}
+    p.update(version=2, supersedes_sha256=v1["sha256"], pa_a1=PA_A1_V2,
+             decision_status="v1 동결 후 PA-A1 실행 전에, S5 원본 탐지기·구간(2000~2025)·N2 반복분포로 교체. PA-A1 검정력·BIC 결과는 미열람. 단, S5의 N2 반복 분포(요약 통계)와 s5_lib 소스는 열람한 상태. 나머지 PA 항목·규칙은 v1과 동일.",
+             change_reason="v1의 PA-A1은 자체 대체 탐지기(2007~2025)였고 S5와 통계가 달라 '같은 CCTV로 시험'이 되지 않음.")
+    return p, v1
+
+def freeze2():
+    p, v1 = build_v2(); h = spec_hash(p); print("PA-0 v2 해시(예정)", h[:12], "| v1", v1["sha256"][:12])
+    if V2P.exists(): print("이미 동결:", "동일" if json.loads(V2P.read_text(encoding="utf-8"))["sha256"] == h else "⛔ 다름"); return
+    refs = {f.name: sha_f(f) for f in [V1P, S5/"S5_0_PREREG.json", S5/"regime_nulls_reps.csv", S5/"regime_nulls.csv", P1/"s5_lib.py", P1/"s5_detect.py", S4/"yearly_venue_topic_counts.npy"] if f.exists()}
+    V2P.write_text(json.dumps(dict(p, created=now(), sha256=h, refs=refs), ensure_ascii=False, indent=1), encoding="utf-8")
+    with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f:
+        f.write(f"- {now()} | PA-0 v2 동결(해시 {h[:12]}) | 사유: v1 대체 탐지기가 S5와 달랐음. PA-A1 결과 미열람 | 본 결과 변경 여부: 없음\n")
+    print("저장: PA_0_PLAN_v2.json")
+
+def tag2():
+    if not V2P.exists(): raise Halt("먼저 freeze2")
+    t = f"PA-0-plan-v2-{pd.Timestamp.now().strftime('%Y-%m-%d')}"
+    if git("tag", "-l", t).stdout.strip(): print("이미 있음:", t); return
+    r = git("add", "--", "paper1/09_PA"); print("add", r.returncode, r.stderr.strip())
+    r = git("commit", "-m", "PA-0 plan v2 (PA-A1 detector -> S5 original, before execution)"); print("commit", r.returncode, (r.stdout + r.stderr)[:200])
+    r = git("tag", "-a", t, "-m", "PA-0 plan v2"); print("tag", r.returncode, r.stderr.strip())
+    print("※ 이어서 git push --follow-tags 로 원격 타임스탬프를 확보하세요.")
+
+# ------------------------------ 공통 컨텍스트 ------------------------------
+def make_ctx():
+    if not V2P.exists(): raise Halt("먼저 freeze2와 tag2")
+    p, _ = build_v2(); sp = json.loads(V2P.read_text(encoding="utf-8"))
+    if sp["sha256"] != spec_hash(sp) or sp["sha256"] != spec_hash(p): raise Halt("동결 파일과 현재 계획이 다릅니다(사후 변경 금지)")
+    if not git("tag", "-l", "PA-0-plan-v2-*").stdout.strip(): raise Halt("tag2를 먼저 실행하세요(동결 태그 없음)")
+    sys.path.insert(0, str(P1)); import s5_lib as L
+    cfg = PA_A1_V2; rng = np.random.default_rng(int(p["seed"]))
+    s5 = json.loads((S5/"S5_0_PREREG.json").read_text(encoding="utf-8")); D = s5["detection"]; PHI = {k: v["phi"] for k, v in D["phi"].items()}
+    C0, KMAX, MINLEN = D["c_primary"], D["k_max"], D["min_len"]
+    cnt, venues, topics, fixed_v = L.load_counts(); wbar = cnt.sum((0, 2))/cnt.sum(); T, K = len(L.YEARS), len(topics); YEARS = np.asarray(L.YEARS); SAM = cfg["samples"]
+    pen = lambda s: C0*PHI[s]*(K-1)*np.log(T)
+    def detect_s(c_arr, s):
+        P, n = L.sample_P(c_arr, fixed_v, wbar, s); return L.detect(P, n, pen(s), KMAX, MINLEN), P, n
+    NR = pd.read_csv(S5/"regime_nulls_reps.csv"); N2 = {s: NR[(NR["null"] == "N2") & (NR["sample"] == s)].R.values for s in SAM}; OBSR = pd.read_csv(S5/"regime_nulls.csv")
+    p_of = lambda s, R: (1 + float((N2[s] >= R).sum()))/(1 + len(N2[s]))
+    info = []
+    for s in SAM:
+        d, P, n = detect_s(cnt, s); ref = float(OBSR[(OBSR["null"] == "N2") & (OBSR["sample"] == s)].obs_R.iloc[0])
+        if abs(d["R"] - ref) > 1e-3: raise Halt(f"S5 관측 R 재현 실패({s}): {d['R']:.4f} vs {ref:.4f}")
+        info.append(dict(sample=s, obs_R=d["R"], obs_k=d["k"], obs_breaks=[int(YEARS[b]) for b in d["br"]], N2_B=len(N2[s]), N2_q95=float(np.quantile(N2[s], .95)), p_N2=p_of(s, d["R"])))
+    print("[관측 재현 OK: S5와 R 일치]\n", pd.DataFrame(info).round(4).to_string(index=False))
+    def J(P, n, it):
+        X, w = np.sqrt(P), 4.0*n; a, b = slice(max(0, it-3), it), slice(it, it+3)
+        m = lambda sl: np.average(X[sl], axis=0, weights=w[sl]) if w[sl].sum() > 0 else X[sl].mean(0)
+        return float(np.linalg.norm(m(b) - m(a))/np.sqrt(2))
+    i20 = int(np.where(YEARS == 2020)[0][0]); Pall, _ = L.sample_P(cnt, fixed_v, wbar, "all")
+    Jobs = {s: J(*L.sample_P(cnt, fixed_v, wbar, s), i20) for s in SAM}; d_vec = Pall[i20:].mean(0) - Pall[:i20].mean(0)
+    P2 = L.trend_probs(cnt); n_cell = cnt.sum(2).astype(float); print("\n관측 2020 점프(Hellinger, 3년 창):", {k: round(v, 4) for k, v in Jobs.items()})
+    def inject(a, it):
+        Q = P2.copy(); Q[it:] = np.clip(Q[it:] + a*d_vec[None, None, :], 1e-9, None); return Q/Q.sum(2, keepdims=True)
+    jump_exp = lambda Q, s, it: J(*L.sample_P(Q*n_cell[:, :, None], fixed_v, wbar, s), it)
+    return dict(p=p, sp=sp, cfg=cfg, rng=rng, L=L, cnt=cnt, fixed_v=fixed_v, wbar=wbar, T=T, YEARS=YEARS, SAM=SAM, detect_s=detect_s, p_of=p_of, info=info,
+                Jobs=Jobs, P2=P2, inject=inject, jump_exp=jump_exp, d_vec=d_vec, MINLEN=MINLEN, KMAX=KMAX)
+
+def run_reps(c, Q, kind, ts, dx, a, ratio, Bp, rows, conv_flag=""):
+    hits = {s: [] for s in c["SAM"]}; rej = {s: [] for s in c["SAM"]}; Rs = {s: [] for s in c["SAM"]}
+    for _ in range(Bp):
+        cc = c["L"].gen_N2(c["cnt"], Q, c["rng"])
+        for s in c["SAM"]:
+            d, _, _ = c["detect_s"](cc, s); Rs[s].append(d["R"]); rej[s].append(c["p_of"](s, d["R"]) < c["cfg"]["alpha"])
+            hits[s].append(any(abs(int(c["YEARS"][b]) - ts) <= 1 for b in d["br"]) if ts else np.nan)
+    for s in c["SAM"]:
+        rows.append(dict(kind=kind, sample=s, t_star=ts, delta_x=dx, a=a, power=float(np.mean(rej[s])), R_mean=float(np.mean(Rs[s])),
+                         hit_near_tstar=float(np.nanmean(hits[s])) if ts else np.nan, J_extra_ratio=(ratio or {}).get(s, np.nan), conv_flag=conv_flag, B=Bp))
+
+def power_grid(c, deltas, Bp, rows):
+    """P1, P2 반영: 도달 불가면 NaN 행 후 건너뜀. 수렴 오차 flag 기록."""
+    for ts in c["cfg"]["t_star"]:
+        it = int(np.where(c["YEARS"] == ts)[0][0]); base = {s: c["jump_exp"](c["P2"], s, it) for s in c["SAM"]}
+        for dx in deltas:
+            target = dx*c["Jobs"]["all"]; lo, hi = 0.0, 1.0/np.abs(c["d_vec"]).max(); reached = False
+            for _ in range(6):
+                if c["jump_exp"](c["inject"](hi, it), "all", it) - base["all"] >= target: reached = True; break
+                hi *= 2
+            if not reached:
+                for s in c["SAM"]: rows.append(dict(kind="power", sample=s, t_star=ts, delta_x=dx, power=np.nan, conv_flag="unreachable"))
+                continue
+            for _ in range(40):
+                mid = (lo + hi)/2; lo, hi = (mid, hi) if c["jump_exp"](c["inject"](mid, it), "all", it) - base["all"] < target else (lo, mid)
+            Q = c["inject"](hi, it); ratio = {s: (c["jump_exp"](Q, s, it) - base[s])/c["Jobs"][s] for s in c["SAM"]}
+            achieved = (c["jump_exp"](Q, "all", it) - base["all"])/target
+            flag = "" if abs(achieved - 1) <= 0.02 else f"conv_off({achieved:.3f})"
+            run_reps(c, Q, "power", ts, dx, hi, ratio, Bp, rows, flag)
+        print(f"  t*={ts} 완료")
+
+def size_check(c, Bp, rows):
+    run_reps(c, c["P2"], "size_check", 0, 0, 0.0, None, Bp, rows)
+    print("[검정 크기 점검 delta=0: 기각률(약 0.05여야 함)]", {r["sample"]: round(r["power"], 3) for r in rows if r["kind"] == "size_check"})
+
+# ------------------------------ BIC ------------------------------
+def pcs(c, s, npc=5):
+    P, _ = c["L"].sample_P(c["cnt"], c["fixed_v"], c["wbar"], s); Z = np.sqrt(P); Z = Z - Z.mean(0)
+    U, sv, _ = np.linalg.svd(Z, full_matrices=False); return (U*sv)[:, :npc]
+def bic_step(c, Y, lin):   # 동결 사양: 구간별 상수 대 구간별 선형(불연속 허용)
+    T, N, M = c["T"], Y.size, c["MINLEN"]; R = np.full((T+1, T+1), np.inf)
+    for a_ in range(T+1):
+        for b_ in range(a_+M, T+1):
+            y = Y[a_:b_]; x = np.arange(b_-a_); A = np.c_[np.ones_like(x), x] if lin else np.ones((len(x), 1)); R[a_, b_] = ((y - A @ np.linalg.lstsq(A, y, rcond=None)[0])**2).sum()
+    best = np.full((c["KMAX"]+1, T+1), np.inf); best[0, 0] = 0
+    for k in range(1, c["KMAX"]+1): best[k] = np.min(best[k-1][:, None] + R, axis=0)
+    return [dict(model="linear" if lin else "constant", k=k, rss=best[k, T], bic=N*np.log(best[k, T]/N + 1e-12) + (k*5*(2 if lin else 1) + (k-1))*np.log(N)) for k in range(1, c["KMAX"]+1) if np.isfinite(best[k, T])]
+def bic_continuous(c, Y, kmax_bp=4):   # 탐색적: 연속 꺾은선(힌지) 모형, 꺾임 수 0..kmax_bp, 꺾임 간격>=MINLEN
+    T, N, M = c["T"], Y.size, c["MINLEN"]; t = np.arange(T, dtype=float); out = []
+    for kb in range(0, kmax_bp+1):
+        best = (np.inf, None)
+        for bps in itertools.combinations(range(M, T-M+1), kb):
+            if any(b2-b1 < M for b1, b2 in zip(bps[:-1], bps[1:])): continue
+            A = np.c_[np.ones(T), t, *[np.maximum(t-b, 0) for b in bps]]; rss = ((Y - A @ np.linalg.lstsq(A, Y, rcond=None)[0])**2).sum()
+            if rss < best[0]: best = (rss, bps)
+        out.append(dict(model="piecewise_linear_continuous", k=kb+1, rss=best[0], bic=N*np.log(best[0]/N + 1e-12) + 5*(2+kb)*np.log(N), breakpoints=[int(c["YEARS"][b]) for b in best[1]]))
+    return out
+
+# ------------------------------ 모드 ------------------------------
+def a1():
+    c = make_ctx(); sfx = "_QUICK" if QUICK else ""; Bp = 40 if QUICK else c["cfg"]["B_power"]; rows = []
+    size_check(c, Bp, rows)
+    if QUICK:
+        print("\n[QUICK] 오류 점검 전용: 재현 OK와 delta=0 기각률만 확인. 곡선·판독 규칙은 본 실행(QUICK=False)에서만 해석(v3 방지).")
+        power_grid(c, [1], 8, rows)   # 코드 경로 점검용 최소 실행, 결과 출력 안 함
+        return
+    power_grid(c, c["cfg"]["delta_x"], Bp, rows)
+    PW = pd.DataFrame(rows); pw = PW[PW.kind == "power"]
+    print("\n[Post-hoc] PA-A1 검정력(S5 N2 기준)\n", pw.pivot_table(index=["sample", "t_star"], columns="delta_x", values="power").round(2).to_string())
+    print("\n[수렴 flag]\n", pw[pw.conv_flag.fillna("") != ""][["sample", "t_star", "delta_x", "conv_flag"]].drop_duplicates().to_string(index=False) or "없음")
+    print("\n[표본별 실현 점프 비율(delta=1)]\n", pw[pw.delta_x == 1].pivot_table(index="sample", columns="t_star", values="J_extra_ratio").round(2).to_string())
+    one = pw[pw.delta_x == 1].groupby("sample").power.agg(["min", "median"]).round(2); print("\n[delta=1 요약]\n", one.to_string())
+    for s, r in one.iterrows(): print(f"  {s}: 사전 판독 → " + ("강화(연속 변화 증거)" if r["min"] >= 0.8 else ("리프레이밍(판정 불가)" if r["median"] < 0.5 else "곡선으로만 보고")))
+    bic = []
+    for s in c["SAM"]:
+        Y = pcs(c, s); bic += [dict(sample=s, **r) for lin in (False, True) for r in bic_step(c, Y, lin)]
+    BC = pd.DataFrame(bic); print("\n[Post-hoc] BIC 최솟값(상수 대 선형; 자기상관으로 과분할 가능, 보조 지표)\n", BC.loc[BC.groupby(["sample", "model"]).bic.idxmin()].round(1).to_string(index=False))
+    PW.to_csv(PA/"PA_A1_v2_power_curve.csv", index=False, encoding="utf-8-sig"); pd.DataFrame(c["info"]).to_csv(PA/"PA_A1_v2_observed.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/"PA_A1_v2_bic.csv", index=False, encoding="utf-8-sig")
+    print("\n※ 검정력은 '관측 2020 점프 방향의 점프'에 한정. S0~S8 판정 불변.")
+    with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f:
+        f.write(f"- {now()} | PA-A1(v2) | 정의: PA_0_PLAN_v2 {c['sp']['sha256'][:12]} | 코드 패치(사양 불변): for/else 버그 수정, 수렴 flag, QUICK 해석 금지 | 결과: PA_A1_v2_*.csv | 본 결과 변경 여부: 없음\n")
+
+def explore():
+    """동결 밖 탐색적 확장. 모든 산출물·표 제목에 [Post-hoc][Exploratory]. 본 판독 규칙에 쓰지 않음."""
+    c = make_ctx(); Bp = 40 if QUICK else c["cfg"]["B_power"]; sfx = "_QUICK" if QUICK else ""; rows = []
+    print("[Post-hoc][Exploratory] 작은 점프(0.25x) 검정력")
+    power_grid(c, [0.25], Bp, rows); PW = pd.DataFrame(rows)
+    print(PW[PW.kind == "power"].pivot_table(index=["sample", "t_star"], columns="delta_x", values="power").round(2).to_string())
+    bic = []
+    for s in c["SAM"]:
+        Y = pcs(c, s); bic += [dict(sample=s, **r) for r in bic_continuous(c, Y)]
+    BC = pd.DataFrame(bic); print("\n[Post-hoc][Exploratory] 연속 꺾은선 BIC(꺾임 수 0~4)\n", BC.drop(columns="rss").round(1).to_string(index=False))
+    PW.to_csv(PA/f"PA_A1_v2_EXPLORATORY_power025{sfx}.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/f"PA_A1_v2_EXPLORATORY_bic_continuous{sfx}.csv", index=False, encoding="utf-8-sig")
+    if not QUICK:
+        with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | PA-A1(v2) 탐색적 확장 | 정의: 동결 밖(delta=0.25, 연속 꺾은선 BIC), 판독 규칙에 미사용 | 결과: PA_A1_v2_EXPLORATORY_*.csv | 본 결과 변경 여부: 없음\n")
+
+try: {"freeze2": freeze2, "tag2": tag2, "a1": a1, "explore": explore}[MODE]()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+add 0 
+commit 0 [main ae98ccb] PA-0 plan v2 (PA-A1 detector -> S5 original, before execution)
+ 2 files changed, 83 insertions(+)
+ create mode 100644 paper1/09_PA/PA_0_PLAN_v2.json
+
+tag 0 
+※ 이어서 git push --follow-tags 로 원격 타임스탬프를 확보하세요.
+
+
+# # 지금까지 한 일과 앞으로 할 일 (2026-10-19 17:39 기준)
+
+# ## 1. 지금까지 한 일
+
+# ### 1-1. 사후분석(PA) 체계 정리
+# | 항목 | 내용 | 상태 |
+# |---|---|---|
+# | 평가 | 지침서·코드·로그 전체 검토. 큰 위험은 N2 귀무의 과적합 가능성, 검정력 해석 범위, min/median 판독 규칙의 비대칭 | 완료 |
+# | 코드 패치 | `for/else` 버그 수정, 수렴 flag, QUICK 해석 금지, `explore` 모드(δ=0.25, 연속 꺾은선 BIC) 추가 | 완료 |
+# | 동결 사양 | `PA_A1_V2` 딕셔너리는 원본과 글자 단위로 동일. `freeze2` 재실행에서 "이미 동결: 동일" 확인 | 완료 |
+
+# ### 1-2. 동결·태그·푸시
+# | 시점 | 커밋 | 태그 | 내용 |
+# |---|---|---|---|
+# | v1 계획 동결 | `738a423` | `PA-0-plan-2026-10-19` | 사후분석 14개 항목, 판독 규칙 |
+# | v2 계획 동결 | `ae98ccb` | `PA-0-plan-v2-2026-10-19` | PA-A1 탐지기를 S5 원본으로 교체, 해시 `a98f9697fa67` |
+# | 실행 코드 | `26e7e64` | `PA-A1-v2-code-2026-10-19` | 패치된 `pa_a1_v2_run.py`, 시험 실행 전 상태 |
+# | 본 실행 설정 | `15f545a` | `PA-A1-v2-fullrun-2026-10-19` | `QUICK=False`만 변경 |
+
+# - GitHub(`LEEYJ1021/transport-knowledge-paper1`)에 `main`과 위 태그, S0~S8 동결 태그를 푸시했습니다. 이 푸시가 외부 타임스탬프입니다.
+# - `S5-results-2026-10-16`과 `S6-0-freeze-2026-10-16`은 lightweight 태그라 `--follow-tags`에서 빠졌고, 따로 푸시했습니다.
+
+# ### 1-3. 태그 정정
+# - 잘못된 태그 3개를 로컬에서 삭제했고 푸시 전이라 원격에는 올라간 적이 없습니다.
+#   - `S4-main-2026-10-16`, `S4-final-2026-10-16`: 실제로는 S4 산출물이 없는 `33b3912`를 가리켰습니다.
+#   - `PA-A1-v2-code-2026-10-19`(첫 시도): 코드 파일 없이 `&&` 없는 명령으로 만들어진 것이었고, 이후 올바른 커밋에 다시 찍었습니다.
+
+# ### 1-4. 재현성 점검(PA-0)에서 확인된 것
+# - S1~S8 manifest의 파일 해시 152건이 현재 파일과 모두 일치합니다(불일치 0, 파일없음 0). 이 기록은 `PA_CHANGELOG.md`에 한 줄 추가됐습니다.
+# - S4 코드 복구 후보를 판정했습니다(`s4_main` ← 히스토리 1079:23, `s4_6_rotation` ← 1080:4, `s4_6b_floor_check` ← 1080:6).
+# - `s4_6_output.txt`(129자)는 오류 메시지이고 실제 출력이 아님을 발견했습니다.
+
+# ### 1-5. PA-A1 시험 실행(QUICK=True) 결과
+# - 관측 R 재현 OK: `all` 0.7595, `fixed14` 0.7755, `within` 0.7033으로 S5와 일치
+# - δ=0 기각률: 0.0, 0.025, 0.10 (B=40에서 정상 범위)
+# - 4개 t* 모두 오류 없이 완료
+# - 관측 2020 점프(3년 창 Hellinger): `all` 0.190, `fixed14` 0.179, `within` 0.150. S5의 `jump` 통계(0.29)와는 정의가 다릅니다.
+
+# ### 1-6. 지금 진행 중
+# - **PA-A1 본 실행**(`QUICK=False`, B=200)이 17:37에 시작해 백그라운드로 돌고 있습니다(PID 2316587). 끝나야 CSV 3개와 로그가 한꺼번에 나옵니다.
+
+# ## 2. 아직 안 한 일 (PA-0 마무리)
+
+# | 항목 | 상태 | 할 일 |
+# |---|---|---|
+# | S4 코드 3종 저장 | **미저장** (`s4_main.py` 등이 untracked 목록에도 없음) | 복구·기록 셀을 `DRY=False`로 실행 |
+# | 태그 정정 CHANGELOG | **미기록** | 삭제한 태그와 사유를 `CHANGELOG_S4.md`·`PA_CHANGELOG.md`에 기록(위 복구 셀이 같이 기록) |
+# | 미추적 산출물 커밋 | **미실행** | `02_S2`, `03_S3`, `04_S4` 산출물과 노트북은 아직 커밋되지 않았음. 정리 셀 `MODE="commit"`을 `DRY=True`로 계획 확인 후 `DRY=False` |
+# | `.gitignore` | 부분 | `oa_raw/`, `_backup_before_income_tv/`, `archive/*.tar.gz` 외에 `.ipynb_checkpoints/`, `_recovered_s4/` 추가 필요 |
+# | `oa_raw` 외부 백업 | **미확인** | `archive/oa_raw_20261013.tar.gz`를 저장소 밖(외장 디스크 등)에 복사 |
+# | `MASTER_MANIFEST.csv` | **코드 없음** | 단계별 해시를 한 장으로 통합하는 코드 작성 |
+# | 원격 비공개 확인 | **미확인** | GitHub에서 저장소가 Private인지 확인 |
+# | lightweight 태그 메모 | 미기록 | 부록 표에 "`S5-results`, `S6-0-freeze`는 lightweight, 외부 시각은 10-19 푸시 시각" |
+
+# 참고로 정리 셀의 "잘못된 태그 삭제" 단계는 이미 수동으로 처리했으므로 비어 있을 것입니다. 커밋 날짜가 생성일이 아니라는 문구도 CHANGELOG에 넣어야 합니다.
+
+# ## 3. 앞으로 할 일 (순서)
+
+# ### 단계 A. PA-A1 본 실행 후 (지금 대기 중)
+# 1. 완료 확인: `ls -l paper1/09_PA/PA_A1_v2_*.csv`
+# 2. 로그 전체를 붙여 주시면 **동결된 판독 규칙**대로 읽습니다.
+#    - δ=0 기각률이 약 0.02~0.09인지. 벗어나면 검정력 해석 전에 먼저 문제를 봅니다.
+#    - 수렴 flag와 표본별 점프 실현 비율(`within`은 1보다 작을 가능성)
+#    - δ=1에서 t*별 검정력의 최솟값·중앙값 → 강화 / 판정 불가 / 곡선만 보고
+# 3. 판독이 어떻게 나와도 B1 문구와 제목을 정리합니다. 제목에서 "체제 전환"을 빼는 방향이 유력합니다.
+# 4. 결과 열람 후에는 정의·임계값을 바꾸지 않습니다. 바꾸면 v3로 분리해야 하고 "결과 열람 전" 주장이 약해집니다.
+# 5. `MODE="explore"`로 δ=0.25 검정력과 연속 꺾은선 BIC를 돌립니다. 결과는 `[Post-hoc][Exploratory]`로만 표기하고 판독 규칙에는 쓰지 않습니다.
+
+# ### 단계 B. 핵심 PA 나머지 둘
+# | PA | 내용 | 필요한 것 |
+# |---|---|---|
+# | **PA-B2** | 2020 점프가 표본 크기·저널 구성 아티팩트인지 분리(연도당 3,800편 하향 추출 B=200, 2020 점프를 구성하는 토픽 상위 10) | A1 결과. 하향 추출은 셀 크기를 바꿔야 해서 `gen_N2` 재사용에 제한이 있음 |
+# | **PA-A2** | S6 신규 진입 우세의 구성 방어(ID 기반 대조 2020+, 진입 정의 2종, 부트스트랩 편향 보정과 저자 단위 클러스터 부트스트랩) | **`s6_lib.py`, `s6_run.py`의 함수 목록과 신규·지속 판별 코드** (아직 못 봄) |
+
+# ### 단계 C. 정합성 점검
+# - **PA-C1:** 중국 소속 신규 저자를 제외한 S6 분해로 진입 우세가 유지되는지(S6×S7 연결)
+# - **PA-C2:** S7 국가 몫을 임베딩 보유 논문만으로 재계산해 ±0.01 이내인지
+
+# ### 단계 D. 약점 리프레이밍
+# - **PA-B3:** 신생 핵심 집합(n_defs≥3)과 D1' 재구성. **F6 생성 코드 위치**와 `(2) 데이터셋정의.ipynb`의 `BASE` 정의가 필요합니다.
+# - **PA-B4:** F1+F3 이분 등급 재추정(145개 토픽)
+# - **PA-B5:** S4 안정성 Wilson 구간, 분위 컷 곡선, 방향 축만 재계산
+# - **PA-B7:** 결측 경계(최악·최선 대입) 분석, 분류기 대입, 저널×연도 IPW
+# - **PA-A3, B9, B8:** S7 국가 미상 교정·균등 4구간·중국 제외 HHI, 소득군 내 상관, 미달 4개 도메인 부록 정렬
+# - **PA-B6:** ORCID 소표본과 수작업 50쌍. 인력이 필요하니 병렬로 진행하세요.
+
+# ### 단계 E. 마무리
+# - **PA-A4:** 동결·CHANGELOG 체계를 부록 표 한 장으로 정리. 열람한 항목은 빠짐없이 기재(s5_lib 소스와 N2 요약은 v2 동결 전에 열람했음).
+# - 모든 PA 표와 그림 제목에 `[Post-hoc]` 표지, 기각된 PA 목록을 부록에 수록
+# - 영문 원고에 "Post-hoc analyses were specified after inspecting the primary results and are reported as exploratory; no pre-registered decision rule was altered." 포함
+# - S0~S8 통과·실패 판정은 PA 결과로 바꾸지 않습니다.
+
+# ## 4. 본문에 쓸 때의 주의
+# - 검정력은 "관측된 2020 점프 방향의 점프"에 한정됩니다. 다른 모양의 변화에 대한 검정력은 아닙니다.
+# - v2는 "결과 미열람 상태에서의 사후 명세"입니다. "사전등록"이라고 쓰지 마세요.
+# - 3년 창 점프(0.19)와 S5의 `jump` 통계(0.29)를 섞어 쓰지 마세요.
+# - BIC 비교는 자기상관 때문에 과분할 쪽으로 기울 수 있으니 보조 지표로만 쓰세요.
+# - 해석은 "함께 움직인다"까지입니다. 연속 변화와 체제 전환 모두 인과 주장이 아닙니다.
+
+# ## 5. 지금 필요한 입력
+# 1. **PA-A1 본 실행 로그**(완료 후)
+# 2. **`s6_lib.py`, `s6_run.py` 함수 목록**(PA-A2용). 원하시면 읽기 전용 추출 스크립트를 드립니다.
+# 3. **F6 생성 코드 위치와 `BASE` 정의**(PA-B3용)
+# 4. **수작업 인력**: PA-B6(50쌍)과 PA-B8-2(새 표본 25편 코딩)를 할 시간이 있는지
+# 5. 우선순위를 A1 → A2 → B2로 유지할지
+
+# 가장 가까운 한 걸음은 본 실행이 끝나기를 기다리는 것이고, 그 사이에 PA-0 마무리 중 코드 복구 저장과 정리 커밋을 `DRY=True`로 계획 확인해 둘 수 있습니다. 본 실행이 같은 CPU를 쓰므로 무거운 작업은 피하세요.
+
+
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ ps -p 2316587 -o pid,etime,cmd
+#     PID     ELAPSED CMD
+# [1]+  Done                    nohup python3 pa_a1_v2_run.py > 09_PA/PA_A1_v2_full_log.txt 2>&1
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ ls -l 09_PA/PA_A1_v2_*.csv
+# cat 09_PA/PA_A1_v2_full_log.txt
+# -rw-rw-r-- 1 yjlee yjlee 1995 Oct 19 17:38 09_PA/PA_A1_v2_bic.csv
+# -rw-rw-r-- 1 yjlee yjlee  312 Oct 19 17:38 09_PA/PA_A1_v2_observed.csv
+# -rw-rw-r-- 1 yjlee yjlee 5637 Oct 19 17:38 09_PA/PA_A1_v2_power_curve.csv
+# nohup: ignoring input
+# [관측 재현 OK: S5와 R 일치]
+#   sample  obs_R  obs_k         obs_breaks  N2_B  N2_q95   p_N2
+#     all 0.7595      3       [2012, 2020]   500  0.7723 0.9441
+# fixed14 0.7755      4 [2008, 2015, 2020]   500  0.7965 0.3992
+#  within 0.7033      4 [2009, 2015, 2020]   500  0.7181 0.6966
+
+# 관측 2020 점프(Hellinger, 3년 창): {'all': 0.1901, 'fixed14': 0.1788, 'within': 0.1495}
+# [검정 크기 점검 delta=0: 기각률(약 0.05여야 함)] {'all': 0.035, 'fixed14': 0.075, 'within': 0.065}
+#   t*=2008 완료
+#   t*=2012 완료
+#   t*=2015 완료
+#   t*=2020 완료
+
+# [Post-hoc] PA-A1 검정력(S5 N2 기준)
+#  delta_x          0.5   1.0   2.0   3.0
+# sample  t_star
+# all     2008    0.03  0.07  0.03  0.04
+#         2012    0.06  0.05  0.04  0.06
+#         2015    0.06  0.05  0.03  0.06
+#         2020    0.02  0.06  0.06  0.04
+# fixed14 2008    0.07  0.06  0.08  0.06
+#         2012    0.06  0.04  0.06  0.06
+#         2015    0.04  0.08  0.03  0.08
+#         2020    0.06  0.06  0.06  0.06
+# within  2008    0.06  0.08  0.08  0.07
+#         2012    0.06  0.06  0.07  0.06
+#         2015    0.08  0.08  0.07  0.08
+#         2020    0.07  0.08  0.08  0.06
+
+# [수렴 flag]
+#   sample  t_star  delta_x       conv_flag
+#     all    2008      0.5 conv_off(6.189)
+# fixed14    2008      0.5 conv_off(6.189)
+#  within    2008      0.5 conv_off(6.189)
+#     all    2008      1.0 conv_off(3.095)
+# fixed14    2008      1.0 conv_off(3.095)
+#  within    2008      1.0 conv_off(3.095)
+#     all    2008      2.0 conv_off(1.547)
+# fixed14    2008      2.0 conv_off(1.547)
+#  within    2008      2.0 conv_off(1.547)
+#     all    2008      3.0 conv_off(1.032)
+# fixed14    2008      3.0 conv_off(1.032)
+#  within    2008      3.0 conv_off(1.032)
+#     all    2012      0.5 conv_off(6.517)
+# fixed14    2012      0.5 conv_off(6.517)
+#  within    2012      0.5 conv_off(6.517)
+#     all    2012      1.0 conv_off(3.258)
+# fixed14    2012      1.0 conv_off(3.258)
+#  within    2012      1.0 conv_off(3.258)
+#     all    2012      2.0 conv_off(1.629)
+# fixed14    2012      2.0 conv_off(1.629)
+#  within    2012      2.0 conv_off(1.629)
+#     all    2012      3.0 conv_off(1.086)
+# fixed14    2012      3.0 conv_off(1.086)
+#  within    2012      3.0 conv_off(1.086)
+#     all    2015      0.5 conv_off(6.318)
+# fixed14    2015      0.5 conv_off(6.318)
+#  within    2015      0.5 conv_off(6.318)
+#     all    2015      1.0 conv_off(3.159)
+# fixed14    2015      1.0 conv_off(3.159)
+#  within    2015      1.0 conv_off(3.159)
+#     all    2015      2.0 conv_off(1.579)
+# fixed14    2015      2.0 conv_off(1.579)
+#  within    2015      2.0 conv_off(1.579)
+#     all    2015      3.0 conv_off(1.053)
+# fixed14    2015      3.0 conv_off(1.053)
+#  within    2015      3.0 conv_off(1.053)
+#     all    2020      0.5 conv_off(6.063)
+# fixed14    2020      0.5 conv_off(6.063)
+#  within    2020      0.5 conv_off(6.063)
+#     all    2020      1.0 conv_off(3.032)
+# fixed14    2020      1.0 conv_off(3.032)
+#  within    2020      1.0 conv_off(3.032)
+#     all    2020      2.0 conv_off(1.516)
+# fixed14    2020      2.0 conv_off(1.516)
+#  within    2020      2.0 conv_off(1.516)
+
+# [표본별 실현 점프 비율(delta=1)]
+#  t_star   2008  2012  2015  2020
+# sample
+# all      3.09  3.26  3.16  3.03
+# fixed14  0.00  0.00  0.00 -0.00
+# within  -0.01  0.01  0.01  0.01
+
+# [delta=1 요약]
+#            min  median
+# sample
+# all      0.05    0.05
+# fixed14  0.04    0.06
+# within   0.06    0.08
+#   all: 사전 판독 → 리프레이밍(판정 불가)
+#   fixed14: 사전 판독 → 리프레이밍(판정 불가)
+#   within: 사전 판독 → 리프레이밍(판정 불가)
+
+# [Post-hoc] BIC 최솟값(상수 대 선형; 자기상관으로 과분할 가능, 보조 지표)
+#   sample    model  k  rss    bic
+#     all constant  5  0.2 -672.2
+#     all   linear  3  0.1 -745.3
+# fixed14 constant  5  0.2 -681.0
+# fixed14   linear  3  0.1 -748.9
+#  within constant  4  0.5 -620.4
+#  within   linear  3  0.2 -659.3
+
+# ※ 검정력은 '관측 2020 점프 방향의 점프'에 한정. S0~S8 판정 불변.
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$
+
+
+
+# # PA-A1 본 실행 결과 판독
+
+# **결론부터 말씀드리면, 이 결과는 "판정 불가"를 뒷받침하는 증거로 쓸 수 없습니다.** 사전 판독 규칙을 기계적으로 적용하면 세 표본 모두 "리프레이밍(판정 불가)"이 나옵니다. 하지만 아래 두 가지 때문에 이 실행은 검정력 분석으로서 성립하지 않는 것으로 보입니다.
+
+# ## 1. 정상으로 확인된 것
+# - 관측 R 재현 OK
+# - δ=0 기각률: all 0.035, fixed14 0.075, within 0.065. 목표 범위(0.02~0.09) 안이라 검정 크기는 정상입니다.
+# - BIC: 세 표본 모두 구간별 선형(k=3)이 구간별 상수(k=4~5)보다 BIC가 낮습니다(all −745 대 −672). 다만 선형 모형은 구간 경계의 불연속을 허용하고 자기상관 때문에 BIC가 편향되므로 보조 지표로만 쓰세요.
+
+# ## 2. 문제 1: 검정력이 점프 크기와 무관하게 약 0.05
+# δ가 0.5에서 3까지 변해도, t*가 어디여도 검정력은 0.02~0.08에 머뭅니다. 이는 δ=0일 때의 기각률(검정 크기)과 같은 수준입니다. 점프를 심어도 검정이 반응하지 않는다는 뜻입니다. 다음 두 가지 중 하나입니다.
+# - 점프 주입 코드에 문제가 있다.
+# - 탐지 통계(R = 1 − cost_k/cost_1)가 이런 점프에는 원래 둔감하다.
+
+# ## 3. 문제 2: δ 보정 실패
+# 수렴 flag가 거의 전 조합에서 떴습니다. 특히 realized ratio × δ가 모든 칸에서 약 3.09로 일정합니다(6.19×0.5, 3.095×1, 1.547×2, 1.032×3). 즉 δ를 바꿔도 실제로 주입된 점프는 항상 같은 값(관측 점프의 약 3.1배, 약 0.59)입니다. δ 축이 실제로는 작동하지 않았다는 뜻입니다.
+
+# 또 δ=1에서 fixed14와 within의 실현 점프 비율은 0.00 근처입니다. 같은 계수를 모든 저널에 주입했는데도 `all` 표본에서만 큰 점프가 나타나고 나머지 두 표본에서는 점프가 거의 없습니다. 점프가 일부 저널(고정 14개 밖)에 몰렸거나 주입 구현에 문제가 있다는 신호입니다.
+
+# 이 두 가지로 "δ=1에서 검정력 0.05"는 "관측 크기의 점프를 넣고도 못 잡았다"가 아닙니다. 실제로는 관측 크기가 아닌 점프를 넣었고, 그마저도 두 표본에는 거의 들어가지 않았습니다. 따라서 이 결과를 "검정력 부족"이나 "연속 변화"의 증거로 쓰면 안 됩니다.
+
+# 원인이 코드 오류인지 탐지 통계의 둔감성인지는 아직 모릅니다. 제가 읽은 코드에서는 이분법 자체의 오류를 찾지 못했습니다. 짚이는 가설은 있지만 확인 없이 단정하지 않겠습니다.
+
+# ## 4. 진단 (읽기 전용)
+# 결과 파일과 주입 함수를 직접 들여다봅니다. CSV는 수정하지 않습니다.
+
+# **(a) CSV에서 확인**
+# ```
+# cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# import pandas as pd
+# d = pd.read_csv("09_PA/PA_A1_v2_power_curve.csv")
+# print(d[d.kind=="size_check"][["sample","power","R_mean"]])
+# p = d[(d.kind=="power")&(d.delta_x==3)]
+# print(p[["sample","t_star","a","power","R_mean","hit_near_tstar","J_extra_ratio"]].round(4).to_string(index=False))
+# EOF
+# ```
+# 주입 크기(`a`)가 δ에 따라 변했는지, `R_mean`이 δ=0일 때보다 올랐는지, 변화점이 t*에서 잡혔는지(`hit_near_tstar`)를 봅니다.
+
+# **(b) 주입 함수 점검.** 이 스크립트는 `try:` 이후 부분을 잘라내므로 `a1()`이 실행되어 CSV를 덮어쓰는 일이 없습니다.
+# ```
+# cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# import numpy as np
+# src = open("pa_a1_v2_run.py").read().split('try: {"freeze2"')[0]
+# exec(src, globals())
+# c = make_ctx(); it = int(np.where(c["YEARS"]==2020)[0][0]); a0 = 1.0/np.abs(c["d_vec"]).max()
+# print("\na0 =", round(a0,4), "| max|d| =", round(np.abs(c["d_vec"]).max(),5))
+# for s in c["SAM"]:
+#     base = c["jump_exp"](c["P2"], s, it)
+#     print(f"\n[{s}] base jump {base:.4f}")
+#     for m in [0, 0.001, 0.01, 0.03, 0.1, 0.3, 1, 3]:
+#         Q = c["inject"](m*a0, it); P, n = c["L"].sample_P(Q*c["cnt"].sum(2).astype(float)[:,:,None], c["fixed_v"], c["wbar"], s)
+#         r = c["L"].detect(P, n, 0.0, 6, 3)  # 노이즈 없는 기대값 자료에서 R, k 확인(벌점 0: 진단 목적)
+#         print(f"  a={m:>6}*a0 | jump_extra {c['jump_exp'](Q, s, it)-base:+.4f} | R(no-noise) {r['R']:.4f} k={r['k']}")
+# EOF
+# ```
+# 이 출력으로 다음을 판별합니다.
+# - 점프가 `a`에 대해 단조 증가하는지, 아니면 거의 계단처럼 뛰는지
+# - `fixed14`와 `within`에서 점프가 정말 생기는지
+# - 노이즈 없는 자료에서 R이 점프에 반응하는지(탐지 통계 둔감성 여부)
+
+# 진단 코드는 제가 짠 것이고 실행해 본 적이 없습니다. `detect`의 `pen=0` 호출은 벌점을 0으로 두는 진단용이며 S5의 판정 방식이 아니니, 해석할 때 이 점을 감안하세요.
+
+# ## 5. 기록과 절차
+
+# **지금 할 것**
+# 1. 이 실행 결과를 지우거나 덮어쓰지 마세요. CSV와 로그를 그대로 커밋하고 태그를 남깁니다. 이 시점부터 "PA-A1 결과 미열람"은 더 이상 사실이 아닙니다.
+#    ```
+#    cd ~/Research/Minnesota_Transport
+#    git add paper1/09_PA/PA_A1_v2_*.csv paper1/09_PA/PA_A1_v2_full_log.txt paper1/09_PA/PA_CHANGELOG.md
+#    git commit -m "PA-A1 v2 run 1 results (calibration failed; power ~ size; not interpretable)"
+#    git tag -a PA-A1-v2-run1-2026-10-19 -m "run 1 outputs, seen"
+#    git push --follow-tags
+#    ```
+# 2. `PA_CHANGELOG.md`에는 "run 1: 보정 실패(δ 무관 점프, fixed14·within 점프 0), 검정력 ≈ 크기. 판독 규칙의 기계적 결과는 판정 불가이나 해석 불가로 기록"이라고 한 줄 적어 두세요(자동 기록 줄에는 이 판단이 없습니다).
+
+# **진단 이후 선택지**
+# - **코드 오류가 확인되면:** 주입 구현의 오류 수정은 결과가 아니라 구현 결함에 대한 수정입니다. 다만 결과를 본 뒤의 수정이므로 v3 계획으로 분리하고, 사유를 "run 1의 보정 실패(실현 점프 비율이 δ와 무관, 두 표본에서 0)"로 기록하세요. run 1과 run 2를 둘 다 보고합니다.
+# - **통계 둔감성이 확인되면:** 이는 S5의 N2 검정이 점프 유형의 변화에 둔감하다는 발견입니다. 이 경우 "판정 불가"는 오히려 S5의 R 통계 자체의 한계라는 논문 서술이 됩니다. 이건 부정적 결과이자 보고할 가치가 있는 결과입니다.
+# - **둘 다 아니거나 불분명하면:** 점프 주입 방식(전 저널에 같은 방향 가산)이 현실적이지 않을 수 있으니, 저널 단위 주입 같은 대안을 v3로 검토합니다.
+
+# ## 6. 논문 서술에 대한 주의
+# - 이 결과로 B1 문구를 확정하지 마세요. "연속적 재배치" 서술은 지금 상태에서는 검정력 분석의 지지를 받지 못합니다. 다만 "판정 불가"로 쓰는 것도 아직 이릅니다.
+# - 제목에서 "체제 전환"을 빼는 방향은 유지해도 되지만, 그 근거는 이 PA가 아니라 S5의 N2 비통과(부정적 증거)임을 분명히 하세요.
+
+# (a), (b) 두 출력을 붙여 주시면 원인을 가르고 v3 필요 여부를 정리하겠습니다.
+
+
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# import pandas as pd
+# d = pd.read_csv("09_PA/PA_A1_v2_power_curve.csv")
+# print(d[d.kind=="size_check"][["sample","power","R_mean"]])
+# p = d[(d.kind=="power")&(d.delta_x==3)]
+# print(p[["sample","t_star","a","power","R_mean","hit_near_tstar","J_extra_ratio"]].round(4).to_string(index=False))
+# EOF
+#     sample  power    R_mean
+# 0      all  0.035  0.765748
+# 1  fixed14  0.075  0.758430
+# 2   within  0.065  0.707200
+#  sample  t_star   a  power  R_mean  hit_near_tstar  J_extra_ratio
+#     all    2008 0.0  0.040  0.7654           0.000         3.0947
+# fixed14    2008 0.0  0.065  0.7630           0.470         0.0000
+#  within    2008 0.0  0.070  0.7078           0.945        -0.0069
+#     all    2012 0.0  0.055  0.7659           0.995         3.2585
+# fixed14    2012 0.0  0.060  0.7587           0.590         0.0000
+#  within    2012 0.0  0.055  0.7067           0.000         0.0147
+#     all    2015 0.0  0.055  0.7657           0.000         3.1588
+# fixed14    2015 0.0  0.075  0.7627           0.450         0.0000
+#  within    2015 0.0  0.080  0.7079           1.000         0.0076
+#     all    2020 0.0  0.040  0.7653           1.000         3.0317
+# fixed14    2020 0.0  0.060  0.7606           1.000        -0.0000
+#  within    2020 0.0  0.065  0.7072           0.935         0.0067
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# import numpy as np
+# src = open("pa_a1_v2_run.py").read().split('try: {"freeze2"')[0]
+# exec(src, globals())
+# c = make_ctx(); it = int(np.where(c["YEARS"]==2020)[0][0]); a0 = 1.0/np.abs(c["d_vec"]).max()
+# print("\na0 =", round(a0,4), "| max|d| =", round(np.abs(c["d_vec"]).max(),5))
+# for s in c["SAM"]:
+#     base = c["jump_exp"](c["P2"], s, it)
+#     print(f"\n[{s}] base jump {base:.4f}")
+#     for m in [0, 0.001, 0.01, 0.03, 0.1, 0.3, 1, 3]:
+#         Q = c["inject"](m*a0, it); P, n = c["L"].sample_P(Q*c["cnt"].sum(2).astype(float)[:,:,None], c["fixed_v"], c["wbar"], s)
+#         r = c["L"].detect(P, n, 0.0, 6, 3)  # 노이즈 없는 기대값 자료에서 R, k 확인(벌점 0: 진단 목적)
+#         print(f"  a={m:>6}*a0 | jump_extra {c['jump_exp'](Q, s, it)-base:+.4f} | R(no-noise) {r['R']:.4f} k={r['k']}")
+# EOF
+# [관측 재현 OK: S5와 R 일치]
+#   sample  obs_R  obs_k         obs_breaks  N2_B  N2_q95   p_N2
+#     all 0.7595      3       [2012, 2020]   500  0.7723 0.9441
+# fixed14 0.7755      4 [2008, 2015, 2020]   500  0.7965 0.3992
+#  within 0.7033      4 [2009, 2015, 2020]   500  0.7181 0.6966
+
+# 관측 2020 점프(Hellinger, 3년 창): {'all': 0.1901, 'fixed14': 0.1788, 'within': 0.1495}
+
+# a0 = 57.5431 | max|d| = 0.01738
+
+# [all] base jump 0.1299
+#   a=     0*a0 | jump_extra +0.5762 | R(no-noise) 0.0000 k=1
+#   a= 0.001*a0 | jump_extra +0.5762 | R(no-noise) 0.0000 k=1
+#   a=  0.01*a0 | jump_extra +0.5766 | R(no-noise) 0.0000 k=1
+#   a=  0.03*a0 | jump_extra +0.5769 | R(no-noise) 0.0000 k=1
+#   a=   0.1*a0 | jump_extra +0.5771 | R(no-noise) 0.0000 k=1
+#   a=   0.3*a0 | jump_extra +0.5772 | R(no-noise) 0.0000 k=1
+#   a=     1*a0 | jump_extra +0.5772 | R(no-noise) 0.0000 k=1
+#   a=     3*a0 | jump_extra +0.5772 | R(no-noise) 0.0000 k=1
+
+# [fixed14] base jump 0.1093
+#   a=     0*a0 | jump_extra -0.0000 | R(no-noise) 0.9618 k=6
+#   a= 0.001*a0 | jump_extra +0.0182 | R(no-noise) 0.9644 k=6
+#   a=  0.01*a0 | jump_extra +0.1374 | R(no-noise) 0.9775 k=6
+#   a=  0.03*a0 | jump_extra +0.2929 | R(no-noise) 0.9875 k=6
+#   a=   0.1*a0 | jump_extra +0.4483 | R(no-noise) 0.9939 k=6
+#   a=   0.3*a0 | jump_extra +0.5180 | R(no-noise) 0.9953 k=6
+#   a=     1*a0 | jump_extra +0.5489 | R(no-noise) 0.9957 k=6
+#   a=     3*a0 | jump_extra +0.5556 | R(no-noise) 0.9958 k=6
+
+# [within] base jump 0.0667
+#   a=     0*a0 | jump_extra +0.0010 | R(no-noise) 0.0000 k=1
+#   a= 0.001*a0 | jump_extra +0.0158 | R(no-noise) 0.0000 k=1
+#   a=  0.01*a0 | jump_extra +0.1243 | R(no-noise) 0.0000 k=1
+#   a=  0.03*a0 | jump_extra +0.2827 | R(no-noise) 0.0000 k=1
+#   a=   0.1*a0 | jump_extra +0.4363 | R(no-noise) 0.0000 k=1
+#   a=   0.3*a0 | jump_extra +0.5045 | R(no-noise) 0.0000 k=1
+#   a=     1*a0 | jump_extra +0.5357 | R(no-noise) 0.0000 k=1
+#   a=     3*a0 | jump_extra +0.5425 | R(no-noise) 0.0000 k=1
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$    cd ~/Research/Minnesota_Transport
+#    git add paper1/09_PA/PA_A1_v2_*.csv paper1/09_PA/PA_A1_v2_full_log.txt paper1/09_PA/PA_CHANGELOG.md
+#    git commit -m "PA-A1 v2 run 1 results (calibration failed; power ~ size; not interpretable)"
+#    git tag -a PA-A1-v2-run1-2026-10-19 -m "run 1 outputs, seen"
+#    git push --follow-tags
+# [main 0007573] PA-A1 v2 run 1 results (calibration failed; power ~ size; not interpretable)
+#  5 files changed, 199 insertions(+)
+#  create mode 100644 paper1/09_PA/PA_A1_v2_bic.csv
+#  create mode 100644 paper1/09_PA/PA_A1_v2_full_log.txt
+#  create mode 100644 paper1/09_PA/PA_A1_v2_observed.csv
+#  create mode 100644 paper1/09_PA/PA_A1_v2_power_curve.csv
+# Enumerating objects: 14, done.
+# Counting objects: 100% (14/14), done.
+# Delta compression using up to 24 threads
+# Compressing objects: 100% (10/10), done.
+# Writing objects: 100% (10/10), 4.51 KiB | 4.51 MiB/s, done.
+# Total 10 (delta 2), reused 0 (delta 0), pack-reused 0
+# remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+# To https://github.com/LEEYJ1021/transport-knowledge-paper1.git
+#    15f545a..0007573  main -> main
+#  * [new tag]         PA-A1-v2-run1-2026-10-19 -> PA-A1-v2-run1-2026-10-19
+# yjlee@u24:~/Research/Minnesota_Transport$
+
+
+# # 점검 결과: 수정이 통과했습니다
+
+# run 1의 원인이던 이상 현상이 사라졌습니다.
+
+# - **a=0에서 세 표본 모두 점프가 0**입니다. 이전에는 `all`이 +0.576이었습니다.
+# - **`all`도 a에 대해 단조 증가한 뒤 포화**합니다(0.039 → 0.111 → 0.249 → 0.393 → 0.461 → 0.492 → 0.4995). `fixed14`와 `within`은 이전과 같고, 세 표본의 곡선이 비슷한 모양입니다.
+# - 패치 줄과 파일명 치환(`run2`, 4곳)도 확인됐습니다.
+
+# **run 2에서 예상되는 동작 (사양대로의 동작이라 문제가 아닙니다)**
+# - `all`의 포화값이 약 0.50이므로 δ=3(목표 0.57)은 `unreachable`로 NaN 행이 생깁니다. `fixed14`와 `within`은 포화값이 0.54이지만 보정이 `all`에서 이뤄져서 같은 a를 쓰므로, 그 칸은 어차피 NaN입니다.
+# - δ=2(목표 0.38)는 도달 가능하지만 포화 구간에 가까워 이분법 수렴 flag가 뜰 수 있습니다. flag가 뜨면 그 칸은 해석에서 따로 표시하세요.
+# - 판독 규칙은 δ=1(목표 0.19, a≈0.015×a0 부근)에서만 적용하므로 영향이 없습니다.
+# - 같은 a를 세 표본에 쓰기 때문에 표본별 실현 점프 비율은 1이 아닐 수 있습니다. 출력의 `J_extra_ratio` 표로 확인하세요. `within`은 관측 점프(0.1495)가 `all`(0.1901)보다 작아서 비율이 1보다 크게 나올 가능성이 큽니다.
+
+# **이제 커밋·태그·푸시한 뒤 실행하세요.** 푸시를 먼저 하는 이유는 결과를 보기 전에 코드 상태의 외부 시각을 남기기 위해서입니다.
+
+# ```
+# cd ~/Research/Minnesota_Transport
+# git add paper1/pa_a1_v2_run.py && git commit -m "PA-A1 v2 run2 code: fix inject() NaN normalization (n=0 cells); spec unchanged" && git tag -a PA-A1-v2-run2-code-2026-10-19 -m "run2 code, pre-run; run1 uninterpretable due to inject NaN bug" && git push --follow-tags
+# cd paper1
+# nohup python3 -u pa_a1_v2_run.py > 09_PA/PA_A1_v2_run2_full_log.txt 2>&1 &
+# sleep 5; tail -f 09_PA/PA_A1_v2_run2_full_log.txt
+# ```
+
+# run 1은 약 1분에 끝났으니 이번에도 비슷할 것입니다(점프가 실제로 들어가면 탐지가 더 오래 걸릴 수 있습니다). `-u` 옵션 덕분에 로그가 실시간으로 쌓입니다.
+
+# **기록**
+# run 1 원인 확정 내용을 `PA_CHANGELOG.md`에 아직 적지 않으셨다면, 실행 전에 지난번 안내한 줄을 추가하세요. 실행 시작 전에 적어 두면 순서가 깔끔합니다.
+
+# **본 실행 결과를 읽을 때 지켜야 할 것**
+# - 판독 규칙(δ=1에서 t*별 검정력의 최솟값 ≥0.8 / 중앙값 <0.5)과 δ·t* 격자는 바꾸지 않습니다.
+# - run 1과 run 2를 모두 부록에 싣고, run 2가 "run 1의 구현 결함만 고친 재실행"임을 명시합니다.
+# - run 2 결과를 본 뒤 설정을 바꾸면 v3이며, 이번에는 그럴 사유가 없도록 로그 전체를 먼저 보고 판단하세요.
+
+# 로그가 끝나면 전체를 붙여 주세요. δ=0 기각률(0.02~0.09), 수렴 flag, 실현 점프 비율, δ=1 검정력 표 순서로 읽겠습니다.
+
+
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport
+# git add paper1/pa_a1_v2_run.py && git commit -m "PA-A1 v2 run2 code: fix inject() NaN normalization (n=0 cells); spec unchanged" && git tag -a PA-A1-v2-run2-code-2026-10-19 -m "run2 code, pre-run; run1 uninterpretable due to inject NaN bug" && git push --follow-tags
+# cd paper1
+# nohup python3 -u pa_a1_v2_run.py > 09_PA/PA_A1_v2_run2_full_log.txt 2>&1 &
+# sleep 5; tail -f 09_PA/PA_A1_v2_run2_full_log.txt
+# [main d6eb03f] PA-A1 v2 run2 code: fix inject() NaN normalization (n=0 cells); spec unchanged
+#  1 file changed, 5 insertions(+), 5 deletions(-)
+# Enumerating objects: 8, done.
+# Counting objects: 100% (8/8), done.
+# Delta compression using up to 24 threads
+# Compressing objects: 100% (5/5), done.
+# Writing objects: 100% (5/5), 862 bytes | 862.00 KiB/s, done.
+# Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
+# remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+# To https://github.com/LEEYJ1021/transport-knowledge-paper1.git
+#    0007573..d6eb03f  main -> main
+#  * [new tag]         PA-A1-v2-run2-code-2026-10-19 -> PA-A1-v2-run2-code-2026-10-19
+# [1] 2319625
+# nohup: ignoring input
+# [관측 재현 OK: S5와 R 일치]
+#   sample  obs_R  obs_k         obs_breaks  N2_B  N2_q95   p_N2
+#     all 0.7595      3       [2012, 2020]   500  0.7723 0.9441
+# fixed14 0.7755      4 [2008, 2015, 2020]   500  0.7965 0.3992
+#  within 0.7033      4 [2009, 2015, 2020]   500  0.7181 0.6966
+
+# 관측 2020 점프(Hellinger, 3년 창): {'all': 0.1901, 'fixed14': 0.1788, 'within': 0.1495}
+# [검정 크기 점검 delta=0: 기각률(약 0.05여야 함)] {'all': 0.035, 'fixed14': 0.075, 'within': 0.065}
+#   t*=2008 완료
+#   t*=2012 완료
+#   t*=2015 완료
+#   t*=2020 완료
+
+# [Post-hoc] PA-A1 검정력(S5 N2 기준)
+#  delta_x          0.5   1.0  2.0  3.0
+# sample  t_star
+# all     2008    0.90  1.00  1.0  1.0
+#         2012    1.00  1.00  1.0  1.0
+#         2015    1.00  1.00  1.0  1.0
+#         2020    1.00  1.00  1.0  NaN
+# fixed14 2008    0.56  0.44  1.0  1.0
+#         2012    0.00  1.00  1.0  1.0
+#         2015    1.00  1.00  1.0  1.0
+#         2020    1.00  1.00  1.0  NaN
+# within  2008    0.26  0.90  1.0  1.0
+#         2012    0.10  1.00  1.0  1.0
+#         2015    1.00  1.00  1.0  1.0
+#         2020    1.00  1.00  1.0  NaN
+
+# [수렴 flag]
+#   sample  t_star  delta_x   conv_flag
+#     all    2020      3.0 unreachable
+# fixed14    2020      3.0 unreachable
+#  within    2020      3.0 unreachable
+
+# [표본별 실현 점프 비율(delta=1)]
+#  t_star   2008  2012  2015  2020
+# sample
+# all      1.00  1.00  1.00  1.00
+# fixed14  1.09  1.09  1.16  1.27
+# within   1.34  1.27  1.09  1.43
+
+# [delta=1 요약]
+#            min  median
+# sample
+# all      1.00     1.0
+# fixed14  0.44     1.0
+# within   0.90     1.0
+#   all: 사전 판독 → 강화(연속 변화 증거)
+#   fixed14: 사전 판독 → 곡선으로만 보고
+#   within: 사전 판독 → 강화(연속 변화 증거)
+
+# [Post-hoc] BIC 최솟값(상수 대 선형; 자기상관으로 과분할 가능, 보조 지표)
+#   sample    model  k  rss    bic
+#     all constant  5  0.2 -672.2
+#     all   linear  3  0.1 -745.3
+# fixed14 constant  5  0.2 -681.0
+# fixed14   linear  3  0.1 -748.9
+#  within constant  4  0.5 -620.4
+#  within   linear  3  0.2 -659.3
+
+# ※ 검정력은 '관측 2020 점프 방향의 점프'에 한정. S0~S8 판정 불변.
+
+
+# # PA-A1 run 2 결과 판독
+
+# run 2는 정상적으로 작동했고, 사전 판독 규칙의 기계적 결과는 세 표본이 서로 다르게 나왔습니다. 다만 규칙 문구가 말하는 "이 크기의 점프"는 실제로 훨씬 큰 점프여서, 본문에 쓸 때는 범위를 좁혀야 합니다.
+
+# ## 1. 정상 작동 확인
+# - **δ=0 기각률**은 0.035, 0.075, 0.065로 run 1과 같고 목표 범위 안입니다. 점프 주입 이전 단계가 수정과 무관하다는 확인이기도 합니다.
+# - **수렴:** `unreachable`은 t*=2020, δ=3뿐입니다. 나머지는 2% 이탈 flag가 없어 보정이 수렴했습니다. 앞에서 "δ=2, 3은 대체로 도달 불가"라고 예상했는데 틀렸고, 포화값이 t*마다 달랐습니다.
+# - **실현 점프 비율**은 `all`이 1.00으로 맞고, `fixed14`는 1.09~1.27, `within`은 1.09~1.43으로 목표보다 큽니다. 같은 a를 세 표본에 쓴 결과이고 사양대로입니다.
+
+# ## 2. 동결 판독 규칙의 기계적 결과 (δ=1)
+# | 표본 | 최솟값 | 중앙값 | 사전 판독 |
+# |---|---|---|---|
+# | all | 1.00 | 1.0 | 강화 |
+# | fixed14 | 0.44 (t*=2008) | 1.0 | 곡선으로만 보고 |
+# | within | 0.90 | 1.0 | 강화 |
+
+# 세 표본의 판독이 갈렸으므로 "강화"를 일괄해서 쓸 수 없습니다. fixed14는 규칙에 따라 곡선만 보고합니다.
+
+# ## 3. 본문에 쓰기 전에 짚어야 할 점
+
+# **(1) "δ=1"은 관측 점프 크기가 아닙니다.** 앞서 제가 "관측 크기의 점프"라고 쓴 표현은 부정확했습니다. 동결된 `jump_def`는 "추세 기저 위에 더해지는 추가 점프 = δ × 관측 2020 점프 전체"입니다. 진단 출력(`base jump`)을 쓰면 관측 점프에서 추세 기저가 이미 만드는 점프를 뺀 초과분은 다음과 같습니다.
+
+# | 표본 | 관측 점프 | 추세 기저 점프 | 관측 초과분 |
+# |---|---|---|---|
+# | all | 0.190 | 0.130 | 약 0.060 |
+# | fixed14 | 0.179 | 0.109 | 약 0.070 |
+# | within | 0.150 | 0.067 | 약 0.083 |
+
+# δ=1에서 주입한 추가 점프는 `all` 기준 0.19이므로 관측 초과분의 약 3배입니다. 따라서 규칙에 적힌 "이 크기의 점프가 있었다면 탐지했을 것"은 과장입니다. 본문에서는 "관측 2020 점프와 같은 크기의 추가 점프(관측 초과분의 약 3배)"라고 정확히 쓰세요. 이는 동결 문구의 정의 문제이므로 부록에 투명하게 적는 것이 맞습니다.
+
+# **(2) 가장 관련 있는 칸은 t*=2020입니다.** 관측된 후보 변화점이 2020이기 때문입니다. 이 줄에서는 δ=0.5에서도 검정력이 세 표본 모두 1.00입니다. δ=0.5의 추가 점프(약 0.095)는 `all` 기준 관측 초과분(0.060)의 약 1.6배입니다. 이 한 줄은 "2020에 초과분의 1.6배쯤 되는 점프가 있었다면 잡혔을 것"이라는 비교적 강한 근거입니다. 다만 초과분과 같은 크기(δ≈0.3~0.45)에서의 검정력은 아직 측정하지 않았습니다.
+
+# **(3) 비단조 칸이 해석되지 않았습니다.**
+# - fixed14, t*=2012: δ=0.5에서 0.00, δ=1에서 1.00
+# - fixed14, t*=2008: δ=0.5에서 0.56, δ=1에서 0.44
+# - within, t*=2012: δ=0.5에서 0.10
+
+# B=200이면 표준오차가 약 0.035이므로 0.00 대 1.00은 잡음이 아닙니다. 짚이는 가설은 `fixed14`의 N2 R 분포가 k=3과 k=4 사이에서 둘로 갈라진 형태(앞서 나온 `N2 반복 분포` 표)여서 임계점 근처에서 반응이 계단처럼 뛴다는 것인데, 확인하지 않은 가설입니다. 아래 진단으로 확인하세요.
+
+# **(4) N2 과적합 우려는 부분적으로 해소됐습니다.** 이전 평가에서 N2 귀무가 관측 구조를 너무 잘 흡수해 점프에 둔감할 수 있다고 우려했는데, 큰 점프(δ≥1)에서는 N2가 흡수하지 못하고 잡아냈습니다. 다만 작은 점프에서는 `fixed14`와 `within`의 민감도가 낮고 불안정합니다.
+
+# **(5) BIC는 run 1과 같은 숫자입니다.** 같은 계산이고 새 증거가 아닙니다. 구간별 선형(k=3)이 구간별 상수보다 낮지만, 불연속을 허용하는 선형 모형이고 자기상관 편향이 있어 보조 지표로만 쓰세요.
+
+# ## 4. B1 문구에 대한 영향
+# - 동결 규칙의 결과가 "강화 2, 곡선만 1"이므로 "연속 변화의 증거"를 일괄 주장하지 마세요.
+# - 근거 있는 서술은 다음과 같습니다. "N2 비통과는, 2020 부근에서 관측 초과분의 약 1.6배 이상의 추가 점프가 있었다면 탐지되었을 것이라는 점에서, 큰 점프의 부재와 부합한다. 더 작은 점프나 다른 t*에서는 표본에 따라 검정력이 낮거나 불안정하다."
+# - 즉 "큰 점프는 배제하지만 관측 초과분 크기의 점프는 판정 불가"입니다. 제목에서 "체제 전환"을 빼는 방향은 유지해도 되지만, "연속 재배치가 확인됐다"는 문구는 이 결과로 지지되지 않습니다.
+# - 검정력은 관측 2020 점프 방향의 점프에 한정됩니다.
+
+# ## 5. 지금 할 일 (순서)
+
+# **① 결과를 커밋하고 푸시합니다.** 코드가 끝난 뒤의 열람 기록이므로 태그를 남기세요.
+# ```
+# cd ~/Research/Minnesota_Transport
+# git add paper1/09_PA/PA_A1_v2_run2_*.csv paper1/09_PA/PA_A1_v2_run2_full_log.txt paper1/09_PA/PA_CHANGELOG.md
+# git commit -m "PA-A1 v2 run 2 results (inject NaN fixed; calibrated)" && git tag -a PA-A1-v2-run2-results-2026-10-19 -m "run2 outputs, seen" && git push --follow-tags
+# ```
+
+# **② `PA_CHANGELOG.md`에 직접 한 줄을 추가합니다.**
+# ```
+# - 2026-10-19 | PA-A1 v2 run 2 결과: δ=0 기각률 0.035/0.075/0.065. δ=1 판독 all 강화(min 1.00), fixed14 곡선만 보고(min 0.44, t*=2008), within 강화(min 0.90). 주의: δ=1 추가 점프는 관측 초과분(점프−추세 기저점프)의 약 3배. t*=2020은 δ=0.5에서 세 표본 모두 1.00. fixed14·within에서 비단조 칸 존재(미해석). 판독 규칙·격자 변경 없음 | 본 결과 변경: 없음
+# ```
+
+# **③ 비단조 칸 진단(읽기 전용)**
+# ```
+# cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# import pandas as pd
+# d = pd.read_csv("09_PA/PA_A1_v2_run2_power_curve.csv"); p = d[(d.kind=="power")&(d.sample.isin(["fixed14","within"]))&(d.delta_x.isin([0.5,1]))&(d.t_star.isin([2008,2012]))]
+# print(p[["sample","t_star","delta_x","a","power","R_mean","hit_near_tstar","J_extra_ratio"]].round(3).to_string(index=False))
+# EOF
+# ```
+# `R_mean`이 N2 q95(`fixed14` 0.7965, `within` 0.7181)에 비해 어디에 있는지, `hit_near_tstar`가 낮은지를 보세요. 낮다면 점프는 있었는데 탐지기가 다른 위치에 변화점을 찍은 것이고, 이는 R 통계의 한계와 위치 회수 결과를 구분해서 보고할 근거가 됩니다.
+
+# **④ 탐색적 확장(선택).** 초과분 크기의 점프에서 검정력을 보려면 `explore`를 δ=0.25, 0.35, 0.45로 돌립니다. 초과분을 δ로 환산하면 대략 0.32(all), 0.37(fixed14), 0.44(within)입니다. 이 확장은 동결 밖이라 판독 규칙에 쓰지 않고 `[Post-hoc][Exploratory]`로만 보고합니다. 패치는 ①~③이 끝난 뒤 드리겠습니다. 이 확장 결과도 열람 후 분석이므로 본 결과를 바꾸는 근거로 쓰지 마세요.
+
+# ③의 출력을 붙여 주시면 비단조 원인을 정리하겠습니다.
+
+
+# # 비단조 칸 진단 해석
+
+# CHANGELOG 커밋(`d4313aa`)도 정상적으로 올라갔습니다. 이 출력으로 비단조 칸의 성격은 어느 정도 설명되지만, 아직 확인하지 못한 부분도 있습니다.
+
+# ## 1. 읽히는 것
+
+# **(1) 검정 통계 R이 N2 임계값 바로 아래에서 움직입니다.**
+
+# `fixed14`의 N2 95% 임계값은 0.7965입니다. 진단 표의 `R_mean`은 다음과 같습니다.
+
+# | 칸 | R_mean | 검정력 |
+# |---|---|---|
+# | 2008, δ=0.5 | 0.789 | 0.565 |
+# | 2008, δ=1 | 0.796 | 0.445 |
+# | 2012, δ=0.5 | 0.784 | 0.005 |
+# | 2012, δ=1 | 0.826 | 1.000 |
+
+# R 평균이 임계값 0.01 안에 있는 칸에서는 검정력이 0에서 1까지 거의 계단처럼 움직입니다. 2012년 δ=0.5(R≈0.784, 검정력 0.005)와 δ=1(R≈0.826, 검정력 1.0)의 차이는 R로 0.04에 불과합니다. 2008년 δ=0.5(0.789)에서 검정력이 0.565나 되는 것은 평균 0.789 아래에 분포가 둘로 갈라져 있다는 뜻입니다. 앞서 본 `fixed14` N2의 k 분포(k=3 301회, k=4 199회)처럼 k가 3과 4 사이를 오가는 구조와 맞지만, 이번 실행에서 k를 직접 저장하지 않아 이 설명은 가설입니다.
+
+# **(2) 2008년의 미세한 하락(0.565 → 0.445)은 해석하지 마세요.** B=200에서 표준오차는 약 0.035라 두 값의 차이(0.12)는 약 2.4배 수준입니다. 한 칸만으로는 "점프가 커졌는데 검정력이 떨어졌다"고 읽기 어렵습니다. 이 한 칸이 `fixed14`의 최솟값(0.44)을 만들어 판독을 "곡선으로만 보고"로 바꿨다는 점은 주의할 사실이지만, 규칙은 그대로 적용합니다.
+
+# **(3) 변화점 위치는 모든 칸에서 회수됩니다(`hit_near_tstar` = 1.0). 이것이 좋은 소식입니다.** 다만 이 수치는 기준선이 필요합니다. 점프가 없어도 t*±1에 변화점이 이미 잡히는 비율이 높을 수 있기 때문입니다. 마침 run 1의 δ=3 행이 보정 실패로 사실상 점프 없는 N2 자료였으므로, 그 값이 기준선이 됩니다.
+
+# | 칸 | 기준선(run 1, 점프 없음) | run 2(점프 주입) |
+# |---|---|---|
+# | fixed14, 2008 | 0.47 | 1.0 |
+# | fixed14, 2012 | 0.59 | 1.0 |
+# | within, 2008 | 0.945 | 1.0 |
+# | within, 2012 | 0.00 | 1.0 |
+
+# `fixed14`와 `within`의 2012에서는 기준선에서 크게 오릅니다. 즉 점프를 넣으면 탐지기는 그 위치에 변화점을 찍는데, R이 N2 임계값을 넘지 못해서 검정력이 낮게 나온 것으로 보입니다. 이는 위치 회수(변화점이 어디인가)와 R 검정(N2보다 변화가 더 큰가)의 민감도가 서로 다르다는 뜻입니다. `within` 2008은 기준선이 이미 0.945라 구분력이 없습니다.
+
+# 기준선으로 쓴 값이 run 1의 δ=3 행이라는 점은 본문에 밝혀야 합니다. 같은 `Q=P2`에서 뽑았으므로 사실상 점프 없는 N2 자료지만, 정식으로 설계된 기준선이 아닙니다.
+
+# **(4) 실현 점프 비율을 함께 읽으세요.** δ=0.5에서도 `fixed14`는 0.55, `within`은 0.65~0.71이 실현됐습니다. `within`이 `fixed14`보다 같은 δ에서 더 큰 점프를 받습니다.
+
+# ## 2. 보고할 때의 문장 틀
+
+# 사전 판독 규칙은 그대로 적용해 "all·within 강화, fixed14 곡선만 보고"로 쓰되, 다음을 함께 적으세요.
+# - δ=1의 주입 점프는 관측 초과분의 약 3배라는 점
+# - t*=2020은 δ=0.5에서 세 표본 모두 검정력 1.00이라는 점
+# - `fixed14`와 `within`에서 R의 반응이 임계값 근처에서 급격해 검정력이 칸마다 크게 달라진다는 점
+# - 변화점 위치는 점프 주입 시 기준선보다 높은 비율로 회수된다는 점(기준선 한계 명시)
+
+# "연속 변화의 증거"라는 일반화 문구는 여전히 피하세요. 근거 있는 서술은 "큰 점프의 부재와 부합하며, 관측 초과분 크기의 점프에 대한 판정은 표본과 t*에 따라 불안정하다"입니다.
+
+# ## 3. 다음 단계: 초과분 크기의 점프 (탐색적)
+
+# 관측 초과분과 같은 크기의 점프(δ 환산 약 0.32~0.44)에서의 검정력이 아직 없습니다. 이 한 줄이 "관측된 정도의 변화를 이 검정이 구분할 수 있는가"에 가장 직접 답합니다. `explore` 모드의 δ를 {0.25, 0.35, 0.45}로 늘려 돌리고, 동결 밖의 `[Post-hoc][Exploratory]`로만 보고합니다.
+
+# ```
+# cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# p = "pa_a1_v2_run.py"; s = open(p, encoding="utf-8").read()
+# assert s.count("power_grid(c, [0.25], Bp, rows)") == 1
+# s = s.replace("power_grid(c, [0.25], Bp, rows)", "power_grid(c, [0.25, 0.35, 0.45], Bp, rows)")
+# s = s.replace("power025", "power_small")
+# s = s.replace("delta=0.25, 연속 꺾은선 BIC", "delta=0.25/0.35/0.45, 연속 꺾은선 BIC")
+# s = s.replace('MODE = "a1"', 'MODE = "explore"', 1)
+# open(p, "w", encoding="utf-8").write(s); print("패치 완료")
+# EOF
+# grep -n '^MODE\|^QUICK\|power_small\|0.35, 0.45' pa_a1_v2_run.py
+# ```
+
+# `MODE = "explore"`, `QUICK = False`가 보이고 `power_small`과 `[0.25, 0.35, 0.45]`가 나오면 커밋·푸시 후 실행합니다.
+
+# ```
+# cd ~/Research/Minnesota_Transport
+# git add paper1/pa_a1_v2_run.py && git commit -m "PA-A1 v2 explore: small-jump grid (exploratory, outside frozen spec)" && git tag -a PA-A1-v2-explore-code-2026-10-19 -m "explore code, pre-run" && git push --follow-tags
+# cd paper1
+# nohup python3 -u pa_a1_v2_run.py > 09_PA/PA_A1_v2_explore_log.txt 2>&1 &
+# sleep 5; tail -f 09_PA/PA_A1_v2_explore_log.txt
+# ```
+
+# 주의할 점은 다음과 같습니다.
+# - `explore`는 판독 규칙에 쓰지 않습니다. 결과가 좋게 나와도 사전 판독(강화 2, 곡선만 1)을 바꾸지 마세요.
+# - 이 코드는 동결 해시와 무관한 `explore` 부분만 바뀝니다. 그래도 사양 점검(`make_ctx`)은 그대로 통과해야 합니다.
+# - 연속 꺾은선 BIC도 이번에 함께 계산됩니다.
+# - 끝나면 `PA_A1_v2_run2_EXPLORATORY_power_small.csv`와 `..._bic_continuous.csv`가 생깁니다(앞선 치환으로 `run2`가 파일명에 들어갑니다).
+
+# 로그를 붙여 주시면 δ=0.25~0.45 검정력과 연속 꺾은선 BIC를 읽겠습니다.
+
+# yjlee@u24:~/Research/Minnesota_Transport$ cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# p = "pa_a1_v2_run.py"; s = open(p, encoding="utf-8").read()
+# assert s.count("power_grid(c, [0.25], Bp, rows)") == 1
+# s = s.replace("power_grid(c, [0.25], Bp, rows)", "power_grid(c, [0.25, 0.35, 0.45], Bp, rows)")
+# s = s.replace("power025", "power_small")
+# s = s.replace("delta=0.25, 연속 꺾은선 BIC", "delta=0.25/0.35/0.45, 연속 꺾은선 BIC")
+# s = s.replace('MODE = "a1"', 'MODE = "explore"', 1)
+# open(p, "w", encoding="utf-8").write(s); print("패치 완료")
+# EOF
+# grep -n '^MODE\|^QUICK\|power_small\|0.35, 0.45' pa_a1_v2_run.py
+# 패치 완료
+# 15:MODE = "explore"      # "freeze2" | "tag2" | "a1" | "explore"
+# 16:QUICK = False          # True: 검정력 B=40, 오류 점검 전용(곡선 해석 금지)
+# 190:    power_grid(c, [0.25, 0.35, 0.45], Bp, rows); PW = pd.DataFrame(rows)
+# 196:    PW.to_csv(PA/f"PA_A1_v2_run2_EXPLORATORY_power_small{sfx}.csv", index=False, encoding="utf-8-sig"); BC.to_csv(PA/f"PA_A1_v2_run2_EXPLORATORY_bic_continuous{sfx}.csv", index=False, encoding="utf-8-sig")
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport
+# git add paper1/pa_a1_v2_run.py && git commit -m "PA-A1 v2 explore: small-jump grid (exploratory, outside frozen spec)" && git tag -a PA-A1-v2-explore-code-2026-10-19 -m "explore code, pre-run" && git push --follow-tags
+# cd paper1
+# nohup python3 -u pa_a1_v2_run.py > 09_PA/PA_A1_v2_explore_log.txt 2>&1 &
+# sleep 5; tail -f 09_PA/PA_A1_v2_explore_log.txt
+# [main ce23737] PA-A1 v2 explore: small-jump grid (exploratory, outside frozen spec)
+#  1 file changed, 4 insertions(+), 4 deletions(-)
+# Enumerating objects: 8, done.
+# Counting objects: 100% (8/8), done.
+# Delta compression using up to 24 threads
+# Compressing objects: 100% (5/5), done.
+# Writing objects: 100% (5/5), 678 bytes | 678.00 KiB/s, done.
+# Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
+# remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+# To https://github.com/LEEYJ1021/transport-knowledge-paper1.git
+#    d4313aa..ce23737  main -> main
+#  * [new tag]         PA-A1-v2-explore-code-2026-10-19 -> PA-A1-v2-explore-code-2026-10-19
+# [1] 2321783
+# nohup: ignoring input
+# [관측 재현 OK: S5와 R 일치]
+#   sample  obs_R  obs_k         obs_breaks  N2_B  N2_q95   p_N2
+#     all 0.7595      3       [2012, 2020]   500  0.7723 0.9441
+# fixed14 0.7755      4 [2008, 2015, 2020]   500  0.7965 0.3992
+#  within 0.7033      4 [2009, 2015, 2020]   500  0.7181 0.6966
+
+# 관측 2020 점프(Hellinger, 3년 창): {'all': 0.1901, 'fixed14': 0.1788, 'within': 0.1495}
+# [Post-hoc][Exploratory] 작은 점프(0.25x) 검정력
+#   t*=2008 완료
+#   t*=2012 완료
+#   t*=2015 완료
+#   t*=2020 완료
+# delta_x         0.25  0.35  0.45
+# sample  t_star
+# all     2008    0.00  0.21  0.69
+#         2012    1.00  1.00  1.00
+#         2015    0.99  1.00  1.00
+#         2020    1.00  1.00  1.00
+# fixed14 2008    0.66  0.80  0.72
+#         2012    0.00  0.00  0.00
+#         2015    1.00  1.00  1.00
+#         2020    0.41  0.68  1.00
+# within  2008    0.18  0.40  0.40
+#         2012    0.04  0.00  0.04
+#         2015    1.00  1.00  1.00
+#         2020    1.00  1.00  1.00
+
+# [Post-hoc][Exploratory] 연속 꺾은선 BIC(꺾임 수 0~4)
+#   sample                       model  k    bic              breakpoints
+#     all piecewise_linear_continuous  1 -656.8                       []
+#     all piecewise_linear_continuous  2 -746.6                   [2014]
+#     all piecewise_linear_continuous  3 -760.1             [2007, 2016]
+#     all piecewise_linear_continuous  4 -755.4       [2006, 2011, 2017]
+#     all piecewise_linear_continuous  5 -744.4 [2003, 2006, 2011, 2017]
+# fixed14 piecewise_linear_continuous  1 -675.5                       []
+# fixed14 piecewise_linear_continuous  2 -749.0                   [2014]
+# fixed14 piecewise_linear_continuous  3 -763.1             [2007, 2016]
+# fixed14 piecewise_linear_continuous  4 -760.0       [2006, 2011, 2017]
+# fixed14 piecewise_linear_continuous  5 -748.7 [2003, 2006, 2011, 2017]
+#  within piecewise_linear_continuous  1 -646.1                       []
+#  within piecewise_linear_continuous  2 -671.3                   [2012]
+#  within piecewise_linear_continuous  3 -676.5             [2003, 2012]
+#  within piecewise_linear_continuous  4 -664.2       [2003, 2007, 2016]
+#  within piecewise_linear_continuous  5 -647.4 [2003, 2006, 2013, 2016]
+
+
+# # 탐색적 확장 결과 해석
+
+# 이 결과는 동결 밖의 `[Post-hoc][Exploratory]`이므로 사전 판독(강화 2, 곡선만 보고 1)을 바꾸지 않습니다. 그 점을 전제로, 관측된 2020 부근 변화와 같은 크기의 점프에서 검정이 어떻게 반응하는지는 다음과 같이 읽힙니다.
+
+# ## 1. 관측 초과분 크기(δ 환산 약 0.32 / 0.37 / 0.44)에서의 검정력
+
+# 초과분은 관측 점프에서 추세 기저 점프를 뺀 값입니다. 점프는 거리라서 뺄셈은 근사치입니다.
+
+# | 표본 | t*=2008 | t*=2012 | t*=2015 | t*=2020 |
+# |---|---|---|---|---|
+# | all (δ≈0.32) | 0.00~0.21 (약함) | 1.00 | 1.00 | 1.00 |
+# | fixed14 (δ≈0.37) | 0.66~0.80 (불안정) | **0.00** | 1.00 | 0.41~0.68 (δ=0.45에서 1.00) |
+# | within (δ≈0.44) | 0.18~0.40 (약함) | **0.00~0.04** | 1.00 | 1.00 |
+
+# **읽히는 것**
+# - 가장 관련 있는 위치인 t*=2020에서는 `all`과 `within`이 δ=0.25부터 이미 1.00이고, `fixed14`는 초과분 크기 근처(δ≈0.35~0.45)에서 0.68~1.00입니다. 2020에 초과분 정도의 점프가 있었다면 세 표본에서 대체로 잡혔을 것이라는 뜻입니다. 다만 `fixed14`는 확실하지 않습니다.
+# - `all`의 N2 기준 R 분포가 매우 좁아서(표준편차 약 0.004) 작은 구조 변화에도 R이 기준을 넘는 것으로 보입니다. 이전 평가에서 걱정한 "N2가 관측 구조를 흡수해 둔감할 가능성"의 반대 방향이고, 과민할 가능성은 이 실험으로 판단할 수 없습니다. 검정 크기(δ=0 기각률)가 정상이므로 위양성 쪽 문제는 크지 않아 보입니다.
+
+# **사각지대**
+# - `fixed14`와 `within`의 t*=2012는 δ=0.45까지 검정력이 0에 가깝고, run 2에서 δ=0.5도 0.005~0.10이었다가 δ=1에서 1.00으로 뜁니다. 어딘가 벽이 있다는 뜻입니다. 선택된 k가 바뀌는 지점일 가능성이 있지만 이번 실행은 k를 저장하지 않아 확인하지 못했습니다(가설).
+# - t*=2008은 세 표본에서 약하거나(all, within) 비단조적입니다(fixed14: 0.66, 0.80, 0.72).
+# - 관측 변화점 후보 중 `all`의 2012, `within`의 2009가 사각지대에 걸립니다. 이 위치들에 대해서는 "탐지력이 낮아 판정할 수 없다"고 써야 합니다.
+
+# ## 2. 연속 꺾은선 BIC
+
+# `k`는 구간 수(꺾임 수+1)입니다.
+
+# | 표본 | 최적 모형 | 꺾임 위치 | BIC | 꺾임 없음(직선)과의 차이 |
+# |---|---|---|---|---|
+# | all | k=3 | 2007, 2016 | −760.1 | 약 103 개선 |
+# | fixed14 | k=3 | 2007, 2016 | −763.1 | 약 88 개선 |
+# | within | k=3 | 2003, 2012 | −676.5 | 약 30 개선 |
+
+# - 꺾임이 2개인 연속 모형이 직선보다 BIC로 크게 좋아서, 변화가 한 직선이 아니라 속도가 바뀌는 연속 변화로 기술하는 편이 자료에 잘 맞습니다.
+# - 같은 PC 자료에서 불연속을 허용한 구간별 선형 모형의 최저 BIC(all −745, fixed14 −749, within −659)보다 연속 모형이 `all`·`fixed14`에서 약 15, `within`에서 약 18 낮습니다. 매개변수는 더 적으니, 이 자료에서는 점프 없는 연속 꺾임이 BIC로 더 낫다는 뜻입니다. 매개변수 수를 세는 방식이 두 계산에서 같지 않아서 숫자를 그대로 비교하기는 어렵고, 방향만 참고하세요.
+# - 선택된 꺾임에 2020이 없습니다. 최대 5구간(꺾임 4개)까지 봐도 2020은 선택되지 않았습니다.
+# - 연도 자료의 자기상관 때문에 BIC가 과분할 쪽으로 기울 수 있고, `within`은 꺾임 위치가 다른 두 표본과 달라 표본 간 일관성이 약합니다. 보조 지표로만 쓰세요.
+
+# ## 3. PA-A1 전체 정리와 B1 문구
+
+# 동결 규칙의 결과는 그대로입니다. 근거 있는 서술은 다음과 같습니다.
+
+# - **쓸 수 있는 것:** "전체와 저널 내 표본에서 2015년 이후(특히 2020) 관측 초과분 크기의 점프가 있었다면 N2 검정이 탐지했을 가능성이 높다. N2 비통과는 이 위치들에서 그런 점프가 없었다는 점과 부합한다. 연속 꺾은선이 점프 모형보다 BIC로 낫다(탐색적)."
+# - **쓰면 안 되는 것:** "체제 전환이 없었음이 확인됐다", "연속 변화의 증거다"(일반 주장). 2008~2012 부근은 `fixed14`와 `within`에서 검정력이 낮거나 불안정해서 판정 불가입니다.
+# - 제목에서 "체제 전환"을 빼는 방향은 유지해도 됩니다. 문구는 "점프보다 연속적 재배치로 서술하는 편이 자료에 부합하며, 2020 부근 후보는 N2 비통과로 유지되지 않는다" 정도가 안전합니다. 검정력은 관측 2020 점프 방향의 점프에 한정된다는 점을 부록에 적으세요.
+# - `fixed14` 곡선이 거칠어서, 본문에는 표 한 장으로 투명하게 보이는 편이 낫습니다.
+
+# ## 4. 지금 할 일
+
+# **① 파일 확인과 커밋·푸시.** 실행이 끝났는지부터 보세요.
+# ```
+# cd ~/Research/Minnesota_Transport/paper1
+# ls -l 09_PA/PA_A1_v2_run2_EXPLORATORY_*.csv
+# tail -2 09_PA/PA_CHANGELOG.md
+# ```
+# CSV 두 개가 있으면 끝난 것입니다. 이어서 CHANGELOG에 수기 줄을 추가하고 커밋하세요.
+# ```
+# cd ~/Research/Minnesota_Transport
+# cat >> paper1/09_PA/PA_CHANGELOG.md <<'EOF'
+# - 2026-10-19 | PA-A1 v2 탐색적 확장 해석 메모(동결 밖, 판독 규칙에 미사용): δ=0.25/0.35/0.45 검정력은 t*=2020에서 all·within 1.00, fixed14 0.41~1.00. t*=2012의 fixed14·within은 δ=0.45까지 ≈0(사각지대), t*=2008은 약하거나 비단조. 연속 꺾은선 BIC는 세 표본 모두 꺾임 2개가 최적(all·fixed14 2007/2016, within 2003/2012), 2020 꺾임은 선택되지 않음. k와 변화점 위치는 미저장이라 사각지대 원인은 가설 | 본 결과 변경: 없음
+# EOF
+# git add paper1/09_PA/PA_A1_v2_run2_EXPLORATORY_*.csv paper1/09_PA/PA_A1_v2_explore_log.txt paper1/09_PA/PA_CHANGELOG.md
+# git commit -m "PA-A1 v2 exploratory results (small jumps, continuous BIC)" && git tag -a PA-A1-v2-explore-results-2026-10-19 -m "explore outputs, seen" && git push --follow-tags
+# ```
+# `pa_a1_v2_run.py`는 `MODE="explore"` 상태로 커밋됐습니다. 이후에 이 파일로 `a1`을 다시 돌릴 일은 없으니 그대로 두어도 됩니다.
+
+# **② PA-A1은 여기서 닫는 것을 권합니다.** 사각지대 원인(k 전환)을 더 파는 것은 v3 계획이 되고, 지금 목적에는 필요하지 않습니다. 부록에는 run 1(보정 실패와 원인), run 2, 탐색적 확장을 모두 싣습니다.
+
+# **③ 다음 PA 선택.** 우선순위는 B2(2020 아티팩트 분리)와 A2(신규 진입 방어)입니다. B2는 PA-A1 결과와 `s5_lib`로 바로 진행할 수 있습니다. A2에는 S6 코드 정보가 필요하니, 아래 읽기 전용 스크립트의 출력을 붙여 주세요.
+
+# ```
+# cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# import ast, re
+# from pathlib import Path
+# P1 = Path.home()/"Research/Minnesota_Transport/paper1"
+# KEY = re.compile(r"entr|persist|new|adapt|realloc|exit|decomp|boot|cluster|homonym|risk|name|oa_id|first_year|cohort", re.I)
+# for fn in ["s6_lib.py", "s6_run.py"]:
+#     t = (P1/fn).read_text(encoding="utf-8"); L = t.splitlines(); tree = ast.parse(t)
+#     print(f"\n==== {fn} ({len(L)}줄) ====")
+#     for n in tree.body:
+#         if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) and n.targets[0].id.isupper(): print("  ", n.targets[0].id, "=", ast.unparse(n.value)[:100])
+#     for n in tree.body:
+#         if isinstance(n, ast.FunctionDef): print(f"  L{n.lineno:<4} def {n.name}({', '.join(a.arg for a in n.args.args)})")
+#     print("[핵심 후보 함수 소스, 각 40줄까지]")
+#     for n in tree.body:
+#         if isinstance(n, ast.FunctionDef) and KEY.search(n.name):
+#             seg = L[n.lineno-1:n.end_lineno]; print(f"\n--- {n.name} (L{n.lineno}-{n.end_lineno}) ---"); print("\n".join(seg[:40]))
+# t = (P1/"s6_run.py").read_text(encoding="utf-8").splitlines()
+# print("\n==== s6_run.py 키워드 줄 ====")
+# for i, l in enumerate(t, 1):
+#     if re.search(r"entrant|persist|first_year|oa_id|homonym|risk|B_BOOT|bootstrap", l): print(f"L{i:<4} {l.strip()[:160]}")
+# EOF
+# ```
+# 출력이 길면 함수 목록과 `entrant`·`persist` 관련 줄만 붙여 주셔도 됩니다.
+
+# 푸시 결과와 S6 정보를 주시면 이어서 B2와 A2 중 어느 쪽을 먼저 할지 정하겠습니다.
+
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport/paper1
+# ls -l 09_PA/PA_A1_v2_run2_EXPLORATORY_*.csv
+# tail -2 09_PA/PA_CHANGELOG.md
+# -rw-rw-r-- 1 yjlee yjlee 1379 Oct 19 18:00 09_PA/PA_A1_v2_run2_EXPLORATORY_bic_continuous.csv
+# -rw-rw-r-- 1 yjlee yjlee 3459 Oct 19 18:00 09_PA/PA_A1_v2_run2_EXPLORATORY_power_small.csv
+# - 2026-10-19 | PA-A1 v2 run 2 결과: δ=0 기각률 0.035/0.075/0.065. δ=1 판독 all 강화(min 1.00), fixed14 곡선만 보고(min 0.44, t*=2008), within 강화(min 0.90). 주의: δ=1 추가 점프는 관측 초과분(점프−추세 기저점프)의 약 3배. t*=2020은 δ=0.5에서 세 표본 모두 1.00. fixed14·within에서 비단조 칸 존재(미해석). 판독 규칙·격자 변경 없음 | 본 결과 변경: 없음- 2026-10-19 | PA-A1 v2 run 2 결과 해석 메모: δ=0 기각률 0.035/0.075/0.065. δ=1 판독 all 강화(min 1.00), fixed14 곡선만 보고(min 0.44, t*=2008), within 강화(min 0.90). 주의: δ=1 추가 점프는 관측 초과분(점프−추세 기저점프)의 약 3배. t*=2020은 δ=0.5에서 세 표본 모두 1.00. fixed14·within에 비단조 칸 존재(미해석). 판독 규칙·격자 변경 없음 | 본 결과 변경: 없음
+# - 2026-10-19T18:00:13 | PA-A1(v2) 탐색적 확장 | 정의: 동결 밖(delta=0.25/0.35/0.45, 연속 꺾은선 BIC), 판독 규칙에 미사용 | 결과: PA_A1_v2_run2_EXPLORATORY_*.csv | 본 결과 변경 여부: 없음
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport
+# cat >> paper1/09_PA/PA_CHANGELOG.md <<'EOF'
+# - 2026-10-19 | PA-A1 v2 탐색적 확장 해석 메모(동결 밖, 판독 규칙에 미사용): δ=0.25/0.35/0.45 검정력은 t*=2020에서 all·within 1.00, fixed14 0.41~1.00. t*=2012의 fixed14·within은 δ=0.45까지 ≈0(사각지대), t*=2008은 약하거나 비단조. 연속 꺾은선 BIC는 세 표본 모두 꺾임 2개가 최적(all·fixed14 2007/2016, within 2003/2012), 2020 꺾임은 선택되지 않음. k와 변화점 위치는 미저장이라 사각지대 원인은 가설 | 본 결과 변경: 없음
+# EOF
+# git add paper1/09_PA/PA_A1_v2_run2_EXPLORATORY_*.csv paper1/09_PA/PA_A1_v2_explore_log.txt paper1/09_PA/PA_CHANGELOG.md
+# git commit -m "PA-A1 v2 exploratory results (small jumps, continuous BIC)" && git tag -a PA-A1-v2-explore-results-2026-10-19 -m "explore outputs, seen" && git push --follow-tags
+# [main 3ad6eaa] PA-A1 v2 exploratory results (small jumps, continuous BIC)
+#  4 files changed, 100 insertions(+)
+#  create mode 100644 paper1/09_PA/PA_A1_v2_explore_log.txt
+#  create mode 100644 paper1/09_PA/PA_A1_v2_run2_EXPLORATORY_bic_continuous.csv
+#  create mode 100644 paper1/09_PA/PA_A1_v2_run2_EXPLORATORY_power_small.csv
+# Enumerating objects: 13, done.
+# Counting objects: 100% (13/13), done.
+# Delta compression using up to 24 threads
+# Compressing objects: 100% (9/9), done.
+# Writing objects: 100% (9/9), 3.57 KiB | 3.57 MiB/s, done.
+# Total 9 (delta 3), reused 0 (delta 0), pack-reused 0
+# remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+# To https://github.com/LEEYJ1021/transport-knowledge-paper1.git
+#    ce23737..3ad6eaa  main -> main
+#  * [new tag]         PA-A1-v2-explore-results-2026-10-19 -> PA-A1-v2-explore-results-2026-10-19
+# yjlee@u24:~/Research/Minnesota_Transport$ cd ~/Research/Minnesota_Transport/paper1
+# python3 - <<'EOF'
+# import ast, re
+# from pathlib import Path
+# P1 = Path.home()/"Research/Minnesota_Transport/paper1"
+# KEY = re.compile(r"entr|persist|new|adapt|realloc|exit|decomp|boot|cluster|homonym|risk|name|oa_id|first_year|cohort", re.I)
+# for fn in ["s6_lib.py", "s6_run.py"]:
+#     t = (P1/fn).read_text(encoding="utf-8"); L = t.splitlines(); tree = ast.parse(t)
+#     print(f"\n==== {fn} ({len(L)}줄) ====")
+#     for n in tree.body:
+#         if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) and n.targets[0].id.isupper(): print("  ", n.targets[0].id, "=", ast.unparse(n.value)[:100])
+#     for n in tree.body:
+#         if isinstance(n, ast.FunctionDef): print(f"  L{n.lineno:<4} def {n.name}({', '.join(a.arg for a in n.args.args)})")
+#     print("[핵심 후보 함수 소스, 각 40줄까지]")
+#     for n in tree.body:
+#         if isinstance(n, ast.FunctionDef) and KEY.search(n.name):
+#             seg = L[n.lineno-1:n.end_lineno]; print(f"\n--- {n.name} (L{n.lineno}-{n.end_lineno}) ---"); print("\n".join(seg[:40]))
+# t = (P1/"s6_run.py").read_text(encoding="utf-8").splitlines()
+# print("\n==== s6_run.py 키워드 줄 ====")
+# for i, l in enumerate(t, 1):
+#     if re.search(r"entrant|persist|first_year|oa_id|homonym|risk|B_BOOT|bootstrap", l): print(f"L{i:<4} {l.strip()[:160]}")
+# EOF
+
+# ==== s6_lib.py (146줄) ====
+#    ROOT = Path.home() / 'Research/Minnesota_Transport'
+#    S6 = ROOT / 'paper1/06_S6'
+#   L12   def pick(df, cands, what)
+#   L16   def _find(o, key)
+#   L22   def load_spec()
+#   L28   def ipw_weights(W, spec)
+#   L37   def load_all(spec)
+#   L140  def make_pair(L, p0, p1, scheme, venue, topic, hom)
+#   L146  def pairs_of(spec)
+# [핵심 후보 함수 소스, 각 40줄까지]
+
+# ==== s6_run.py (119줄) ====
+#    QUICK = False
+#    L = load_all(spec)
+#    K = L['K']
+#    PAIRS = pairs_of(spec)
+#    MAIN = spec['main']
+#    TERMS = ['adapt', 'realloc', 'entry_new', 'entry_ret', 'exit_final', 'exit_gap']
+#    FR = pd.DataFrame(fr)
+#    G = pd.DataFrame(grid)
+#    RS = pd.DataFrame(res)
+#   L17   def summarize(dec)
+# [핵심 후보 함수 소스, 각 40줄까지]
+
+# ==== s6_run.py 키워드 줄 ====
+# L31   ex, drop = P.excess(); exc_rows.append(dict(pair=f"{p0}->{p1}", scheme=sc, excess_half=half(ex), dropped_entrant_mass=drop,
+# L66   pd.DataFrame(boot_rows).to_csv(S6 / f"renewal_bootstrap{sfx}.csv", index=False, encoding="utf-8-sig")
+# L86   fr.append(dict(pair=f"{p0}->{p1}", defn=d, subset=sub, n_persist=int(mk.sum()), n_zero_t0=int(z.sum()),
+# L95   axes = list(itertools.product(PAIRS, [s for s in spec["schemes"] if "m_" + s in L["R"].columns], spec["venue_sets"], list(L["risk"]), spec["topic_sets"]))
+# L108  G.groupby(["pair", "hom"])[["excess_half", "within_share", "entry_share"]].agg(["min", "max"]).to_csv(S6 / f"homonym_range{sfx}.csv", encoding="utf-8-sig")
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$
+
+# -*- coding: utf-8 -*-
+# paper1/MASTER_MANIFEST.csv + MASTER_TAGS.csv 생성. 파일 수정 없음, 결과·판정과 무관한 기록 작업.
+import hashlib, subprocess
+from pathlib import Path
+import pandas as pd
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"
+git = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+SKIP = {"oa_raw", ".ipynb_checkpoints", "_backup_before_income_tv", "_recovered_s4", "__pycache__"}
+tracked = set(git("ls-files", "paper1").stdout.splitlines())
+rows = []
+for d in sorted(P1.glob("[0-9][0-9]_*")):
+    for f in sorted(d.rglob("*")):
+        if not f.is_file() or any(s in f.parts for s in SKIP): continue
+        rel = f.relative_to(ROOT).as_posix()
+        rows.append(dict(stage=d.name, file=rel, bytes=f.stat().st_size, mtime=pd.Timestamp(f.stat().st_mtime, unit="s").isoformat(timespec="seconds"),
+                         sha256=sha_f(f), git_tracked=rel in tracked))
+for f in sorted(P1.glob("*.py")):
+    rel = f.relative_to(ROOT).as_posix()
+    rows.append(dict(stage="code", file=rel, bytes=f.stat().st_size, mtime=pd.Timestamp(f.stat().st_mtime, unit="s").isoformat(timespec="seconds"), sha256=sha_f(f), git_tracked=rel in tracked))
+M = pd.DataFrame(rows); M.to_csv(P1/"MASTER_MANIFEST.csv", index=False, encoding="utf-8-sig")
+tg = git("for-each-ref", "--format=%(refname:short)|%(objecttype)|%(objectname:short)|%(*objectname:short)|%(creatordate:iso)", "refs/tags").stdout.strip().splitlines()
+T = pd.DataFrame([x.split("|") for x in tg], columns=["tag", "type", "obj", "commit_if_annotated", "created"]); T.to_csv(P1/"MASTER_TAGS.csv", index=False, encoding="utf-8-sig")
+remote = set(l.split("refs/tags/")[1].replace("^{}", "") for l in git("ls-remote", "--tags", "origin").stdout.splitlines() if "refs/tags/" in l)
+T["on_origin"] = T.tag.isin(remote); T.to_csv(P1/"MASTER_TAGS.csv", index=False, encoding="utf-8-sig")
+print(M.groupby("stage").agg(files=("file", "size"), MB=("bytes", lambda x: round(x.sum()/1e6, 1)), untracked=("git_tracked", lambda x: int((~x).sum()))).to_string())
+print(f"\n태그 {len(T)}개 | 원격 미푸시 {int((~T.on_origin).sum())}개:", list(T[~T.on_origin].tag)[:12])
+print("※ git_tracked=False 파일이 남아 있으면 PA-0 정리 커밋을 먼저 끝내세요. 이 표는 기록용이며 결과를 바꾸지 않습니다.")
+
+       files    MB  untracked
+stage                        
+00_S0     32   0.2          0
+01_S1     50  31.1         15
+02_S2     36  14.8         36
+03_S3     26   0.9          6
+04_S4     24   1.6         22
+05_S5     19   0.3          0
+06_S6     29   0.1          0
+07_S7     27   1.0          1
+08_S8     32   0.6          0
+09_PA     14   0.0          0
+code      14   0.2          3
+
+태그 27개 | 원격 미푸시 0개: []
+※ git_tracked=False 파일이 남아 있으면 PA-0 정리 커밋을 먼저 끝내세요. 이 표는 기록용이며 결과를 바꾸지 않습니다.
+
+# -*- coding: utf-8 -*-
+# PA-B2: 2020 변화의 표본 크기·저널 구성 아티팩트 분리. 미실행 코드.
+# MODE: "freeze" -> "tag" -> (git push --follow-tags) -> "run"(QUICK=True: 오류 점검 전용) -> "run"(QUICK=False)
+# S0~S8 판정 불변. 모든 산출물 [Post-hoc]. 판독 규칙은 PLAN_B2에 동결.
+import sys, json, hashlib, subprocess, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 40); pd.set_option("display.max_rows", 200)
+MODE = "freeze"
+QUICK = True
+
+ROOT = Path.home() / "Research/Minnesota_Transport"; P1 = ROOT/"paper1"; PA = P1/"09_PA"; S5 = P1/"05_S5"; S3 = P1/"03_S3"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_b = lambda b: hashlib.sha256(b).hexdigest(); sha_f = lambda p: sha_b(Path(p).read_bytes())
+git = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+class Halt(Exception): pass
+spec_hash = lambda s: sha_b(json.dumps({k: v for k, v in s.items() if k not in ("sha256", "created", "refs")}, sort_keys=True, ensure_ascii=False).encode())
+V2P, BP = PA/"PA_0_PLAN_v2.json", PA/"PA_B2_PLAN.json"
+
+PLAN_B2 = dict(
+    version=1, seed=2026, parent="PA_0_PLAN_v2.json",
+    status="사후 명세. PA-A1 run 1·2·탐색 결과를 본 뒤 작성. PA-B2 결과는 미열람. S0~S8 판정 불변.",
+    caps=[3800, 3000], primary_cap=3800, B=200, focus_year=2020, window_pre=[2017, 2019], window_post=[2020, 2022], samples=["all", "fixed14", "within"],
+    downsample="연도별 (저널x토픽) 셀 카운트에서 총 cap편을 비복원 추출(다변량 초기하). 연도 논문 수가 cap 이하이면 그대로. 저널 구성은 기대값상 유지",
+    detector="s5_lib.detect(P, n, pen, kmax, minlen) 그대로. pen = c_primary*phi_s*(K-1)*log(T), S5_0_PREREG.json 값. 추출된 카운트로 s5_lib.sample_P 재계산",
+    stats="(a) 2020 점프 J = ||가중평균(sqrt P)[2020,2023) - 가중평균(sqrt P)[2017,2020)||/sqrt(2), 가중치 4n (PA-A1과 동일), (b) 2020±1년 변화점 회수율, (c) R, (d) 변화점 연도 분포",
+    reading="primary_cap에서 표본별 '유지' = (회수율>=0.80) AND (J 중앙값 >= 0.80*J_obs). 세 표본 모두 유지: '표본 크기 아티팩트 아님' / 일부: '혼재(표본 의존)' / 없음: '아티팩트 후보 확정'. cap=3000은 민감도로만 보고",
+    descriptive="관측 자료 기술 1회: decomp_break(2017-19 대 2020-22)의 토픽 상위 10(저널 내/간), 2019->2020 저널별 논문 수 증가 상위 10",
+    caveat="하향 추출은 표집 잡음을 늘려 J를 위로 편향시킬 수 있어 J만으로 판정하지 않음. 벌점은 S5 값 고정이라 추출 후 비용/벌점 비율이 달라짐. 검정은 논문 독립 가정",
+    forbidden="결과를 본 뒤 cap·임계값·창 변경(변경 시 v2 계획으로 분리하고 사유 기록)")
+
+def freeze():
+    if not V2P.exists(): raise Halt("PA_0_PLAN_v2.json이 없습니다")
+    h = spec_hash(PLAN_B2); print("PA-B2 계획 해시(예정)", h[:12])
+    if BP.exists(): print("이미 동결:", "동일" if json.loads(BP.read_text(encoding="utf-8"))["sha256"] == h else "⛔ 다름"); return
+    refs = {f.name: sha_f(f) for f in [V2P, S5/"S5_0_PREREG.json", P1/"s5_lib.py", PA/"PA_A1_v2_run2_power_curve.csv"] if f.exists()}
+    BP.write_text(json.dumps(dict(PLAN_B2, created=now(), sha256=h, refs=refs), ensure_ascii=False, indent=1), encoding="utf-8")
+    with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as f:
+        f.write(f"\n- {now()} | PA-B2 계획 동결(해시 {h[:12]}) | 사유: PA-A1 결과 열람 뒤의 사후 명세, B2 결과 미열람. QUICK 실행은 오류 점검 전용 | 본 결과 변경 여부: 없음\n")
+    print("저장: PA_B2_PLAN.json")
+
+def tag():
+    if not BP.exists(): raise Halt("먼저 freeze")
+    t = f"PA-B2-plan-{pd.Timestamp.now().strftime('%Y-%m-%d')}"
+    if git("tag", "-l", t).stdout.strip(): print("이미 있음:", t); return
+    r = git("add", "--", "paper1/09_PA/PA_B2_PLAN.json", "paper1/09_PA/PA_CHANGELOG.md"); print("add", r.returncode, r.stderr.strip())
+    r = git("commit", "-m", "PA-B2 plan freeze (before execution)"); print("commit", r.returncode, (r.stdout + r.stderr)[:200])
+    r = git("tag", "-a", t, "-m", "PA-B2 plan"); print("tag", r.returncode, r.stderr.strip()); print("※ 이어서 git push --follow-tags (실행 전 외부 타임스탬프)")
+
+def run():
+    if not BP.exists(): raise Halt("먼저 freeze")
+    sp = json.loads(BP.read_text(encoding="utf-8"))
+    if sp["sha256"] != spec_hash(sp) or sp["sha256"] != spec_hash(PLAN_B2): raise Halt("동결 파일과 현재 계획이 다릅니다(사후 변경 금지)")
+    if not git("tag", "-l", "PA-B2-plan-*").stdout.strip(): raise Halt("tag 단계를 먼저 실행하세요")
+    sys.path.insert(0, str(P1)); import s5_lib as L
+    sfx = "_QUICK" if QUICK else ""; B = 20 if QUICK else PLAN_B2["B"]; rng = np.random.default_rng(int(PLAN_B2["seed"]))
+    s5 = json.loads((S5/"S5_0_PREREG.json").read_text(encoding="utf-8")); D = s5["detection"]; PHI = {k: v["phi"] for k, v in D["phi"].items()}
+    C0, KMAX, MINLEN = D["c_primary"], D["k_max"], D["min_len"]
+    cnt, venues, topics, fixed_v = L.load_counts(); wbar = cnt.sum((0, 2))/cnt.sum(); T, V, K = cnt.shape; YEARS = np.asarray(L.YEARS); SAM = PLAN_B2["samples"]; f = PLAN_B2["focus_year"]
+    pen = lambda s: C0*PHI[s]*(K-1)*np.log(T); i20 = int(np.where(YEARS == f)[0][0]); pre, post = PLAN_B2["window_pre"], PLAN_B2["window_post"]
+    def J(P, n, it, ):   # PA-A1과 동일 정의(3년 창)
+        X, w = np.sqrt(P), 4.0*n; a, b = slice(max(0, it-3), it), slice(it, it+3)
+        m = lambda sl: np.average(X[sl], axis=0, weights=w[sl]) if w[sl].sum() > 0 else X[sl].mean(0)
+        return float(np.linalg.norm(m(b) - m(a))/np.sqrt(2))
+    def detect_s(c_arr, s):
+        P, n = L.sample_P(c_arr, fixed_v, wbar, s); return L.detect(P, n, pen(s), KMAX, MINLEN), P, n
+    # 관측 재현 점검(S5와 R 일치)
+    OBS = {}; ref = pd.read_csv(S5/"regime_nulls.csv")
+    for s in SAM:
+        d, P, n = detect_s(cnt, s); r0 = float(ref[(ref["null"] == "N2") & (ref["sample"] == s)].obs_R.iloc[0])
+        if abs(d["R"] - r0) > 1e-3: raise Halt(f"S5 관측 R 재현 실패({s}): {d['R']:.4f} vs {r0:.4f}")
+        OBS[s] = dict(J=J(P, n, i20), R=d["R"], breaks=[int(YEARS[b]) for b in d["br"]])
+    print("[관측 재현 OK]", {s: (round(v["J"], 4), v["breaks"]) for s, v in OBS.items()})
+    # ---- 관측 기술 통계 1회 ----
+    a0, a1, b1 = pre[0]-int(YEARS[0]), post[0]-int(YEARS[0]), post[1]+1-int(YEARS[0])
+    wi, bt, tot = L.decomp_break(cnt, a0, a1, b1)
+    names = {}
+    try:
+        Cd = pd.read_csv(S3/"topic_evidence_cards.csv"); col = [c for c in Cd.columns if c.lower() in ("name", "label", "topic_name", "top_terms", "top10", "keywords")]
+        if col: names = dict(zip(Cd.topic.astype(int), Cd[col[0]].astype(str).str.slice(0, 60)))
+    except Exception as e: print("※ 카드 이름 생략:", str(e)[:80])
+    gA = set(pd.read_csv(S3/"L7_topic_grade.csv").pipe(lambda g: g[g[[c for c in g.columns if "grade" in c.lower()][0]].astype(str).str.upper().str.strip() == "A"]).topic.astype(int))
+    top = np.argsort(-np.abs(tot))[:10]
+    TP = pd.DataFrame([dict(rank=r+1, topic=int(topics[i]), name=names.get(int(topics[i]), ""), delta=tot[i], within_journal=wi[i], between_journal=bt[i], grade_A=int(topics[i]) in gA) for r, i in enumerate(top)])
+    print(f"\n[Post-hoc] {pre[0]}-{pre[1]} 대 {post[0]}-{post[1]} 토픽 변화 상위 10\n", TP.round(4).to_string(index=False))
+    print(f"저널 간 성분 비중(전 토픽 절대합): {np.abs(bt).sum()/(np.abs(wi).sum()+np.abs(bt).sum()):.3f}")
+    nv = cnt.sum(2); ip = int(np.where(YEARS == f-1)[0][0]); dv = nv[i20] - nv[ip]
+    VG = pd.DataFrame(dict(venue=venues, fixed14=fixed_v, n_prev=nv[ip], n_focus=nv[i20], delta=dv, share_of_total_delta=dv/dv.sum())).sort_values("delta", ascending=False)
+    print(f"\n[Post-hoc] {f-1}->{f} 저널별 논문 수 증가 상위 10 (전체 증가 {int(dv.sum())})\n", VG.head(10).round(3).to_string(index=False))
+    TP.to_csv(PA/f"PA_B2_observed_topics{sfx}.csv", index=False, encoding="utf-8-sig"); VG.to_csv(PA/f"PA_B2_venue_growth{sfx}.csv", index=False, encoding="utf-8-sig")
+    # ---- 하향 추출 복제 ----
+    def cap_counts(c, cap):
+        out = c.copy()
+        for y in range(T):
+            flat = c[y].ravel().astype(np.int64)
+            if flat.sum() > cap: out[y] = rng.multivariate_hypergeometric(flat, cap, method="marginals").reshape(V, K)
+        return out
+    R_ = []
+    for cap in PLAN_B2["caps"]:
+        for b in range(B):
+            cc = cap_counts(cnt, cap)
+            for s in SAM:
+                d, P, n = detect_s(cc, s); yrs = [int(YEARS[x]) for x in d["br"]]
+                R_.append(dict(cap=cap, rep=b, sample=s, J=J(P, n, i20), R=d["R"], k=d["k"], hit=any(abs(y-f) <= 1 for y in yrs), breaks=str(yrs)))
+        print(f"  cap={cap} 완료")
+    RP = pd.DataFrame(R_); RP.to_csv(PA/f"PA_B2_cap_replicates{sfx}.csv", index=False, encoding="utf-8-sig")
+    SM = RP.groupby(["cap", "sample"]).agg(J_med=("J", "median"), J_q05=("J", lambda x: x.quantile(.05)), J_q95=("J", lambda x: x.quantile(.95)), R_med=("R", "median"), hit_rate=("hit", "mean"), k_mode=("k", lambda x: x.mode().iloc[0])).reset_index()
+    SM["J_obs"] = SM["sample"].map(lambda s: OBS[s]["J"]); SM["J_ratio"] = SM.J_med/SM.J_obs; SM.to_csv(PA/f"PA_B2_summary{sfx}.csv", index=False, encoding="utf-8-sig")
+    print("\n[Post-hoc] PA-B2 하향 추출 요약\n", SM.round(3).to_string(index=False))
+    if QUICK:
+        print("\n[QUICK] 오류 점검 전용: 위 수치를 해석하거나 판독 규칙을 적용하지 마세요(B=20, v2 계획 사유 방지)."); return
+    pr = SM[SM.cap == PLAN_B2["primary_cap"]].set_index("sample"); keep = {s: bool(pr.loc[s, "hit_rate"] >= 0.80 and pr.loc[s, "J_ratio"] >= 0.80) for s in SAM}
+    print("\n[동결 판독, cap=%d]" % PLAN_B2["primary_cap"], {s: ("유지" if v else "실패") for s, v in keep.items()})
+    print("→", "표본 크기 아티팩트 아님" if all(keep.values()) else ("혼재(표본 의존)" if any(keep.values()) else "아티팩트 후보 확정"))
+    print("※ J는 표집 잡음으로 위로 편향될 수 있고, 판독은 PLAN_B2의 규칙을 코드로 옮긴 것입니다. S5 판정(체제 서사 철회)은 바꾸지 않습니다.")
+    with (PA/"PA_CHANGELOG.md").open("a", encoding="utf-8") as fh:
+        fh.write(f"- {now()} | PA-B2 실행 | 정의: PA_B2_PLAN {sp['sha256'][:12]} | 결과: PA_B2_*.csv | 본 결과 변경 여부: 없음\n")
+
+try: {"freeze": freeze, "tag": tag, "run": run}[MODE]()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+PA-B2 계획 해시(예정) 47c93a7c5739
+저장: PA_B2_PLAN.json
+
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport
+# echo "- $(date +%Y-%m-%dT%H:%M:%S) | PA-0 MASTER_MANIFEST·MASTER_TAGS 생성(기록 전용). 생성 시각 기준 해시이며 각 단계 동결 시점의 해시는 단계별 manifest가 증명 | 본 결과 변경: 없음" >> paper1/09_PA/PA_CHANGELOG.md
+# git add paper1/MASTER_MANIFEST.csv paper1/MASTER_TAGS.csv paper1/09_PA/PA_CHANGELOG.md && git commit -m "PA-0: master manifest and tag list" && git push --follow-tags
+# [main c915932] PA-0: master manifest and tag list
+#  3 files changed, 333 insertions(+)
+#  create mode 100644 paper1/MASTER_MANIFEST.csv
+#  create mode 100644 paper1/MASTER_TAGS.csv
+# Enumerating objects: 11, done.
+# Counting objects: 100% (11/11), done.
+# Delta compression using up to 24 threads
+# Compressing objects: 100% (7/7), done.
+# Writing objects: 100% (7/7), 17.41 KiB | 8.70 MiB/s, done.
+# Total 7 (delta 3), reused 0 (delta 0), pack-reused 0
+# remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+# To https://github.com/LEEYJ1021/transport-knowledge-paper1.git
+#    3ad6eaa..c915932  main -> main
+# yjlee@u24:~/Research/Minnesota_Transport$ cd ~/Research/Minnesota_Transport/paper1
+# # 1) MODE="freeze" 로 저장 후 실행 → 해시 확인
+# # 2) MODE="tag" 로 바꿔 실행 → 이어서 푸시
+# cd .. && git push --follow-tags && cd paper1
+# # 3) MODE="run", QUICK=True → 오류 점검만 (수치 해석 금지)
+# # 4) QUICK=False 로 바꿔 본 실행 (백그라운드 권장)
+# nohup python3 -u pa_b2.py > 09_PA/PA_B2_full_log.txt 2>&1 &
+# Everything up-to-date
+# [1] 2326614
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$
+
+# yjlee@u24:~/Research/Minnesota_Transport$ cd ~/Research/Minnesota_Transport/paper1
+# sed -i 's/^MODE = "tag"/MODE = "run"/' pa_b2.py && grep -n '^MODE\|^QUICK' pa_b2.py
+# ( time python3 -u pa_b2.py ) 2>&1 | tee 09_PA/PA_B2_quick_log.txt
+# 9:MODE = "run"
+# 10:QUICK = True
+# [관측 재현 OK] {'all': (0.1901, [2012, 2020]), 'fixed14': (0.1788, [2008, 2015, 2020]), 'within': (0.1495, [2009, 2015, 2020])}
+
+# [Post-hoc] 2017-2019 대 2020-2022 토픽 변화 상위 10
+#   rank  topic                                                         name   delta  within_journal  between_journal  grade_A
+#     1     71 covid, 19, pandemic, travel, post, mobility, public, spread,  0.0175          0.0172           0.0003     True
+#     2     69 prediction, graph, traffic, temporal, forecasting, flow, con  0.0085          0.0055           0.0030     True
+#     3     45 phase, current, control, drives, fault, pmsm, torque, predic  0.0084          0.0029           0.0054     True
+#     4    131 reinforcement, learning, deep, autonomous, control, signal,   0.0076          0.0060           0.0016     True
+#     5     88 permanent, magnet, motor, flux, machines, machine, synchrono  0.0075          0.0009           0.0066     True
+#     6     99 vehicular, edge, computing, offloading, internet, resource,   0.0069          0.0040           0.0029     True
+#     7    138 driving, drivers, young, risky, self, anger, older, reported -0.0063         -0.0027          -0.0036     True
+#     8    123 mobility, shared, maas, service, public, scooter, micromobil  0.0060          0.0069          -0.0009     True
+#     9     20 privacy, secure, security, authentication, preserving, schem  0.0058          0.0038           0.0020     True
+#    10    133 prediction, trajectory, intention, autonomous, driving, lear  0.0058          0.0040           0.0018     True
+# 저널 간 성분 비중(전 토픽 절대합): 0.404
+
+# [Post-hoc] 2019->2020 저널별 논문 수 증가 상위 10 (전체 증가 928)
+#      venue  fixed14  n_prev  n_focus  delta  share_of_total_delta
+#     T-ITS     True     425      706    281                 0.303
+#      T-TE    False      94      219    125                 0.135
+#       AAP     True     272      373    101                 0.109
+#      TR-D     True     212      302     90                 0.097
+#      TRIP    False      61      145     84                 0.091
+#      TR-E     True     162      220     58                 0.062
+#   ITS Mag    False      45       92     47                 0.051
+#      RTBM    False      44       90     46                 0.050
+# TranspPol     True     133      170     37                 0.040
+#       TBS    False      55       90     35                 0.038
+#   cap=3800 완료
+#   cap=3000 완료
+
+# [Post-hoc] PA-B2 하향 추출 요약
+#   cap  sample  J_med  J_q05  J_q95  R_med  hit_rate  k_mode  J_obs  J_ratio
+# 3000     all  0.194  0.191  0.199  0.716       1.0       3  0.190    1.021
+# 3000 fixed14  0.184  0.180  0.191  0.671       1.0       3  0.179    1.028
+# 3000  within  0.154  0.150  0.161  0.653       1.0       4  0.150    1.030
+# 3800     all  0.190  0.187  0.192  0.728       1.0       3  0.190    0.997
+# 3800 fixed14  0.180  0.176  0.183  0.746       1.0       4  0.179    1.004
+# 3800  within  0.150  0.147  0.154  0.670       1.0       4  0.150    1.006
+
+# [QUICK] 오류 점검 전용: 위 수치를 해석하거나 판독 규칙을 적용하지 마세요(B=20, v2 계획 사유 방지).
+
+# real    0m1.313s
+# user    0m4.155s
+# sys     0m0.114s
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$
+
+
+# QUICK 점검은 통과했습니다. 관측 재현이 OK이고(all 0.1901/[2012, 2020], fixed14 0.1788, within 0.1495는 PA-A1과 같은 값), 하향 추출 두 cap과 요약 표가 끝까지 나왔으며, 소요 시간은 1.3초였습니다. 속도 문제는 없으니 본 실행도 B=200이라도 몇십 초면 끝날 것으로 보입니다. 이 수치는 B=20이므로 약속대로 해석하지 않고, 판독 규칙도 적용하지 않습니다.
+
+# ## 먼저 기록할 것 (열람 사실)
+
+# QUICK 출력에는 본 실행과 같은 값이 나오는 관측 기술 표(토픽 변화 상위 10, 저널별 증가 상위 10)와 하향 추출 요약이 포함됐고, 우리는 이를 이미 보았습니다. 그래서 "PA-B2 결과 미열람"은 더 이상 정확하지 않으므로, 아래처럼 실제 상태를 CHANGELOG에 남기세요. 본 실행 코드와 규칙은 바뀌지 않았습니다.
+
+# ## 본 실행 절차
+
+# ```bash
+# cd ~/Research/Minnesota_Transport/paper1
+# echo "- $(date +%Y-%m-%dT%H:%M:%S) | PA-B2 QUICK 점검(B=20, 수치 미해석): 오류 없이 완료(1.3초). QUICK 출력에 관측 기술 표(토픽 상위 10, 저널별 증가)와 하향 추출 요약이 포함되어 열람함. 기술 표는 결정적이라 본 실행과 같음. 판독 규칙·cap·창 변경 없음 | 본 결과 변경: 없음" >> 09_PA/PA_CHANGELOG.md
+# sed -i 's/^QUICK = True/QUICK = False/' pa_b2.py && grep -n '^MODE\|^QUICK' pa_b2.py
+# cd .. && git add paper1/pa_b2.py paper1/09_PA/PA_CHANGELOG.md paper1/09_PA/PA_B2_quick_log.txt paper1/09_PA/PA_B2_*_QUICK.csv
+# git commit -m "PA-B2: QUICK check done; QUICK=False for full run (spec unchanged)" && git tag -a PA-B2-fullrun-2026-10-19 -m "full run config, pre-run" && git push --follow-tags
+# cd paper1 && ( time python3 -u pa_b2.py ) 2>&1 | tee 09_PA/PA_B2_full_log.txt
+# ```
+
+# `grep`에서 `MODE = "run"`과 `QUICK = False`가 모두 보여야 합니다. 시간이 짧아 포그라운드로 돌려도 됩니다. 끝나면 `[동결 판독, cap=3800]` 줄과 `PA_B2_*.csv`(접미사 `_QUICK` 없음)가 생깁니다.
+
+# ## 본 실행 후
+
+# 이전과 같이 결과 CSV와 로그를 커밋·태그·푸시하고 로그 전체를 붙여 주세요.
+
+# ```bash
+# cd ~/Research/Minnesota_Transport
+# git add paper1/09_PA/PA_B2_*.csv paper1/09_PA/PA_B2_full_log.txt paper1/09_PA/PA_CHANGELOG.md
+# git commit -m "PA-B2 results" && git tag -a PA-B2-results-2026-10-19 -m "PA-B2 outputs, seen" && git push --follow-tags
+# ```
+
+# ## 해석 전에 알아 둘 설계 한계
+
+# 이것은 결과가 아니라 동결된 설계에 대한 점검이므로 지금 적어 둡니다.
+
+# - **cap이 약하게 작동합니다.** 분석 집합의 2020년 논문은 4,794편이고, cap 3,800은 이를 약 20% 줄이는 정도입니다. 표본 크기가 점프를 만들었다면 이 정도 하향 추출은 그 효과를 크게 지우지 못할 수 있습니다. 즉 이 검정은 "표본 크기 아티팩트"를 반증하는 힘이 제한적입니다. cap 3,000은 민감도로만 두었으므로 판독에는 쓰지 않지만, 본문에서는 두 cap의 결과를 함께 표로 보이세요.
+# - **동결 판독은 점프와 회수율을 쓰는데, 둘 다 하향 추출에 둔감할 수 있습니다.** 그래서 "유지"가 나와도 "아티팩트가 아니다"의 강한 증거가 아니라 "이 정도 하향 추출로는 사라지지 않는다"로 쓰세요.
+# - 저널 구성 효과는 `within` 표본이 이미 통제하므로, 본문에서는 "표본 크기" 판독과 분리해 서술하세요.
+# - 보조로 보여 준 관측 표에서 2019→2020 저널별 증가는 T-ITS 한 곳이 30%를 차지한다는 점이 눈에 띕니다. 이는 기술 통계로 본문에 쓸 수 있지만, 판독 규칙과는 별개입니다.
+
+# 실행 결과를 붙여 주시면 동결 규칙대로 읽겠습니다.
+
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport/paper1
+# echo "- $(date +%Y-%m-%dT%H:%M:%S) | PA-B2 QUICK 점검(B=20, 수치 미해석): 오류 없이 완료(1.3초). QUICK 출력에 관측 기술 표(토픽 상위 10, 저널별 증가)와 하향 추출 요약이 포함되어 열람함. 기술 표는 결정적이라 본 실행과 같음. 판독 규칙·cap·창 변경 없음 | 본 결과 변경: 없음" >> 09_PA/PA_CHANGELOG.md
+# sed -i 's/^QUICK = True/QUICK = False/' pa_b2.py && grep -n '^MODE\|^QUICK' pa_b2.py
+# cd .. && git add paper1/pa_b2.py paper1/09_PA/PA_CHANGELOG.md paper1/09_PA/PA_B2_quick_log.txt paper1/09_PA/PA_B2_*_QUICK.csv
+# git commit -m "PA-B2: QUICK check done; QUICK=False for full run (spec unchanged)" && git tag -a PA-B2-fullrun-2026-10-19 -m "full run config, pre-run" && git push --follow-tags
+# cd paper1 && ( time python3 -u pa_b2.py ) 2>&1 | tee 09_PA/PA_B2_full_log.txt
+# 9:MODE = "run"
+# 10:QUICK = False
+# [main 45cc113] PA-B2: QUICK check done; QUICK=False for full run (spec unchanged)
+#  7 files changed, 222 insertions(+), 2 deletions(-)
+#  create mode 100644 paper1/09_PA/PA_B2_cap_replicates_QUICK.csv
+#  create mode 100644 paper1/09_PA/PA_B2_observed_topics_QUICK.csv
+#  create mode 100644 paper1/09_PA/PA_B2_quick_log.txt
+#  create mode 100644 paper1/09_PA/PA_B2_summary_QUICK.csv
+#  create mode 100644 paper1/09_PA/PA_B2_venue_growth_QUICK.csv
+# Enumerating objects: 17, done.
+# Counting objects: 100% (17/17), done.
+# Delta compression using up to 24 threads
+# Compressing objects: 100% (12/12), done.
+# Writing objects: 100% (12/12), 7.24 KiB | 3.62 MiB/s, done.
+# Total 12 (delta 4), reused 0 (delta 0), pack-reused 0
+# remote: Resolving deltas: 100% (4/4), completed with 4 local objects.
+# To https://github.com/LEEYJ1021/transport-knowledge-paper1.git
+#    ca8a949..45cc113  main -> main
+#  * [new tag]         PA-B2-fullrun-2026-10-19 -> PA-B2-fullrun-2026-10-19
+# [관측 재현 OK] {'all': (0.1901, [2012, 2020]), 'fixed14': (0.1788, [2008, 2015, 2020]), 'within': (0.1495, [2009, 2015, 2020])}
+
+# [Post-hoc] 2017-2019 대 2020-2022 토픽 변화 상위 10
+#   rank  topic                                                         name   delta  within_journal  between_journal  grade_A
+#     1     71 covid, 19, pandemic, travel, post, mobility, public, spread,  0.0175          0.0172           0.0003     True
+#     2     69 prediction, graph, traffic, temporal, forecasting, flow, con  0.0085          0.0055           0.0030     True
+#     3     45 phase, current, control, drives, fault, pmsm, torque, predic  0.0084          0.0029           0.0054     True
+#     4    131 reinforcement, learning, deep, autonomous, control, signal,   0.0076          0.0060           0.0016     True
+#     5     88 permanent, magnet, motor, flux, machines, machine, synchrono  0.0075          0.0009           0.0066     True
+#     6     99 vehicular, edge, computing, offloading, internet, resource,   0.0069          0.0040           0.0029     True
+#     7    138 driving, drivers, young, risky, self, anger, older, reported -0.0063         -0.0027          -0.0036     True
+#     8    123 mobility, shared, maas, service, public, scooter, micromobil  0.0060          0.0069          -0.0009     True
+#     9     20 privacy, secure, security, authentication, preserving, schem  0.0058          0.0038           0.0020     True
+#    10    133 prediction, trajectory, intention, autonomous, driving, lear  0.0058          0.0040           0.0018     True
+# 저널 간 성분 비중(전 토픽 절대합): 0.404
+
+# [Post-hoc] 2019->2020 저널별 논문 수 증가 상위 10 (전체 증가 928)
+#      venue  fixed14  n_prev  n_focus  delta  share_of_total_delta
+#     T-ITS     True     425      706    281                 0.303
+#      T-TE    False      94      219    125                 0.135
+#       AAP     True     272      373    101                 0.109
+#      TR-D     True     212      302     90                 0.097
+#      TRIP    False      61      145     84                 0.091
+#      TR-E     True     162      220     58                 0.062
+#   ITS Mag    False      45       92     47                 0.051
+#      RTBM    False      44       90     46                 0.050
+# TranspPol     True     133      170     37                 0.040
+#       TBS    False      55       90     35                 0.038
+#   cap=3800 완료
+#   cap=3000 완료
+
+# [Post-hoc] PA-B2 하향 추출 요약
+#   cap  sample  J_med  J_q05  J_q95  R_med  hit_rate  k_mode  J_obs  J_ratio
+# 3000     all  0.194  0.189  0.198  0.715       1.0       3  0.190    1.020
+# 3000 fixed14  0.184  0.179  0.189  0.670       1.0       3  0.179    1.030
+# 3000  within  0.155  0.150  0.161  0.652       1.0       4  0.150    1.036
+# 3800     all  0.190  0.186  0.193  0.728       1.0       3  0.190    0.998
+# 3800 fixed14  0.179  0.175  0.183  0.746       1.0       4  0.179    1.000
+# 3800  within  0.150  0.147  0.154  0.670       1.0       4  0.150    1.006
+
+# [동결 판독, cap=3800] {'all': '유지', 'fixed14': '유지', 'within': '유지'}
+# → 표본 크기 아티팩트 아님
+# ※ J는 표집 잡음으로 위로 편향될 수 있고, 판독은 PLAN_B2의 규칙을 코드로 옮긴 것입니다. S5 판정(체제 서사 철회)은 바꾸지 않습니다.
+
+# real    0m7.349s
+# user    0m9.908s
+# sys     0m0.394s
+# yjlee@u24:~/Research/Minnesota_Transport/paper1$ cd ~/Research/Minnesota_Transport
+# git add paper1/09_PA/PA_B2_*.csv paper1/09_PA/PA_B2_full_log.txt paper1/09_PA/PA_CHANGELOG.md
+# git commit -m "PA-B2 results" && git tag -a PA-B2-results-2026-10-19 -m "PA-B2 outputs, seen" && git push --follow-tags
+# [main 8bed2df] PA-B2 results
+#  6 files changed, 1302 insertions(+)
+#  create mode 100644 paper1/09_PA/PA_B2_cap_replicates.csv
+#  create mode 100644 paper1/09_PA/PA_B2_full_log.txt
+#  create mode 100644 paper1/09_PA/PA_B2_observed_topics.csv
+#  create mode 100644 paper1/09_PA/PA_B2_summary.csv
+#  create mode 100644 paper1/09_PA/PA_B2_venue_growth.csv
+# Enumerating objects: 13, done.
+# Counting objects: 100% (13/13), done.
+# Delta compression using up to 24 threads
+# Compressing objects: 100% (9/9), done.
+# Writing objects: 100% (9/9), 28.74 KiB | 4.79 MiB/s, done.
+# Total 9 (delta 3), reused 0 (delta 0), pack-reused 0
+# remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+# To https://github.com/LEEYJ1021/transport-knowledge-paper1.git
+#    45cc113..8bed2df  main -> main
+#  * [new tag]         PA-B2-results-2026-10-19 -> PA-B2-results-2026-10-19
+# yjlee@u24:~/Research/Minnesota_Transport$
+
+
+
+
+
+
+
+

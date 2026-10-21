@@ -4,3 +4,4 @@
 - 2026-10-19T15:17:37 | S6 마무리(규칙 변경 없음): 동결 규칙 해시 df08e07566ca 유지. 동명이인 변형 7종 범위(homonym_range.csv), FHK 민감도(homonym_variants_grid.csv), 재현 점검(equal 대비, 코드 조정 없음). BH-FDR은 p값 검정군이 없어 미적용, Price 분해는 중점 분해와 중복이라 생략, ID 검증은 2020+ 한정이라 미실시 | S6 | 통과 판정
 - 2026-10-19T15:19:43 | S6 마무리(규칙 변경 없음): 동결 규칙 해시 df08e07566ca 유지. 동명이인 변형 7종 범위(homonym_range.csv), FHK 민감도(homonym_variants_grid.csv), 재현 점검(equal 대비, 코드 조정 없음). BH-FDR은 p값 검정군이 없어 미적용, Price 분해는 중점 분해와 중복이라 생략, ID 검증은 2020+ 한정이라 미실시 | S6 | 통과 판정
 - 2026-10-19T15:20:07 | S6 요약에 K3 정의 주석 추가(수치·규칙 변경 없음, 태그 S6-close 이후) | S6 | 기록
+- 2026-10-19T15:21:24 | S6 마무리(규칙 변경 없음): 동결 규칙 해시 df08e07566ca 유지. 동명이인 변형 7종 범위(homonym_range.csv), FHK 민감도(homonym_variants_grid.csv), 재현 점검(equal 대비, 코드 조정 없음). BH-FDR은 p값 검정군이 없어 미적용, Price 분해는 중점 분해와 중복이라 생략, ID 검증은 2020+ 한정이라 미실시 | S6 | 통과 판정

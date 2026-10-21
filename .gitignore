@@ -2,3 +2,6 @@ analysis_data/
 *.parquet
 .ipynb_checkpoints/
 __pycache__/
+paper1/01_S1/oa_raw/
+paper1/01_S1/_backup_before_income_tv/
+archive/*.tar.gz

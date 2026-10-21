@@ -1,0 +1,31 @@
+﻿column,scimago_name,definition,time_unit,unit,plan_use,role,caution
+documents,Documents,연도별 문서 수(Scopus),연도,N,"S1.5 완결성 대조(코퍼스 논문 수와 비), S4.5 저널 크기 맥락",검증·맥락,문서 유형 전체를 세므로 코퍼스(정리 후)와 정확히 같지 않음. 0인 행이 있음(JPT 2019)
+citable_docs_3y,Citable documents,최근 3년 창의 인용 가능 문서 수,3년 창,N,맥락,맥락,연도 단위 문서 수가 아님
+noncitable_docs_3y,Non-citable documents,최근 3년 창의 인용 불가 문서 수,3년 창,N,S2.8 비연구 항목 규칙의 외부 참고,맥락,저널의 비연구 문서 비중 추정. 규칙 제거 건수와 직접 비교 금지(정의 다름)
+cited_docs_3y,Cited documents,3년 창에서 1회 이상 인용된 문서 수,3년 창,N,맥락,맥락,S4의 인용 백분위(코퍼스 기반)와 별개
+uncited_docs_3y,Uncited documents,3년 창에서 미인용 문서 수,3년 창,N,맥락,맥락,
+cites_per_doc_2y,Cites / Doc. (2 years),2년 창 문서당 인용(JIF와 같은 계산이라고 Scimago가 설명),2년 창,비율,"S1.9 JIF 대체, S4.6 맥락",맥락,Clarivate JIF가 아님
+cites_per_doc_3y,Cites / Doc. (3 years),3년 창 문서당 인용,3년 창,비율,맥락,맥락,
+cites_per_doc_4y,Cites / Doc. (4 years),4년 창 문서당 인용,4년 창,비율,맥락,맥락,
+cites_per_doc_total_3y,Cites per document,3년 창 문서당 총 인용,3년 창,비율,(중복),사용 안 함,610행 전부 cites_per_doc_3y와 같은 값이라 중복 열
+ext_cites_per_doc_3y,External Cites per document,자기인용 제외 3년 창 문서당 인용,3년 창,비율,S4.6 맥락,맥락,
+total_cites,Total Cites,해당 연도에 받은 전체 인용 수,연도,N,맥락,맥락,
+self_cites,Self Cites,해당 연도의 저널 자기인용 수,연도,N,맥락,맥락,
+sjr,SJR,크기 비의존 영향력(시변),연도,지수,"S1.9 JIF 대체, S4.5, S4.6 맥락",맥락,결측 50행(신생 저널). 인용 기반이라 S4 토픽 질 변수와 순환 가능: 공변량 투입 금지
+est_apc_usd,Est. APC (USD),SJR 등에서 계산된 추정 APC,연도,USD,(해당 없음),사용 안 함,실제 APC가 아니라 모형 추정치. SJR과 사실상 같은 정보
+est_value_usd,Est. value (USD),추정 APC × 5년 인용 가능 문서 수,5년 창,USD,(해당 없음),사용 안 함,재무 가상치. 분석 의미 없음
+intl_collab_pct,International Collaboration,둘 이상 국가 주소가 있는 문서 비율,연도,%,S1.6 국가 층 외부 대조,검증,"S7 결과 변수와 가까움: 검증·기술용으로만, 공변량 금지. 문서 30편 미만 행은 불안정"
+female_pct,Female Percent,여성 저자 비율(Scimago 추정),연도,%,(계획 외),기술용,성별 추정 방식 미확인. 계획서에 없는 변수라 부록 한정
+overton_docs,Overton,정책 문서에 인용된 문서 수(Overton),연도,N,S8 맥락,맥락,저널 수준 정책 반영도. 논문 단위 도메인 사전을 대체하지 못함
+q_transportation,quartile_transportation,Transportation 분야 사분위(1~4),연도,순서형,S4.6 맥락,맥락,해당 분야에 평가된 행만 값이 있음
+d_q_best,(파생) 분야별 사분위의 최고값,행에 있는 분야 사분위 중 최소값,연도,순서형,맥락,맥락,저널마다 평가 분야 집합이 달라 저널 간 비교는 주의
+d_n_categories,(파생) 사분위가 있는 분야 수,,연도,N,,맥락,
+d_self_cite_share,(파생) self_cites / total_cites,,연도,비율,맥락,맥락,분모 0은 결측
+d_uncited_share_3y,(파생) uncited / (cited + uncited),,3년 창,비율,맥락,맥락,
+d_noncitable_share_3y,(파생) noncitable / (citable + noncitable),,3년 창,비율,맥락,맥락,
+d_log_documents,(파생) ln(documents),,연도,로그,맥락,맥락,documents=0은 결측
+d_documents_yoy,(파생) 전년 대비 문서 수 증가율,,연도,비율,맥락,맥락,전년 값이 0이거나 없으면 결측
+d_doc_share_year_all,(파생) 해당 연도 전체 저널 문서 수 중 비중,,연도,비율,E2 대안(Scopus 기반) 민감도,맥락,분모는 그 해 Data에 있는 저널이라 구성이 해마다 바뀜(34개 저널 한정). 코퍼스 비중(E2)과 다른 개념
+d_sjr_pct_fixed_ref,(파생) 같은 해 고정 저널 14개 SJR 분포에서의 백분위,,연도,0~1,맥락,맥락,기준집단이 고정 저널 14개라 해마다 비교 가능. 값이 있는 SJR 행만
+d_scopus_first_year,(파생) Data에 있는 저널의 첫 연도,,저널,연도,S1.9 E1 보조,맥락,창간연도가 아님. Scopus 지표 표의 시작
+d_years_since_first,(파생) year - d_scopus_first_year,,연도,N,맥락,맥락,

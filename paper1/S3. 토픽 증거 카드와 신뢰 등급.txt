@@ -1,0 +1,2653 @@
+# # S2까지 한 일 (핵심)
+# **S2는 "측정 도구와 점검을 확정하는 단계"로 닫는 전제입니다.** 저자 층(2.4, 2.5)은 S6 직전으로 이월합니다.
+# | 영역 | 한 일 | 핵심 결과 |
+# |---|---|---|
+# | Scimago 대조 | 코퍼스와 Scopus 문서 수, 다국적 공저 비교 | 고정 14개 합계 64,779 대 64,088(+1.1%). T-IV 2025는 사실상 빈 칸, RailEng은 수집 문제가 아님 |
+# | 사전등록 | S2 부록 동결(`646135ccaa68`), 알파벳순 규칙 동결 | 알파벳순과 일치하는 논문 6,011편(96%가 3~4인) |
+# | 국가 층 | 가중치 4종 × (주, 복구) 국가 질량 | 불변식 PASS, C4 부호 일치 23/24. 다만 검정력이 낮음 |
+# | 위험군 | 재현율 점검, 선택 효과 | 제외 비중 CN 23.4%, US 8.4%. 정밀도는 순환적(`ambiguous`가 OpenAlex ID 수로 정의됨) |
+# | 토픽 결측 | 분해, 성향 모형 | 보유율 79.1%, AUC 0.73. 2007년 고정 저널 하락은 원인 미확인 |
+# | 정리 규칙 | 546건 표시(제거 안 함) | 규칙 변경 없음 |
+# | 규명 | 창 안 논문 수, 토픽 18, 38, 49 | 81,485/81,645/81,441은 서로 다른 정의. 18번은 1편짜리 빈 군집(유효 149개) |
+# | 제목 분류기, K 민감도 | 교차검증 정확도 0.508, C1 후보 부호는 15회 모두 유지 | C2, C3, C5는 S5~S7 이후 재계산 |
+# **아직 열려 있는 것**
+# - 수작업 라벨링(정리 규칙 91건, 미상 소속 30건, 토픽 38/49 120건)
+# - 커밋과 태그가 실제로 만들어졌는지(`git tag -l "S2-*"`)
+# - 2007년 하락, T-IV 2025, T-ITS 2008의 원인(S5에서 아티팩트 후보로 표시)
+
+# # S3: 토픽 증거 카드와 신뢰 등급
+# **목적:** 150개 토픽을 이름이 아니라 증거 묶음(카드)으로 만들고 A/B/C 등급을 매깁니다. 통과 기준은 A등급 50% 이상입니다.
+# | 순서 | 단계 | 내용 | 라벨링 필요 여부 |
+# |---|---|---|---|
+# | 0 | **S3-0** 부록 동결 | 모든 임계값, 겹치지 않는 기간 5개, L5 검증 대상(38/49번), L7 실패 정의, 복합 토픽 조건부 규칙 | 불필요(조건부 규칙으로 동결) |
+# | 1 | **L1** 구별 단어 | 기간별 정보적 사전분포 로그 오즈비(단어, bigram), 기존 lift와 Jaccard 병기 | 불필요 |
+# | 2 | **L3** 일관성·안정성 | 상위 10단어 NPMI, 부트스트랩 200회 top-10 Jaccard(시간이 가장 오래 걸림) | 불필요 |
+# | 3 | **L2** 대표 논문 | 구별 점수 상위이면서 연도·저널 내 인용 백분위가 높은 10편(최근 연도 처리 규칙 필요) | 불필요 |
+# | 4 | **L4** 구조 지문 | 저널 엔트로피, 정점 연도, 성장 기울기, 비고정 저널 비율 등. 팀 규모와 신규 저자 비율은 `BASE` 정의 확인 후 | 불필요 |
+# | 5 | **L5** 비연구·복합 탐지 | 동일 제목 반복, n<30, 모듈러리티, 38/49번 처리 | **필요(38/49 라벨링)** |
+# | 6 | **L7** A/B/C 등급 | 실패 항목 0개 A, 1개 B, 2개 이상 C | L5 이후 |
+# | 7 | (선택) **L6** | OpenAlex 토픽 대응표 | 보류 |
+# **S3 안에서 닫히는 것과 아닌 것**
+# - A등급 비중 50% 이상까지는 S3에서 확정합니다.
+# - "핵심 결과가 A등급 재추정에서 유지되는가"는 S5~S7 결과가 나온 뒤에 닫습니다.
+# **한계로 적을 것**
+# - 단어 재료는 제목뿐입니다(초록 사용 흔적은 못 찾음).
+# - 고정 저널은 PREREG의 14개를 씁니다.
+# - Scimago 변수는 등급 계산에 쓰지 않습니다.
+# **권장 순서:** S3-0 동결 → L1 → L3 → L2 → L4 → (라벨링) → L5 → L7
+# S3-0 부록 초안과 L1 코드부터 이어서 만들까요?
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# S3-0 부록 동결 (OpenAlex 호출 없음, 데이터 미열람: 규칙과 임계값만 기록)
+# 사용법: 1) FREEZE=False로 실행해 SPEC을 읽고 수정  2) 확정되면 FREEZE=True로 실행
+# 주의: 아래 모든 수치는 '임의 출발값'입니다. 근거를 확인해 동결 전에 바꾸세요.
+#       동결 후에는 수정 불가(수정 시 새 버전으로 분리하고 CHANGELOG에 사유 기록).
+# 제가 확인하지 못한 것: S2 부록 파일명, topic 변수 열 이름. 해당 부분은 존재할 때만 해시를 기록합니다.
+# =====================================================================================
+import json, hashlib, subprocess, warnings
+from pathlib import Path
+import pandas as pd
+warnings.filterwarnings("ignore")
+
+# ---------------- 설정 ----------------
+FREEZE = True
+COMMIT = True
+TAG_NAME = None                      # None이면 S3-0-freeze-YYYY-MM-DD
+ROOT = Path.home() / "Research/Minnesota_Transport"
+LABEL_FILE = ROOT / "paper1/02_S2/s2_open_topic38_49_manual.csv"
+# --------------------------------------
+S2, S3 = ROOT / "paper1/02_S2", ROOT / "paper1/03_S3"
+SPEC_FILE = "S3_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_b = lambda b: hashlib.sha256(b).hexdigest()
+sha_f = lambda p: sha_b(Path(p).read_bytes())
+class Halt(Exception): pass
+
+SPEC = dict(
+    version=1,
+    scope="S3 토픽 증거 카드 L1~L5, L7. L6은 보류. 토픽 18번(1편 빈 군집)은 분모에서 제외(유효 149개).",
+    decision_status="모든 수치는 임의 출발값. S3 결과 열람 전에 동결.",
+    seed=2026,
+    periods=[[2000, 2004], [2005, 2009], [2010, 2014], [2015, 2019], [2020, 2025]],  # 겹치지 않음. 1990년대는 확장이라 제외
+    text=dict(unit="논문 제목", lowercase=True, ngram=[1, 2], stopwords="sklearn english", min_df_corpus=5, stemming=False),
+    L1=dict(
+        comparison="기간 r 안에서 토픽 k 논문 대 같은 기간의 토픽 k 외 논문(해석 선택, 계획서 수식의 y_rw 정의가 모호해 이렇게 고정)",
+        prior="a_w = alpha0 * (코퍼스 전체 빈도 비율), alpha0=500", alpha0=500,
+        z="delta / sqrt(분산), 분산은 1/(y_kw+a_w) + 1/(y_rw+a_w)",
+        min_topic_papers_in_period=20, min_word_count_in_topic_period=3, top_n=10, z_distinct=1.96,
+        legacy_overlap="기존 lift(2005 이후 합산) top-6와 Jaccard를 병기(통과 기준 아님)"),
+    L2=dict(candidate_pool=50, final_n=10,
+            rule="구별 점수(L1, 전체 기간 합산) 상위 50편 중 연도x저널 내 인용 백분위(중간 순위) 상위 10편",
+            recent_cutoff_year=2023, recent_rule="2023년 이후 논문은 인용 백분위 순위에서 제외(대표 논문 후보에서 뺌)"),
+    L3=dict(npmi_unit="토픽 논문 제목 문서 단위 동시출현", npmi_top_words=10,
+            bootstrap_B=200, bootstrap_stat="논문 복원추출 후 top-10 단어 Jaccard(원 표본 대비)의 중앙값"),
+    L4=dict(fields=["저널 엔트로피", "1위 저널 비율", "정점 연도", "성장 기울기(연 비중 OLS)", "비고정 저널 비율", "DOI 결측 비율",
+                    "평균 팀 규모(BASE 정의 확인 후)", "신규 저자 비율(BASE 정의 확인 후)"],
+            note="L4는 등급 계산에 쓰지 않는 기술 정보"),
+    L5=dict(
+        auto_flags=dict(small_n=30, repeated_title_top_share=0.20, repeated_title_min_n=30, unique_title_ratio_min=0.50,
+                        composite_graph="상위 30단어 동시출현 그래프, greedy modularity", modularity_composite=0.35),
+        manual_conditional_rule=dict(
+            applies_to_topics=[38, 49],
+            min_judged_per_topic=30,
+            nonresearch_share_ge=0.50, composite_share_ge=0.30,
+            outcome={"nonresearch_share>=0.50": "비연구: L7 F3 실패, 핵심 결과에서 제외 후보",
+                     "composite_share>=0.30 and nonresearch_share<0.50": "복합 표시: L7 F3 실패",
+                     "otherwise": "단일 연구 토픽: F3 통과",
+                     "judged<30": "미결: 해당 토픽은 등급 보류(등급 비율 분모에서 제외하고 별도 보고)"},
+            report="비율과 Wilson 95% 구간을 함께 보고. 라벨 열 이름·값 대응은 집계 스크립트에서 지정(규칙 자체는 여기서 고정)")),
+    L7=dict(
+        fail_items={
+            "F1_stability": "L3 부트스트랩 Jaccard 중앙값 < 0.50",
+            "F2_coherence": "L3 NPMI 평균이 유효 토픽 분포의 하위 25% 미만(상대 기준)",
+            "F3_nonresearch_or_composite": "L5 자동 플래그 또는 38/49 조건부 규칙에서 비연구·복합·반복제목·n<30",
+            "F4_distinctiveness": "평가 가능한 기간 중 z>=1.96 단어가 3개 이상인 기간 비율 < 0.50, 또는 평가 가능 기간 0개"},
+        npmi_quantile=0.25, stability_min=0.50, distinct_words_min=3, distinct_period_share_min=0.50,
+        grade="실패 0개 A, 1개 B, 2개 이상 C", pass_rule="A등급 비율 >= 0.50 (분모: 유효 149개 중 등급 보류 제외)",
+        later="핵심 결과의 A등급 재추정(부호 유지, 크기 +-30%)은 S5~S7 뒤에 닫음"),
+    caveats=["단어 재료는 제목뿐", "고정 저널은 PREREG의 14개", "Scimago 변수는 등급에 쓰지 않음",
+             "38/49 라벨은 연구자가 이 동결 이전에 채웠음(규칙은 라벨 비율에 대한 일반 임계값이라 라벨을 보고 조정하지 않았다고 해도 '완전 비열람'은 아님)"],
+)
+
+def spec_hash(s):
+    return sha_b(json.dumps({k: v for k, v in s.items() if k not in ("sha256", "created")}, sort_keys=True, ensure_ascii=False).encode())
+
+def git(*a, check=False):
+    r = subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+    if check and r.returncode: raise Halt(f"git {' '.join(a)} 실패: {r.stderr.strip()}")
+    return r
+
+def changelog_once(key, line):
+    cl = S3 / "CHANGELOG_S3.md"
+    if not cl.exists(): cl.write_text("# CHANGELOG S3 (날짜 | 변경 | 사유 | 영향)\n\n", encoding="utf-8")
+    if key in cl.read_text(encoding="utf-8"): return
+    with cl.open("a", encoding="utf-8") as f: f.write(line + "\n")
+
+def main():
+    h = spec_hash(SPEC); print(f"S3-0 규칙 해시(예정) {h[:12]}")
+    print(json.dumps({k: SPEC[k] for k in ["periods", "L1", "L7"]}, ensure_ascii=False, indent=1)[:2500], "...")
+    p = S3 / SPEC_FILE
+    if p.exists():
+        old = json.loads(p.read_text(encoding="utf-8"))
+        if old["sha256"] != h: raise Halt(f"이미 동결된 규칙({old['sha256'][:12]})과 다릅니다. 새 버전으로 분리하고 CHANGELOG에 사유를 쓰세요")
+        print("이미 동결됨: 동일"); return
+    if not FREEZE: print("\n(점검만: 아무것도 쓰지 않았습니다. 수치를 확정한 뒤 FREEZE=True)"); return
+    S3.mkdir(parents=True, exist_ok=True)
+    spec = dict(SPEC, created=now(), sha256=h)
+    # 참조 해시(있을 때만): 라벨 파일, S2 부록
+    refs = {}
+    if LABEL_FILE.exists(): refs[LABEL_FILE.name] = sha_f(LABEL_FILE)
+    for f in sorted(S2.glob("*PREREG*")) + sorted(S2.glob("*APPENDIX*")): refs[f.name] = sha_f(f)
+    spec["reference_hashes_at_freeze"] = refs
+    p.write_text(json.dumps(spec, ensure_ascii=False, indent=1), encoding="utf-8")
+    changelog_once("S3-0 동결", f"- {now()} | S3-0 동결: 기간 5개, L1~L5, L7 임계값, 38/49 조건부 규칙(해시 {h[:12]}). 모든 수치는 임의 출발값이며 S3 결과 열람 전에 기록. "
+                   f"38/49 수작업 라벨은 이 동결 전에 연구자가 채웠고 집계는 동결 후 수행(규칙은 라벨 비율 임계값이라 일반형이지만 완전 비열람은 아님). L1 비교 대상 정의는 계획서 수식이 모호해 '같은 기간 토픽 외 논문'으로 고정 | S3 설계 | S3 전체")
+    print(f"저장: {SPEC_FILE} | 참조 해시 {list(refs)}")
+    if not COMMIT: return
+    if git("rev-parse", "--show-toplevel").returncode: raise Halt("git 저장소가 아닙니다")
+    if not git("config", "user.name").stdout.strip(): raise Halt("git user.name/email을 설정하세요")
+    tag = TAG_NAME or f"S3-0-freeze-{pd.Timestamp.now().strftime('%Y-%m-%d')}"
+    if git("tag", "-l", tag).stdout.strip(): raise Halt(f"태그 {tag}가 이미 있습니다")
+    git("add", "--", "paper1/03_S3", check=True)
+    c = git("commit", "-m", "S3-0 freeze: 증거 카드 임계값과 38/49 조건부 규칙"); print((c.stdout or c.stderr).strip()[:300])
+    git("tag", "-a", tag, "-m", "S3-0 freeze", check=True); print(f"태그: {tag} | 원격: git push --follow-tags")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+S3-0 규칙 해시(예정) c8cbfffc8194
+{
+ "periods": [
+  [
+   2000,
+   2004
+  ],
+  [
+   2005,
+   2009
+  ],
+  [
+   2010,
+   2014
+  ],
+  [
+   2015,
+   2019
+  ],
+  [
+   2020,
+   2025
+  ]
+ ],
+ "L1": {
+  "comparison": "기간 r 안에서 토픽 k 논문 대 같은 기간의 토픽 k 외 논문(해석 선택, 계획서 수식의 y_rw 정의가 모호해 이렇게 고정)",
+  "prior": "a_w = alpha0 * (코퍼스 전체 빈도 비율), alpha0=500",
+  "alpha0": 500,
+  "z": "delta / sqrt(분산), 분산은 1/(y_kw+a_w) + 1/(y_rw+a_w)",
+  "min_topic_papers_in_period": 20,
+  "min_word_count_in_topic_period": 3,
+  "top_n": 10,
+  "z_distinct": 1.96,
+  "legacy_overlap": "기존 lift(2005 이후 합산) top-6와 Jaccard를 병기(통과 기준 아님)"
+ },
+ "L7": {
+  "fail_items": {
+   "F1_stability": "L3 부트스트랩 Jaccard 중앙값 < 0.50",
+   "F2_coherence": "L3 NPMI 평균이 유효 토픽 분포의 하위 25% 미만(상대 기준)",
+   "F3_nonresearch_or_composite": "L5 자동 플래그 또는 38/49 조건부 규칙에서 비연구·복합·반복제목·n<30",
+   "F4_distinctiveness": "평가 가능한 기간 중 z>=1.96 단어가 3개 이상인 기간 비율 < 0.50, 또는 평가 가능 기간 0개"
+  },
+  "npmi_quantile": 0.25,
+  "stability_min": 0.5,
+  "distinct_words_min": 3,
+  "distinct_period_share_min": 0.5,
+  "grade": "실패 0개 A, 1개 B, 2개 이상 C",
+  "pass_rule": "A등급 비율 >= 0.50 (분모: 유효 149개 중 등급 보류 제외)",
+  "later": "핵심 결과의 A등급 재추정(부호 유지, 크기 +-30%)은 S5~S7 뒤에 닫음"
+ }
+} ...
+저장: S3_0_PREREG.json | 참조 해시 ['s2_open_topic38_49_manual.csv', 'S2_PREREG_ADDENDUM.json']
+[main 109a7f4] S3-0 freeze: 증거 카드 임계값과 38/49 조건부 규칙
+ 2 files changed, 132 insertions(+)
+ create mode 100644 paper1/03_S3/CHANGELOG_S3.md
+ create mode 100644 paper1/03_S3/S3_0_PREREG.json
+태그: S3-0-freeze-2026-10-16 | 원격: git push --follow-tags
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# 38/49번 토픽 수작업 라벨 집계 (S3-0 동결 이후에만 실행). OpenAlex 호출 없음.
+# 단계: 1) STEP="inspect"  열과 값 분포 확인(아무것도 쓰지 않음)
+#       2) TOPIC_COL, LABEL_COL, LABEL_MAP을 채우고 STEP="aggregate"
+# 열 이름과 라벨 값은 제가 파일을 보지 못해 비워 두었습니다. inspect 출력을 보고 채우세요.
+# =====================================================================================
+import json, math, warnings
+from pathlib import Path
+import pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 200); pd.set_option("display.max_columns", 30)
+
+# ---------------- 설정 ----------------
+STEP = "inspect"
+ROOT = Path.home() / "Research/Minnesota_Transport"
+LABEL_FILE = ROOT / "paper1/02_S2/s2_open_topic38_49_manual.csv"
+TOPIC_COL = None            # 예: "topic"
+LABEL_COL = None            # 라벨이 들어 있는 열
+ID_COLS = None              # 중복 판정에 쓸 열 목록, 예: ["pid"]  (None이면 중복 검사 생략)
+# 라벨 원값 -> "research" | "nonresearch" | "composite". 매핑에 없는 값은 중단.
+LABEL_MAP = {}              # 예: {"연구": "research", "비연구": "nonresearch", "복합": "composite"}
+BLANK_OK = False            # True면 빈칸을 '미판정'으로 제외하고 진행
+# --------------------------------------
+S3 = ROOT / "paper1/03_S3"; SPEC_FILE = S3 / "S3_0_PREREG.json"
+import hashlib
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+class Halt(Exception): pass
+
+def wilson(k, n, z=1.96):
+    p = k / n; d = 1 + z * z / n; c = p + z * z / (2 * n); h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)); return round((c - h) / d, 3), round((c + h) / d, 3)
+
+def main():
+    if not LABEL_FILE.exists(): raise Halt(f"{LABEL_FILE} 없음")
+    D = pd.read_csv(LABEL_FILE, dtype=str, encoding="utf-8-sig").fillna("")
+    print(f"행 {len(D)} | 열 {list(D.columns)}")
+    if STEP == "inspect":
+        print(D.head(5).to_string(max_colwidth=50))
+        for c in D.columns:
+            if D[c].nunique() <= 12: print(f"\n[{c}] 값 분포:\n{D[c].value_counts(dropna=False).to_string()}")
+        print("\n→ TOPIC_COL, LABEL_COL, LABEL_MAP을 채우고 STEP='aggregate'로 실행"); return
+    # --- aggregate ---
+    if not SPEC_FILE.exists(): raise Halt("S3_0_PREREG.json이 없습니다. s3_0_freeze.py를 FREEZE=True로 먼저 실행하세요")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8")); rule = spec["L5"]["manual_conditional_rule"]
+    if not (TOPIC_COL and LABEL_COL and LABEL_MAP): raise Halt("TOPIC_COL, LABEL_COL, LABEL_MAP을 설정하세요")
+    for c in [TOPIC_COL, LABEL_COL]:
+        if c not in D.columns: raise Halt(f"열 {c} 없음")
+    if ID_COLS:
+        dup = D[D.duplicated(ID_COLS, keep=False)]
+        if len(dup): raise Halt(f"{ID_COLS} 중복 {len(dup)}행")
+    D[TOPIC_COL] = D[TOPIC_COL].str.strip(); D[LABEL_COL] = D[LABEL_COL].str.strip()
+    blank = D[D[LABEL_COL] == ""]
+    if len(blank) and not BLANK_OK: raise Halt(f"빈 라벨 {len(blank)}행. 채우거나 BLANK_OK=True(미판정 제외)로 두세요")
+    D = D[D[LABEL_COL] != ""]
+    bad = sorted(set(D[LABEL_COL]) - set(LABEL_MAP))
+    if bad: raise Halt(f"LABEL_MAP에 없는 값: {bad}")
+    D["cls"] = D[LABEL_COL].map(LABEL_MAP)
+    unexpected = sorted(set(D[TOPIC_COL].astype(str)) - {str(t) for t in rule["applies_to_topics"]})
+    if unexpected: raise Halt(f"규칙 대상(38, 49) 밖의 토픽 값: {unexpected}")
+    rows = []
+    for t, g in D.groupby(TOPIC_COL):
+        n = len(g); nr = int((g.cls == "nonresearch").sum()); cp = int((g.cls == "composite").sum())
+        sn, sc = nr / n, cp / n
+        if n < rule["min_judged_per_topic"]: out = "미결(등급 보류)"
+        elif sn >= rule["nonresearch_share_ge"]: out = "비연구"
+        elif sc >= rule["composite_share_ge"]: out = "복합"
+        else: out = "단일 연구 토픽"
+        lo1, hi1 = wilson(nr, n) if n else (None, None); lo2, hi2 = wilson(cp, n) if n else (None, None)
+        rows.append(dict(topic=t, n_judged=n, n_nonresearch=nr, nonresearch_share=round(sn, 3), nonres_wilson=[lo1, hi1],
+                         n_composite=cp, composite_share=round(sc, 3), comp_wilson=[lo2, hi2], decision=out,
+                         F3_fail=out in ("비연구", "복합")))
+    R = pd.DataFrame(rows); print(R.to_string(index=False))
+    R.to_csv(S3 / "L5_topic38_49_decision.csv", index=False, encoding="utf-8-sig")
+    meta = dict(label_file=LABEL_FILE.name, label_sha256=sha_f(LABEL_FILE), spec_sha256=spec["sha256"], n_rows=len(D), n_blank_excluded=int(len(blank)),
+                label_map=LABEL_MAP, coders="(기입: 판정자와 AI 사전 판정 여부)", at=now())
+    (S3 / "L5_topic38_49_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    cl = S3 / "CHANGELOG_S3.md"
+    if "38/49 라벨 집계" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | 38/49 라벨 집계: 동결 규칙(해시 {spec['sha256'][:12]})을 그대로 적용, 판정 {len(D)}건, 결과 {dict(zip(R.topic, R.decision))}. 라벨 파일 해시 {meta['label_sha256'][:12]} | L5 | L7 F3\n")
+    print("저장: L5_topic38_49_decision.csv, L5_topic38_49_meta.json, CHANGELOG 기록")
+    print("※ 판정자가 1명이면 코더 간 일치도(kappa)는 낼 수 없습니다. 판정 주체(직접/AI 사전 판정)를 meta의 coders에 기입하세요.")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+행 120 | 열 ['pid', 'venue_short', 'year', 'title', 'topic', 'group', 'group_size', 'sample_size', 'label']
+     pid venue_short  year                                              title topic   group group_size sample_size label
+0   7724        TR-B  2025  Column-and-row generation based exact algorith...    38  그 외 저널        131          30     R
+1   8355      VT Mag  2025  Toward Near-Field 3D Spot Beam Focusing: Possi...    38  VT Mag        264          30     V
+2   8665        TR-E  2025  Gig work: A bibliometric systematic literature...    49  그 외 저널        420          30     R
+3  15701       T-ITS  2025  Robust Design for RIS-Aided Integrated Wireles...    38  그 외 저널        131          30     R
+4  15971       CACIE  2025  Knowledge‐guided generative adversarial networ...    49   CACIE        104          30     R
+
+[topic] 값 분포:
+topic
+38    60
+49    60
+
+[group] 값 분포:
+group
+그 외 저널    60
+VT Mag    30
+CACIE     30
+
+[group_size] 값 분포:
+group_size
+131    30
+264    30
+420    30
+104    30
+
+[sample_size] 값 분포:
+sample_size
+30    120
+
+[label] 값 분포:
+label
+R    73
+N    18
+O    17
+V    12
+
+→ TOPIC_COL, LABEL_COL, LABEL_MAP을 채우고 STEP='aggregate'로 실행
+
+
+import pandas as pd
+from pathlib import Path
+p = Path.home() / "Research/Minnesota_Transport/paper1/02_S2/s2_open_topic38_49_manual.csv"
+D = pd.read_csv(p, dtype=str, encoding="utf-8-sig")
+print(pd.crosstab([D.topic, D.group], D.label))
+label         N  O   R  V
+topic group              
+38    VT Mag  4  3  15  8
+      그 외 저널  3  4  22  1
+49    CACIE   4  7  16  3
+      그 외 저널  7  3  20  0
+
+import pandas as pd
+from pathlib import Path
+for f in sorted((Path.home()/"Research/Minnesota_Transport/analysis_data/final").glob("F*.csv")):
+    print(f.name, list(pd.read_csv(f, nrows=0).columns))
+F1_papers.csv ['pid', 'doi_norm', 'title', 'venue_short', 'year', 'cited_by_count', 'n_authors', 'is_solo', 'in_sample', 'topic150', 'has_topic', 'fixed_venue']
+F2_author_paper.csv ['pid', 'name_norm', 'author_pos', 'year', 'venue_short', 'n_authors', 'topic150', 'w']
+F2_risk_names.csv ['name_norm', 'ambiguous', 'heavy']
+F3_author_period_venue_topic.csv ['name_norm', 'period', 'venue_short', 'topic150', 'w']
+F4_authors.csv ['name_norm', 'first_year', 'last_year', 'n_papers', 'n_venues', 'cohort', 'm_P95_99', 'm_P00_04', 'm_P05_09', 'm_P10_14', 'm_P12_14', 'm_P15_19', 'm_P20_24', 'm_P22_24', 'continuing_main', 'entrant_main']
+F5_continuing_authors.csv ['name_norm', 'm0', 'em0', 'dc0', 'm1', 'em1', 'dc1', 'd_em', 'd_dc', 'first_year', 'cohort', 'team0', 'main_venue0', 'coauthor_em0', 'n_coauthors0']
+F6_topics.csv ['topic150', 'share_0509', 'share_1519', 'share_2025', 'emerging', 'declining', 'top_words']
+F7_oa_author_ids.csv ['pid', 'rank', 'name_norm', 'oa_id']
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# S3 / L1 기간별 구별 단어 (정보적 사전분포 로그 오즈비). OpenAlex 호출 없음.
+# 모든 임계값은 동결된 S3_0_PREREG.json에서 읽는다(코드에 다시 쓰지 않음).
+# 비교: 기간 r 안에서 토픽 k 논문 대 같은 기간의 토픽 k 외 논문. 단위는 토큰 빈도(문서 빈도 아님).
+# 분석 집합: F1에서 동결 제외 pid 제거 + in_sample + has_topic + topic150 존재 + 2000~2025 (정의 확인용 건수를 출력)
+# 구현 선택(규칙이 정의하지 않아 여기서 정함, CHANGELOG에 기록됨):
+#   - 어휘: sklearn CountVectorizer 기본 토큰 패턴, ngram (1,2), english stopwords, 분석 집합 전체 min_df=5
+#   - 사전분포 빈도 a_w: 분석 집합(2000~2025) 전체 토큰 빈도 비율 x alpha0
+#   - 후보 단어: 토픽-기간 빈도 >= min_word_count 이고 delta > 0. 순위는 z 내림차순
+#   - 기존 lift 대조: 2005~2025 합산 구간에서 단어(unigram)만으로 top-6를 만들어 F6 top_words 앞 6개와 Jaccard(통과 기준 아님)
+# =====================================================================================
+import json, re, hashlib, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+import scipy.sparse as sp
+from sklearn.feature_extraction.text import CountVectorizer
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"
+DATA, S0, S3 = ROOT / "analysis_data/final", ROOT / "paper1/00_S0", ROOT / "paper1/03_S3"
+SPEC_FILE = S3 / "S3_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+truthy = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+class Halt(Exception): pass
+
+def main():
+    if not SPEC_FILE.exists(): raise Halt("S3_0_PREREG.json 없음: 동결 먼저")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8")); L1 = spec["L1"]; txt = spec["text"]
+    periods = [tuple(p) for p in spec["periods"]]; a0 = float(L1["alpha0"])
+    min_p, min_c, top_n, zc = L1["min_topic_papers_in_period"], L1["min_word_count_in_topic_period"], L1["top_n"], L1["z_distinct"]
+    # ---- 분석 집합 ----
+    F = pd.read_csv(DATA / "F1_papers.csv", low_memory=False); F["pid"] = F.pid.astype(str)
+    EXC = set(pd.read_csv(S0 / "EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+    n0 = len(F); F = F[~F.pid.isin(EXC)]
+    n1 = len(F); F = F[truthy(F.in_sample)]
+    n2 = len(F); F = F[truthy(F.has_topic) & F.topic150.notna()]
+    n3 = len(F); F = F[F.year.between(periods[0][0], periods[-1][1])].copy()
+    print(f"F1 {n0:,} -> 제외 후 {n1:,} -> in_sample {n2:,} -> has_topic·topic150 {n3:,} -> 2000~2025 {len(F):,}")
+    print("※ 이 건수가 S2에서 확정한 정의(예: 81,441 등)와 맞는지 확인하세요. 다르면 in_sample/has_topic 열 해석을 점검.")
+    F["topic"] = F.topic150.astype(int); F["title"] = F.title.fillna("").astype(str)
+    print("토픽 수:", F.topic.nunique(), "| 토픽당 논문 수 최소/중앙/최대:", F.topic.value_counts().min(), int(F.topic.value_counts().median()), F.topic.value_counts().max())
+    # ---- 행렬 ----
+    cv = CountVectorizer(lowercase=txt["lowercase"], ngram_range=tuple(txt["ngram"]), stop_words="english", min_df=txt["min_df_corpus"])
+    X = cv.fit_transform(F.title).tocsr(); vocab = np.array(cv.get_feature_names_out()); V = len(vocab)
+    freq = np.asarray(X.sum(0)).ravel().astype(float); a_w = a0 * freq / freq.sum()
+    print(f"어휘 {V:,}개 | 총 토큰 {int(freq.sum()):,}")
+    topics = np.sort(F.topic.unique()); tidx = {t: i for i, t in enumerate(topics)}; ti = F.topic.map(tidx).values; yr = F.year.values
+
+    def score(Yk, Yr):
+        nk, nr = Yk.sum(), Yr.sum()
+        d = np.log((Yk + a_w) / (nk + a0 - Yk - a_w)) - np.log((Yr + a_w) / (nr + a0 - Yr - a_w))
+        return d, d / np.sqrt(1 / (Yk + a_w) + 1 / (Yr + a_w))
+
+    def run(lo, hi, unigram_only=False):
+        m = (yr >= lo) & (yr <= hi); Xp = X[m]; tp = ti[m]
+        Y = sp.csr_matrix((np.ones(len(tp)), (tp, np.arange(len(tp)))), shape=(len(topics), len(tp))) @ Xp
+        tot = np.asarray(Xp.sum(0)).ravel().astype(float); cnt = np.bincount(tp, minlength=len(topics)); out = []
+        for k, t in enumerate(topics):
+            if cnt[k] < min_p: out.append((t, cnt[k], False, 0, [])); continue
+            Yk = Y[k].toarray().ravel(); Yr = tot - Yk; d, z = score(Yk, Yr)
+            ok = (Yk >= min_c) & (d > 0)
+            if unigram_only: ok &= np.array([" " not in w for w in vocab])
+            idx = np.where(ok)[0]; idx = idx[np.argsort(-z[idx])]
+            rows = [(vocab[i], int(Yk[i]), round(float(d[i]), 3), round(float(z[i]), 2)) for i in idx[:top_n]]
+            out.append((t, cnt[k], True, int((z[idx] >= zc).sum()), rows))
+        return out
+
+    long, summ = [], []
+    for (lo, hi) in periods:
+        for t, n, ev, nsig, rows in run(lo, hi):
+            summ.append(dict(topic=t, period=f"{lo}-{hi}", n_papers=int(n), evaluable=ev, n_words_z_ge=nsig))
+            for r, (w, y, d, z) in enumerate(rows, 1): long.append(dict(topic=t, period=f"{lo}-{hi}", rank=r, word=w, y_kw=y, delta=d, z=z))
+    S = pd.DataFrame(summ); Lg = pd.DataFrame(long)
+    Lg.to_csv(S3 / "L1_distinct_words.csv", index=False, encoding="utf-8-sig"); S.to_csv(S3 / "L1_topic_period_summary.csv", index=False, encoding="utf-8-sig")
+    print(f"\n토픽-기간 {len(S)}칸 중 평가 가능(논문 >= {min_p}) {int(S.evaluable.sum())}칸 ({S.evaluable.mean():.1%})")
+    print("평가 가능 칸의 z>=%.2f 단어 수 분포:" % zc, S[S.evaluable].n_words_z_ge.describe().round(1).to_dict())
+    # F4 입력(등급 계산은 L7에서): 토픽별 '평가 가능 기간 중 단어 3개 이상' 비율
+    f4 = S[S.evaluable].groupby("topic").apply(lambda g: pd.Series(dict(n_eval=len(g), share_ge=(g.n_words_z_ge >= spec["L7"]["distinct_words_min"]).mean())))
+    f4 = f4.reindex(topics).fillna({"n_eval": 0}); f4.to_csv(S3 / "L1_F4_inputs.csv", encoding="utf-8-sig")
+    print(f"평가 가능 기간 0개인 토픽: {int((f4.n_eval == 0).sum())}개 -> {list(f4.index[f4.n_eval == 0])[:20]}")
+    # ---- 확인용 카드: 38, 49 ----
+    for t in (38, 49):
+        if t in topics:
+            print(f"\n[토픽 {t}] 기간별 상위 6 단어")
+            for (lo, hi) in periods:
+                g = Lg[(Lg.topic == t) & (Lg.period == f"{lo}-{hi}")].head(6)
+                print(f"  {lo}-{hi}:", ", ".join(g.word) if len(g) else "(평가 불가)")
+    # ---- 기존 lift 대조 ----
+    legacy = None
+    try:
+        F6 = pd.read_csv(DATA / "F6_topics.csv"); print("\nF6 top_words 예시(형식 확인):", F6.top_words.head(3).tolist())
+        def parse(s):
+            s = str(s); parts = [p.strip().lower() for p in re.split(r"[,;|/]", s) if p.strip()]
+            return parts if len(parts) > 1 else s.lower().split()
+        new = {t: [r[0] for r in rows[:6]] for t, n, ev, nsig, rows in run(2005, 2025, unigram_only=True) if ev}
+        jac = []
+        for _, r in F6.iterrows():
+            t = int(r.topic150)
+            if t in new:
+                a, b = set(parse(r.top_words)[:6]), set(new[t]); jac.append((t, len(a & b) / len(a | b) if a | b else np.nan))
+        legacy = pd.DataFrame(jac, columns=["topic", "jaccard_top6"]); legacy.to_csv(S3 / "L1_legacy_overlap.csv", index=False)
+        print(f"기존 lift top-6와 Jaccard: 중앙값 {legacy.jaccard_top6.median():.2f}, 평균 {legacy.jaccard_top6.mean():.2f} (n={len(legacy)}) | 통과 기준 아님")
+        print("※ F6 top_words 파싱 결과가 의도와 다르면(예: bigram 포함, 구분자 다름) 이 값은 무의미합니다. 위 예시로 형식을 확인하세요.")
+    except Exception as e: print("※ 기존 lift 대조 생략:", e)
+    # ---- 기록 ----
+    outs = ["L1_distinct_words.csv", "L1_topic_period_summary.csv", "L1_F4_inputs.csv"] + (["L1_legacy_overlap.csv"] if legacy is not None else [])
+    meta = dict(spec_sha256=spec["sha256"], at=now(), n_docs=len(F), vocab=V, counts_chain=[n0, n1, n2, n3, len(F)], outputs={f: sha_f(S3 / f) for f in outs})
+    (S3 / "L1_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    cl = S3 / "CHANGELOG_S3.md"
+    if "L1 실행" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | L1 실행(규칙 해시 {spec['sha256'][:12]}): 분석 집합 {len(F):,}편, 어휘 {V:,}개. 구현 선택(규칙이 정의하지 않음): 기본 토큰 패턴, 분석 집합 전체 빈도로 a_w, 후보=토픽-기간 빈도 >= {min_c} 이고 delta>0, 기존 lift 대조는 2005~2025 합산 unigram top-6 | L1 | L3, L7 F4\n")
+    print("\n저장:", outs, "+ L1_meta.json, CHANGELOG 기록")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+F1 111,685 -> 제외 후 111,416 -> in_sample 111,416 -> has_topic·topic150 88,091 -> 2000~2025 76,984
+※ 이 건수가 S2에서 확정한 정의(예: 81,441 등)와 맞는지 확인하세요. 다르면 in_sample/has_topic 열 해석을 점검.
+토픽 수: 149 | 토픽당 논문 수 최소/중앙/최대: 166 495 989
+어휘 25,890개 | 총 토큰 1,009,246
+
+토픽-기간 745칸 중 평가 가능(논문 >= 20) 593칸 (79.6%)
+평가 가능 칸의 z>=1.96 단어 수 분포: {'count': 593.0, 'mean': 88.7, 'std': 83.3, 'min': 2.0, '25%': 31.0, '50%': 62.0, '75%': 117.0, 'max': 460.0}
+평가 가능 기간 0개인 토픽: 0개 -> []
+
+[토픽 38] 기간별 상위 6 단어
+  2000-2004: (평가 불가)
+  2005-2009: radio, wireless, cognitive, ultra, spectrum, mobile radio
+  2010-2014: mobile, radio, wireless, lte, networks, cognitive
+  2015-2019: wireless, radio, 5g, mobile, communications, networks
+  2020-2025: 6g, 5g, radio, communications, mobile, wireless
+
+[토픽 49] 기간별 상위 6 단어
+  2000-2004: tgrg, networks, using, page, tgrg page, analysis
+  2005-2009: page, research, identification, value, hotspot, evaluation
+  2010-2014: page, papers, selected, conference, selected papers, paradox
+  2015-2019: lab, research lab, population synthesis, world conference, papers, research
+  2020-2025: journal, retrieval, fundamental, editor, diagram, engineering
+
+F6 top_words 예시(형식 확인): ['park, occupancy, parking, carsharing, toll, lanes', 'electrification, plug, hydrogen, fleets, electric, duty', 'alignments, horizontal, alignment, sight, vertical, geometric']
+기존 lift top-6와 Jaccard: 중앙값 0.20, 평균 0.26 (n=149) | 통과 기준 아님
+※ F6 top_words 파싱 결과가 의도와 다르면(예: bigram 포함, 구분자 다름) 이 값은 무의미합니다. 위 예시로 형식을 확인하세요.
+
+저장: ['L1_distinct_words.csv', 'L1_topic_period_summary.csv', 'L1_F4_inputs.csv', 'L1_legacy_overlap.csv'] + L1_meta.json, CHANGELOG 기록
+
+
+import pandas as pd
+from pathlib import Path
+R = Path.home() / "Research/Minnesota_Transport"
+S = pd.read_csv(R/"paper1/03_S3/L1_topic_period_summary.csv")
+print(S.groupby("period").evaluable.agg(["sum", "size"]))
+f4 = pd.read_csv(R/"paper1/03_S3/L1_F4_inputs.csv"); print(f4.share_ge.describe()); print("F4 실패 토픽:", int((f4.share_ge < 0.5).sum()))
+F = pd.read_csv(R/"analysis_data/final/F1_papers.csv", low_memory=False)
+t = F[F.topic150 == 49]; vc = t.title.value_counts()
+print(vc.head(15)); print("1위 제목 비중", round(vc.iloc[0]/len(t), 3), "| 고유 제목 비율", round(t.title.nunique()/len(t), 3), "| n", len(t))
+           sum  size
+period              
+2000-2004   82   149
+2005-2009  103   149
+2010-2014  123   149
+2015-2019  139   149
+2020-2025  146   149
+count    149.000000
+mean       0.998658
+std        0.016385
+min        0.800000
+25%        1.000000
+50%        1.000000
+75%        1.000000
+max        1.000000
+Name: share_ge, dtype: float64
+F4 실패 토픽: 0
+title
+Bibliographic Section                                                                                                 20
+TGRG page                                                                                                             12
+Books of Interest                                                                                                     10
+Book of Interest                                                                                                       6
+TGRG Page                                                                                                              2
+The Silver Anniversary of CACAIE: 25 Years of Innovation in Computing                                                  1
+User heterogeneity and bi-criteria system optimum                                                                      1
+Making political science matter: Debate, knowledge, research and method                                                1
+Normalization of network generalized extreme value models                                                              1
+First Google's android phone launched [Mobile Radio]                                                                   1
+A systematic decision criterion for the elimination of useless overpasses                                              1
+On Principles of Scholarly Research Contributions: How to Avoid Multiple Rounds of Reviews                             1
+Early View of Accepted Manuscripts                                                                                     1
+The logsum as an evaluation measure: Review of the literature and new results                                          1
+The Aw–Rascle and Zhang’s model: Vacuum problems, existence and regularity of the solutions of the Riemann problem     1
+Name: count, dtype: int64
+1위 제목 비중 0.034 | 고유 제목 비율 0.923 | n 582
+
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# S3 / L3 일관성(NPMI)·안정성(부트스트랩 top-10 Jaccard). OpenAlex 호출 없음.
+# 임계값은 동결된 S3_0_PREREG.json에서 읽는다. 분석 집합은 L1과 동일(건수 체인 출력).
+# 구현 선택(동결 규칙이 정의하지 않음, CHANGELOG에 기록):
+#   - 토픽의 top-10 단어: 2000~2025 합산 구간에서 '토픽 k 대 나머지 토픽 전체' L1 점수 상위 10개, unigram만
+#     (bigram은 구성 단어와 항상 함께 나타나 NPMI를 부풀리므로 제외). 후보 = 토픽 내 빈도 >= min_word_count 이고 delta > 0
+#   - NPMI: 토픽 k 논문 제목을 문서로 한 이진 동시출현, 쌍 45개 평균. 동시출현 0이면 -1
+#   - 부트스트랩: 토픽 k 논문을 복원추출(원래 개수)하고 나머지 토픽 집단 빈도는 고정, top-10 재산출 후 원 top-10과 Jaccard, 중앙값 사용
+#   - F2는 유효 149개 토픽의 NPMI 평균 하위 25% 미만(상대 기준이라 구조적으로 일부는 실패)
+# =====================================================================================
+import json, hashlib, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+import scipy.sparse as sp
+from sklearn.feature_extraction.text import CountVectorizer
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"
+DATA, S0, S3 = ROOT / "analysis_data/final", ROOT / "paper1/00_S0", ROOT / "paper1/03_S3"
+SPEC_FILE = S3 / "S3_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+truthy = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+class Halt(Exception): pass
+
+def main():
+    if not SPEC_FILE.exists(): raise Halt("S3_0_PREREG.json 없음")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8")); L1, L3, L7, txt = spec["L1"], spec["L3"], spec["L7"], spec["text"]
+    periods = [tuple(p) for p in spec["periods"]]; a0 = float(L1["alpha0"]); min_c = L1["min_word_count_in_topic_period"]
+    B, seed = int(L3["bootstrap_B"]), int(spec["seed"]); topn = int(L3["npmi_top_words"])
+    F = pd.read_csv(DATA / "F1_papers.csv", low_memory=False); F["pid"] = F.pid.astype(str)
+    EXC = set(pd.read_csv(S0 / "EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+    n0 = len(F); F = F[~F.pid.isin(EXC)]; F = F[truthy(F.in_sample) & truthy(F.has_topic) & F.topic150.notna()]
+    F = F[F.year.between(periods[0][0], periods[-1][1])].copy()
+    print(f"분석 집합 {len(F):,}편 (L1과 같아야 함: 76,984)")
+    F["topic"] = F.topic150.astype(int); F["title"] = F.title.fillna("").astype(str)
+    cv = CountVectorizer(lowercase=txt["lowercase"], ngram_range=tuple(txt["ngram"]), stop_words="english", min_df=txt["min_df_corpus"])
+    X = cv.fit_transform(F.title).tocsr(); vocab = np.array(cv.get_feature_names_out()); V = len(vocab)
+    freq = np.asarray(X.sum(0)).ravel().astype(float); a_w = a0 * freq / freq.sum(); tot = freq.copy()
+    uni = np.array([" " not in w for w in vocab]); print(f"어휘 {V:,} (unigram {int(uni.sum()):,})")
+    topics = np.sort(F.topic.unique()); rng = np.random.default_rng(seed); rows = []
+
+    def top10(Yk, Yr):
+        nk, nr = Yk.sum(), Yr.sum()
+        d = np.log((Yk + a_w) / (nk + a0 - Yk - a_w)) - np.log((Yr + a_w) / (nr + a0 - Yr - a_w))
+        z = d / np.sqrt(1 / (Yk + a_w) + 1 / (Yr + a_w)); ok = uni & (Yk >= min_c) & (d > 0)
+        idx = np.where(ok)[0]; return idx[np.argsort(-z[idx])][:topn]
+
+    for n_done, t in enumerate(topics, 1):
+        Xk = X[(F.topic == t).values]; n = Xk.shape[0]
+        Yk = np.asarray(Xk.sum(0)).ravel().astype(float); Yr = tot - Yk
+        base = top10(Yk, Yr)
+        if len(base) < topn:  # 후보 부족
+            rows.append(dict(topic=t, n_papers=n, n_top=len(base), top10=", ".join(vocab[base]), npmi_mean=np.nan, jaccard_median=np.nan)); continue
+        # NPMI
+        Bn = (Xk[:, base] > 0).toarray().astype(float); df = Bn.sum(0); co = Bn.T @ Bn; vals = []
+        for i in range(topn):
+            for j in range(i + 1, topn):
+                pij = co[i, j] / n
+                vals.append(-1.0 if pij == 0 else np.log(pij / ((df[i] / n) * (df[j] / n))) / (-np.log(pij)) if pij < 1 else 1.0)
+        # 부트스트랩
+        bs = set(base); jac = []
+        for _ in range(B):
+            Ykb = np.asarray(Xk[rng.integers(0, n, n)].sum(0)).ravel().astype(float)
+            tb = set(top10(Ykb, Yr)); jac.append(len(bs & tb) / len(bs | tb))
+        rows.append(dict(topic=t, n_papers=n, n_top=len(base), top10=", ".join(vocab[base]), npmi_mean=round(float(np.mean(vals)), 4),
+                         jaccard_median=round(float(np.median(jac)), 3), jaccard_p10=round(float(np.percentile(jac, 10)), 3)))
+        if n_done % 20 == 0: print(f"  {n_done}/{len(topics)} 토픽 완료")
+    R = pd.DataFrame(rows)
+    q = R.npmi_mean.quantile(L7["npmi_quantile"])
+    R["F1_stability_fail"] = R.jaccard_median < L7["stability_min"]; R["F2_coherence_fail"] = R.npmi_mean < q
+    R.loc[R.npmi_mean.isna(), ["F1_stability_fail", "F2_coherence_fail"]] = True   # 후보 부족은 실패로 처리(기록)
+    R.to_csv(S3 / "L3_topic_metrics.csv", index=False, encoding="utf-8-sig")
+    print(f"\nNPMI 평균: 중앙값 {R.npmi_mean.median():.3f}, 하위 25% 경계 {q:.3f} | -1에 가까운 토픽(<-0.8) {int((R.npmi_mean < -0.8).sum())}개")
+    print(f"Jaccard 중앙값 분포: {R.jaccard_median.describe().round(3).to_dict()}")
+    print(f"F1 실패 {int(R.F1_stability_fail.sum())} | F2 실패 {int(R.F2_coherence_fail.sum())} | 후보 부족(top-10 미만) {int((R.n_top < topn).sum())}")
+    for t in (38, 49):
+        r = R[R.topic == t]
+        if len(r): print(f"[토픽 {t}] top10: {r.top10.iloc[0]} | NPMI {r.npmi_mean.iloc[0]} | Jaccard {r.jaccard_median.iloc[0]}")
+    meta = dict(spec_sha256=spec["sha256"], at=now(), n_docs=len(F), B=B, seed=seed, npmi_q25=float(q), output_sha256=sha_f(S3 / "L3_topic_metrics.csv"))
+    (S3 / "L3_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    cl = S3 / "CHANGELOG_S3.md"
+    if "L3 실행" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | L3 실행(규칙 해시 {spec['sha256'][:12]}): top-10은 2000~2025 합산 unigram 점수 상위, NPMI는 토픽 논문 제목 단위(동시출현 0이면 -1), 부트스트랩 B={B} seed={seed}, F2 경계(NPMI 하위 25%) {q:.3f}. 위 구현 선택은 동결 규칙이 정의하지 않아 정함 | L3 | L7 F1, F2\n")
+    print("저장: L3_topic_metrics.csv, L3_meta.json, CHANGELOG 기록")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+분석 집합 76,984편 (L1과 같아야 함: 76,984)
+어휘 25,890 (unigram 7,729)
+  20/149 토픽 완료
+  40/149 토픽 완료
+  60/149 토픽 완료
+  80/149 토픽 완료
+  100/149 토픽 완료
+  120/149 토픽 완료
+  140/149 토픽 완료
+
+NPMI 평균: 중앙값 -0.109, 하위 25% 경계 -0.195 | -1에 가까운 토픽(<-0.8) 1개
+Jaccard 중앙값 분포: {'count': 149.0, 'mean': 0.757, 'std': 0.104, 'min': 0.429, '25%': 0.667, '50%': 0.818, '75%': 0.818, 'max': 1.0}
+F1 실패 2 | F2 실패 37 | 후보 부족(top-10 미만) 0
+[토픽 38] top10: 5g, radio, mobile, wireless, 6g, communications, networks, spectrum, channel, challenges | NPMI -0.075 | Jaccard 0.818
+[토픽 49] top10: page, papers, journal, lab, conference, fundamental, tgrg, selected, retrieval, synthesis | NPMI -0.8356 | Jaccard 0.538
+저장: L3_topic_metrics.csv, L3_meta.json, CHANGELOG 기록
+
+
+# # 논문 1 진행 현황과 남은 일 (2026-10-16 기준, 규명 결과 반영)
+
+# ## 지금까지 한 일
+
+# | 단계 | 상태 | 핵심 결과 |
+# |---|---|---|
+# | **S0 사전등록·동결** | 완료 | 오염 레코드 269편 제외(F1X 111,416편), 고정 저널 14개. 주 시나리오 NONE이라 연속 노출 시계열이 주 분석이고 사건 대조는 민감도입니다. 보정 PREREG는 커밋 `90416c0`(`f16e76b4`)입니다. |
+# | **S1 국가 층** | 완료·동결 | 창 2007, 포함 논문 81,645편, 국가 보유율 94.7%. 수작업 정확도 200/200(텍스트 기준), 원문 대조 41/41. 복구 규칙(`d4a87d357217`)으로 연도별 미상 몫이 평평해졌습니다. 태그 `S1-final-2026-10-13`. |
+# | **S2 측정 교정** | 도구·점검 확정, 일부 이월 | 아래 "S2 규명 결과" 참조. |
+# | **S3-0 동결** | 완료 | 규칙 해시 `c8cbfffc8194`, 커밋 `109a7f4`, 태그 `S3-0-freeze-2026-10-16`. 38/49 라벨 파일과 S2 부록(`S2_PREREG_ADDENDUM.json`)의 해시도 함께 기록했습니다. |
+# | **S3 L1 구별 단어** | 실행 완료 | 분석 집합 76,984편(토픽 보유율 79.1%로 S2와 일치). 평가 가능한 토픽-기간 칸 593/745(79.6%)이고, 기간별로 82·103·123·139·146개 토픽입니다. F4 실패는 0개로 변별력이 없습니다. 기존 lift와의 Jaccard 중앙값은 0.20(병기용)입니다. |
+# | **S3 L3 일관성·안정성** | 실행 완료 | NPMI 중앙값 -0.109(하위 25% 경계 -0.195), F1 실패 2개, F2 실패 37개(구조상 약 25%). 후보 부족 토픽은 0개입니다. |
+# | **38/49 라벨 집계** | 스크립트 완성, 실행 출력 미확인 | 라벨 체계는 R/N/V/O(논문 유형). 비연구 판정은 어느 매핑에서도 0.50 미만으로 예상되나 계산 예상일 뿐입니다. |
+
+# ### S2 규명 결과 (첨부 반영)
+
+# **닫힌 것**
+# - **창 안 논문 수:** 81,485(DOI 보유)와 81,645(DOI 없는 160편 포함), 81,441(authorship 보유)은 서로 다른 정의라 모순이 아닙니다.
+# - **토픽 18번:** EDA에 기록된 1편짜리 빈 군집입니다. 유효 토픽은 149개입니다.
+# - **T-ITS 2008:** Scimago 쪽 이탈로 보며 "원인 미확인"으로 기록하고 닫습니다. Scimago 시계열이 우리 것보다 거칩니다(|z|>3 비율 3.7% 대 0.9%).
+# - **위험군 검증의 순환성 확인:** `ambiguous`가 OpenAlex ID 2개 이상으로 정의되어 정밀도·재현율이 독립 검증이 아닙니다. "동명이인 재현율 0.30"이 아니라 "OpenAlex ID 분할 기반 일치도(이름 빈도별)"로 보고해야 합니다.
+
+# **가설로만 남은 것 (직접 확인 전)**
+# - f_dup 459 대 441은 정의 차이일 가능성이 큽니다. `t.duplicated().sum()`이 266, `duplicated(keep=False)`가 459로 나오면 닫힙니다.
+# - 토픽 49번이 복합 군집이라는 판독은 S3 L3(NPMI -0.836)와도 맞습니다.
+
+# ## 이번 S3에서 나온 중요한 발견
+
+# 1. **F4가 작동하지 않습니다.** 149개 토픽이 전부 통과합니다. z가 보정된 검정이 아닌 탓입니다.
+# 2. **F1도 거의 작동하지 않습니다.** 실패가 2개뿐입니다.
+# 3. **F2는 상대 기준이라 구조적으로 약 25%가 실패합니다.** 그래서 "A등급 50% 이상"은 F3(L5)에서 큰 실패가 나오지 않는 한 사실상 충족되는 설계입니다. 통과를 강한 증거로 쓰지 말고 한계로 보고하세요.
+# 4. **라벨 체계가 논문 유형이라 동결 규칙의 복합 비율을 측정하지 못합니다.** 복합은 "미측정"으로 두고 L5 자동 플래그로 넘깁니다. 이는 동결 규칙의 설계상 틈이라 CHANGELOG에 남깁니다.
+# 5. **토픽 49번은 동결된 반복 제목 플래그(1위 제목 비중 0.034, 고유 제목 비율 0.923)에 걸리지 않습니다.** 그런데 L1 카드는 안내문 어휘(`page`, `tgrg`, `journal`)가 지배하고 L3는 NPMI 최저 수준입니다. 규칙 판정과 카드가 서로 다른 말을 하는 사례로 논문에 기록할 만합니다.
+# 6. 49번은 F1X에서 524편이고, 라벨 층 크기 합(104+420)과 일치합니다. 라벨 표본이 F1X의 49번 전체를 모집단으로 한 것이라는 점이 확인됩니다.
+
+# ## 열려 있는 것 (확인되지 않음)
+# - `git tag -l "S2-*"` 결과(S2 커밋·태그 실제 생성 여부).
+# - L1·L3 산출물이 커밋되었는지.
+# - 수작업 라벨링: 정리 규칙 91건과 미상 소속 30건은 첨부 시점에 0건이었고, 이후 상태는 모릅니다.
+# - 2007년 하락, T-IV 2025의 원인(S5에서 아티팩트 후보로 표시).
+# - 38/49 라벨 집계 출력(`CODERS` 기입 후 실행)과 `unk` 관련 후속은 아직 받지 못했습니다.
+
+# ## 앞으로 할 일
+
+# ### A. 바로 (S3 진행)
+# 1. **L1·L3 산출물 커밋.** `git add paper1/03_S3` 후 커밋.
+# 2. **38/49 라벨 집계 실행.** `CODERS`를 채우고 출력을 붙여 주세요.
+# 3. **L5 자동 플래그 코드.** 반복 제목, n<30, 모듈러리티(복합 표시)와 38/49 라벨 판정을 합칩니다. F3과 최종 등급이 여기서 정해지므로 L4보다 먼저 합니다.
+# 4. **L2 대표 논문.** 구별 점수 상위 50편 중 연도·저널 내 인용 백분위 상위 10편이고, 2023년 이후는 제외합니다.
+# 5. **L4 구조 지문.** 팀 규모와 신규 저자 비율은 `BASE` 정의를 확인한 뒤에 합니다. `grep -n "BASE" "(2) 데이터셋정의.ipynb"`가 필요합니다. 나머지 지표(저널 엔트로피, 정점 연도, 성장 기울기 등)는 지금도 가능합니다.
+# 6. **L7 등급.** F1~F4 실패 수로 A/B/C를 매깁니다. 통과 기준 A등급 비율 ≥ 0.50.
+
+# ### B. S2 마무리 (S3와 병행 가능)
+# - 한 줄 확인 두 개: `t.duplicated` 수치(266, 459), `grep BASE`.
+# - 수작업: 정리 규칙 91건, 미상 소속 30건.
+# - 위험군 변형 7종 분해와 빈도별 재현율을 `risk_names_report.md`로 쓰기. 그다음 `s2_finalize.py`로 커밋(commit_dry를 먼저).
+# - CHANGELOG_S2에 규명 결과 문단 기록(규칙 변경 없음).
+
+# ### C. S3 이후
+# | 단계 | 내용 | 비고 |
+# |---|---|---|
+# | **S4** | 양×질 4분면, 저널 구성 정확 분해 | S3 등급과 무관하게 진행 가능 |
+# | **S5(핵심)** | 변화점 탐지, 두 귀무, 반분 재현, 사건 대조와 4유형 분류 | 국가 층이 2007년부터라 지리는 19개 연도만 사용. 2007년 하락, T-IV 2025, T-ITS 2008은 아티팩트 후보로 표시 |
+# | **S6** | 갱신 4항 분해와 multiverse | 저자 층 지표(2.4, 2.5)는 이 직전에 처리. F3의 기간이 겹치므로(`P12_14`⊂`P10_14`, `P22_24`⊂`P20_24`) 이중 계산에 주의 |
+# | **S7~S8** | 지역 집중, 공급-부담 정렬 | S8 이중 코딩은 코더 2명이 필요하므로 인력 확보가 먼저입니다. 복구판 국가 몫 재구성이 민감도에 필요하나 코드가 아직 없습니다 |
+# | **S9~S10** | 후보 풀과 추출 규칙 동결, 투고 패키지 | AI 사용 선언에 검수 3종 사전 판정 범위를 기재 |
+
+# ## 논문에 쓸 한계 (갱신)
+# - 소속 국가는 국적이 아니며 단일 출처(OpenAlex)에 의존합니다. 원문 대조는 41건입니다.
+# - 위험군 검증은 순환적이라 독립 정답이 필요하면 ORCID 기반이나 수작업 표본이 대안입니다.
+# - 토픽 단어 재료는 제목뿐이고 제목 분류기 정확도는 0.508이라 민감도 용도로만 씁니다.
+# - S3 등급 기준(F1, F2, F4)은 변별력이 낮고 F2는 상대 기준입니다. 49번처럼 규칙 판정과 카드가 어긋나는 사례가 있습니다.
+# - 38/49 라벨은 논문 유형 라벨이라 복합 토픽을 측정하지 못했고, 매핑은 사후 결정입니다.
+
+# ## 제안
+# **먼저 해야 할 것은 L1·L3 커밋과 38/49 집계 실행입니다.** 그다음 L5 자동 플래그 코드로 넘어가는 것이 순서상 맞습니다. L5가 F3과 등급을 가르는 단계이기 때문입니다. 집계 출력을 붙여 주시면 이어서 L5를 만들겠습니다.
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# 38/49번 토픽 수작업 라벨 집계 v2 (S3-0 동결 이후 실행, OpenAlex 호출 없음)
+# 라벨 체계(연구자 제공): R 연구 논문 / N 비연구(칼럼, 편집자 글, 서지·도서 안내, 목차, 소개, 정정) /
+#                        V 리뷰·서베이·튜토리얼·방법론 가이드 / O 기타·판단 불가. 제목·저널·연도만 보고 판정.
+# 주의 1: 이 라벨은 '논문 유형'이라 동결 규칙의 '복합 토픽 비율'을 측정하지 못한다 -> 복합은 '미측정'으로 두고 L5 자동 플래그로 넘긴다.
+# 주의 2: 아래 매핑(주 매핑, 민감도 3종)은 라벨을 본 뒤 정한 사후 결정이며 CHANGELOG에 그렇게 기록한다.
+# 판정: 동결 규칙대로 단순 비율을 주 판정으로 쓰고, 층 크기 가중 비율과 민감도 매핑을 병기한다.
+# =====================================================================================
+import json, math, hashlib, warnings
+from pathlib import Path
+import pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30)
+
+# ---------------- 설정 ----------------
+ROOT = Path.home() / "Research/Minnesota_Transport"
+LABEL_FILE = ROOT / "paper1/02_S2/s2_open_topic38_49_manual.csv"
+TOPIC_COL, LABEL_COL, STRATUM_COL, SIZE_COL, N_COL = "topic", "label", "group", "group_size", "sample_size"
+CODERS = "연구자 직접"      # 직접 판정했다면              # 필수: 판정 주체(예: "연구자 직접" 또는 "AI 사전 판정 + 연구자 확인")
+# 비연구로 세는 코드: 주 매핑 = N만. 민감도 = N+O, N+O+V
+NONRES_MAIN = {"N"}
+NONRES_VARIANTS = {"N만(주)": {"N"}, "N+O": {"N", "O"}, "N+O+V": {"N", "O", "V"}}
+# --------------------------------------
+S3 = ROOT / "paper1/03_S3"; SPEC_FILE = S3 / "S3_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+class Halt(Exception): pass
+
+def wilson(k, n, z=1.96):
+    p = k / n; d = 1 + z * z / n; c = p + z * z / (2 * n); h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)); return round((c - h) / d, 3), round((c + h) / d, 3)
+
+def main():
+    if not CODERS.strip(): raise Halt("CODERS(판정 주체)를 설정에 기입하세요")
+    if not SPEC_FILE.exists(): raise Halt("S3_0_PREREG.json이 없습니다(동결 먼저)")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8")); rule = spec["L5"]["manual_conditional_rule"]
+    ref = spec.get("reference_hashes_at_freeze", {}).get(LABEL_FILE.name)
+    cur = sha_f(LABEL_FILE)
+    if ref and ref != cur: raise Halt(f"라벨 파일 해시가 동결 시점과 다릅니다(동결 {ref[:12]} / 현재 {cur[:12]}). 수정했다면 CHANGELOG에 사유를 기록하고 규칙 갱신 여부를 판단하세요")
+    D = pd.read_csv(LABEL_FILE, dtype=str, encoding="utf-8-sig").fillna("")
+    D[LABEL_COL] = D[LABEL_COL].str.strip().str.upper()
+    bad = sorted(set(D[LABEL_COL]) - {"R", "N", "V", "O"})
+    if bad: raise Halt(f"정의되지 않은 라벨 값: {bad}")
+    if (D[LABEL_COL] == "").any(): raise Halt("빈 라벨이 있습니다")
+    if D.duplicated("pid").any(): raise Halt("pid 중복")
+    D["topic_i"] = D[TOPIC_COL].astype(int)
+    if set(D.topic_i) != set(rule["applies_to_topics"]): raise Halt(f"토픽 값이 규칙 대상과 다릅니다: {sorted(set(D.topic_i))}")
+    # 층 정합성: 층 크기와 표본 크기
+    S = D.groupby(["topic_i", STRATUM_COL]).agg(n=("pid", "size"), size=(SIZE_COL, "first"), ssz=(N_COL, "first")).reset_index()
+    S["size"] = S["size"].astype(int); S["ssz"] = S["ssz"].astype(int)
+    if (S.n != S.ssz).any(): raise Halt(f"층별 실제 행 수와 sample_size 불일치:\n{S}")
+    print("층 구성:\n", S.to_string(index=False))
+    rows, sens = [], []
+    for t, g in D.groupby("topic_i"):
+        n = len(g); st = S[S.topic_i == t].set_index(STRATUM_COL); w = st["size"] / st["size"].sum()
+        def shares(codes):
+            k = int(g[LABEL_COL].isin(codes).sum()); simple = k / n
+            weighted = sum(w[s] * g[g[STRATUM_COL] == s][LABEL_COL].isin(codes).mean() for s in st.index)
+            return k, simple, weighted
+        for name, codes in NONRES_VARIANTS.items():
+            k, sm, wt = shares(codes)
+            sens.append(dict(topic=t, mapping=name, n=n, k=k, simple=round(sm, 3), weighted=round(wt, 3),
+                             simple_ge_cut=sm >= rule["nonresearch_share_ge"], weighted_ge_cut=wt >= rule["nonresearch_share_ge"]))
+        k, sm, wt = shares(NONRES_MAIN); lo, hi = wilson(k, n)
+        if n < rule["min_judged_per_topic"]: dec = "미결(등급 보류)"
+        elif sm >= rule["nonresearch_share_ge"]: dec = "비연구"
+        else: dec = "비연구 아님(복합 여부는 L5 자동 플래그로 판정)"
+        cnt = g[LABEL_COL].value_counts().to_dict()
+        rows.append(dict(topic=t, n_judged=n, counts=cnt, nonres_simple=round(sm, 3), nonres_weighted=round(wt, 3), nonres_wilson=[lo, hi],
+                         composite="미측정(라벨 체계에 복합 코드 없음)", decision_main=dec, F3_fail_from_manual=(dec == "비연구")))
+    R = pd.DataFrame(rows); X = pd.DataFrame(sens)
+    print("\n[주 판정: 동결 규칙, 단순 비율, 비연구=N]"); print(R.to_string(index=False))
+    print("\n[민감도: 비연구 정의 x 가중 방식]"); print(X.to_string(index=False))
+    flip = bool(X.simple_ge_cut.any() or X.weighted_ge_cut.any())
+    print("\n민감도 전체에서 비연구 기준(0.50) 초과 사례:", "있음 -> 판정이 매핑·가중에 좌우됨, 결과로 보고" if flip else "없음 -> 판정은 매핑·가중과 무관")
+    R.to_csv(S3 / "L5_topic38_49_decision.csv", index=False, encoding="utf-8-sig"); X.to_csv(S3 / "L5_topic38_49_sensitivity.csv", index=False, encoding="utf-8-sig")
+    meta = dict(label_file=LABEL_FILE.name, label_sha256=cur, spec_sha256=spec["sha256"], coders=CODERS, scheme="R연구/N비연구/V리뷰·튜토리얼/O기타·판단불가, 제목·저널·연도만 보고 판정",
+                main_mapping="비연구=N", variants={k: sorted(v) for k, v in NONRES_VARIANTS.items()}, composite="미측정", decision_flips=flip, at=now())
+    (S3 / "L5_topic38_49_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    cl = S3 / "CHANGELOG_S3.md"
+    if "38/49 라벨 집계" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | 38/49 라벨 집계(규칙 해시 {spec['sha256'][:12]}, 라벨 해시 {cur[:12]}): 판정 {dict(zip(R.topic, R.decision_main))}. "
+                    f"사후 결정: 라벨이 논문 유형(R/N/V/O)이라 동결 규칙의 복합 비율을 측정하지 못해 복합은 '미측정'으로 두고 L5 자동 플래그로 넘김. 비연구 매핑은 주 N만, 민감도 N+O·N+O+V, 가중(층 크기)은 병기. 판정 주체 {CODERS}. 비연구 기준 초과 사례 {'있음' if flip else '없음'} | L5 | L7 F3\n")
+    print("저장: L5_topic38_49_decision.csv, L5_topic38_49_sensitivity.csv, L5_topic38_49_meta.json, CHANGELOG 기록")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+층 구성:
+  topic_i  group  n  size  ssz
+      38 VT Mag 30   264   30
+      38 그 외 저널 30   131   30
+      49  CACIE 30   104   30
+      49 그 외 저널 30   420   30
+
+[주 판정: 동결 규칙, 단순 비율, 비연구=N]
+ topic  n_judged                              counts  nonres_simple  nonres_weighted  nonres_wilson            composite                decision_main  F3_fail_from_manual
+    38        60   {'R': 37, 'V': 9, 'O': 7, 'N': 7}          0.117            0.122 [0.058, 0.222] 미측정(라벨 체계에 복합 코드 없음) 비연구 아님(복합 여부는 L5 자동 플래그로 판정)                False
+    49        60 {'R': 36, 'N': 11, 'O': 10, 'V': 3}          0.183            0.213 [0.106, 0.299] 미측정(라벨 체계에 복합 코드 없음) 비연구 아님(복합 여부는 L5 자동 플래그로 판정)                False
+
+[민감도: 비연구 정의 x 가중 방식]
+ topic mapping  n  k  simple  weighted  simple_ge_cut  weighted_ge_cut
+    38   N만(주) 60  7   0.117     0.122          False            False
+    38     N+O 60 14   0.233     0.233          False            False
+    38   N+O+V 60 23   0.383     0.423          False            False
+    49   N만(주) 60 11   0.183     0.213          False            False
+    49     N+O 60 21   0.350     0.340          False            False
+    49   N+O+V 60 24   0.400     0.360          False            False
+
+민감도 전체에서 비연구 기준(0.50) 초과 사례: 없음 -> 판정은 매핑·가중과 무관
+저장: L5_topic38_49_decision.csv, L5_topic38_49_sensitivity.csv, L5_topic38_49_meta.json, CHANGELOG 기록
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# S3 / L5 비연구·복합 토픽 자동 플래그 + 38/49 수작업 판정 결합 -> L7 F3 입력. OpenAlex 호출 없음.
+# 임계값은 동결된 S3_0_PREREG.json의 L5.auto_flags에서 읽는다. 분석 집합은 L1·L3과 동일(76,984편).
+# 선행 조건: s3_label_aggregate.py 실행 결과(L5_topic38_49_decision.csv)가 03_S3에 있어야 함.
+# 구현 선택(동결 규칙이 정의하지 않음, CHANGELOG에 기록):
+#   - 제목 정규화: 소문자 + 공백 정리만(구두점 유지). 반복 제목 = 정규화 제목이 같은 논문
+#   - 그래프 단어: 2000~2025 합산 '토픽 k 대 나머지' L1 점수 상위 30 unigram(L3와 같은 방식). 후보 부족 시 있는 만큼
+#   - 그래프: 노드=그 단어들, 간선=토픽 논문 제목 안 동시출현 횟수(가중), 간선이 하나라도 있는 노드만 사용
+#   - 모듈러리티: networkx greedy_modularity_communities(가중). 간선 2개 미만이면 '미평가'(플래그 없음, 개수 보고)
+#   - F3 실패 = small_n 또는 반복 제목 또는 복합(자동) 또는 38/49 수작업 판정 '비연구'
+# 주의: 모듈러리티 0.35는 보정되지 않은 임의 출발값이라 그래프 크기에 민감하다. 분포를 함께 보고 해석은 보수적으로.
+# =====================================================================================
+import json, hashlib, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"
+DATA, S0, S3 = ROOT / "analysis_data/final", ROOT / "paper1/00_S0", ROOT / "paper1/03_S3"
+SPEC_FILE, MANUAL_FILE = S3 / "S3_0_PREREG.json", S3 / "L5_topic38_49_decision.csv"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+truthy = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+class Halt(Exception): pass
+
+def main():
+    try: import networkx as nx
+    except Exception: raise Halt("networkx가 없습니다: pip install networkx")
+    if not SPEC_FILE.exists(): raise Halt("S3_0_PREREG.json 없음")
+    if not MANUAL_FILE.exists(): raise Halt("L5_topic38_49_decision.csv 없음: s3_label_aggregate.py를 먼저 실행하세요")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8")); A = spec["L5"]["auto_flags"]; L1, txt = spec["L1"], spec["text"]
+    periods = [tuple(p) for p in spec["periods"]]; a0 = float(L1["alpha0"]); min_c = L1["min_word_count_in_topic_period"]
+    mp = pd.read_csv(S3 / "L5_topic38_49_meta.json".replace(".json", ".json")) if False else json.loads((S3 / "L5_topic38_49_meta.json").read_text(encoding="utf-8"))
+    if mp.get("spec_sha256") != spec["sha256"]: raise Halt("수작업 집계가 다른 규칙 해시로 만들어졌습니다. 집계를 다시 실행하세요")
+    M = pd.read_csv(MANUAL_FILE, dtype=str, encoding="utf-8-sig").fillna(""); M["topic"] = M.topic.astype(int)
+    manual_fail = {int(r.topic): str(r.F3_fail_from_manual).lower() == "true" for r in M.itertuples()}
+    manual_dec = {int(r.topic): r.decision_main for r in M.itertuples()}
+    F = pd.read_csv(DATA / "F1_papers.csv", low_memory=False); F["pid"] = F.pid.astype(str)
+    EXC = set(pd.read_csv(S0 / "EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+    F = F[~F.pid.isin(EXC)]; F = F[truthy(F.in_sample) & truthy(F.has_topic) & F.topic150.notna()]
+    F = F[F.year.between(periods[0][0], periods[-1][1])].copy()
+    print(f"분석 집합 {len(F):,}편 (L1·L3과 같아야 함: 76,984)")
+    F["topic"] = F.topic150.astype(int); F["title"] = F.title.fillna("").astype(str)
+    F["tnorm"] = F.title.str.lower().str.replace(r"\s+", " ", regex=True).str.strip()
+    cv = CountVectorizer(lowercase=txt["lowercase"], ngram_range=tuple(txt["ngram"]), stop_words="english", min_df=txt["min_df_corpus"])
+    X = cv.fit_transform(F.title).tocsr(); vocab = np.array(cv.get_feature_names_out())
+    freq = np.asarray(X.sum(0)).ravel().astype(float); a_w = a0 * freq / freq.sum(); tot = freq.copy()
+    uni = np.array([" " not in w for w in vocab])
+
+    def top_words(Yk, Yr, k=30):
+        nk, nr = Yk.sum(), Yr.sum()
+        d = np.log((Yk + a_w) / (nk + a0 - Yk - a_w)) - np.log((Yr + a_w) / (nr + a0 - Yr - a_w))
+        z = d / np.sqrt(1 / (Yk + a_w) + 1 / (Yr + a_w)); ok = uni & (Yk >= min_c) & (d > 0)
+        idx = np.where(ok)[0]; return idx[np.argsort(-z[idx])][:k]
+
+    rows = []
+    for t in np.sort(F.topic.unique()):
+        m = (F.topic == t).values; n = int(m.sum()); g = F[m]
+        vc = g.tnorm.value_counts(); top_share = float(vc.iloc[0] / n); uniq = float(g.tnorm.nunique() / n)
+        small = n < A["small_n"]
+        rep = (n >= A["repeated_title_min_n"]) and (top_share >= A["repeated_title_top_share"] or uniq < A["unique_title_ratio_min"])
+        Xk = X[m]; Yk = np.asarray(Xk.sum(0)).ravel().astype(float); idx = top_words(Yk, tot - Yk, 30)
+        mod, nn, ne, nc = np.nan, 0, 0, 0
+        if len(idx) >= 2:
+            Bn = (Xk[:, idx] > 0).toarray().astype(float); co = Bn.T @ Bn; G = nx.Graph()
+            for i in range(len(idx)):
+                for j in range(i + 1, len(idx)):
+                    if co[i, j] > 0: G.add_edge(int(i), int(j), weight=float(co[i, j]))
+            nn, ne = G.number_of_nodes(), G.number_of_edges()
+            if ne >= 2:
+                comms = list(nx.algorithms.community.greedy_modularity_communities(G, weight="weight"))
+                mod = nx.algorithms.community.modularity(G, comms, weight="weight"); nc = len(comms)
+        comp = (not np.isnan(mod)) and mod >= A["modularity_composite"]
+        mf = manual_fail.get(int(t), False)
+        rows.append(dict(topic=int(t), n_papers=n, top_title=vc.index[0][:60], top_title_share=round(top_share, 3), unique_ratio=round(uniq, 3),
+                         flag_small_n=small, flag_repeated_title=rep, graph_nodes=nn, graph_edges=ne, communities=nc,
+                         modularity=None if np.isnan(mod) else round(float(mod), 3), flag_composite_auto=comp,
+                         manual_decision=manual_dec.get(int(t), ""), flag_manual_nonresearch=mf,
+                         F3_fail=bool(small or rep or comp or mf)))
+    R = pd.DataFrame(rows); R.to_csv(S3 / "L5_topic_flags.csv", index=False, encoding="utf-8-sig")
+    print(f"\n토픽 {len(R)}개 | small_n {int(R.flag_small_n.sum())} | 반복 제목 {int(R.flag_repeated_title.sum())} | 복합(자동) {int(R.flag_composite_auto.sum())} | 수작업 비연구 {int(R.flag_manual_nonresearch.sum())} | F3 실패 {int(R.F3_fail.sum())}")
+    print(f"모듈러리티 미평가(간선 < 2): {int(R.modularity.isna().sum())}개 | 그래프 노드 수 분포: {R.graph_nodes.describe().round(1).to_dict()}")
+    print("모듈러리티 분포:", R.modularity.dropna().astype(float).describe().round(3).to_dict())
+    print("상위 모듈러리티 10개 토픽:\n", R.dropna(subset=["modularity"]).sort_values("modularity", ascending=False)[["topic", "n_papers", "graph_nodes", "graph_edges", "communities", "modularity", "F3_fail"]].head(10).to_string(index=False))
+    print("반복 제목 플래그 토픽:", R[R.flag_repeated_title][["topic", "top_title", "top_title_share", "unique_ratio"]].to_string(index=False) if R.flag_repeated_title.any() else "없음")
+    print("\n[38/49 확인: 동결 자동 플래그가 이 두 토픽을 잡는가]")
+    print(R[R.topic.isin([38, 49])][["topic", "top_title_share", "unique_ratio", "graph_nodes", "graph_edges", "communities", "modularity", "flag_repeated_title", "flag_composite_auto", "manual_decision", "F3_fail"]].to_string(index=False))
+    meta = dict(spec_sha256=spec["sha256"], manual_meta_sha256=sha_f(S3 / "L5_topic38_49_meta.json"), manual_decision_sha256=sha_f(MANUAL_FILE),
+                at=now(), n_docs=len(F), output_sha256=sha_f(S3 / "L5_topic_flags.csv"))
+    (S3 / "L5_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    cl = S3 / "CHANGELOG_S3.md"
+    if "L5 실행" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | L5 실행(규칙 해시 {spec['sha256'][:12]}): 자동 플래그(small_n<{A['small_n']}, 반복 제목, 모듈러리티>={A['modularity_composite']})와 38/49 수작업 판정 결합. 구현 선택(규칙이 정의하지 않음): 제목은 소문자·공백 정리만 정규화, 그래프는 2000~2025 합산 unigram 상위 30단어의 제목 내 동시출현(가중), 간선 2개 미만은 미평가. "
+                    f"결과: F3 실패 {int(R.F3_fail.sum())}개, 38/49 자동 플래그 {R[R.topic.isin([38, 49])].set_index('topic')[['flag_repeated_title', 'flag_composite_auto']].to_dict('index')} | L5 | L7 F3\n")
+    print("\n저장: L5_topic_flags.csv, L5_meta.json, CHANGELOG 기록")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+분석 집합 76,984편 (L1·L3과 같아야 함: 76,984)
+
+토픽 149개 | small_n 0 | 반복 제목 0 | 복합(자동) 2 | 수작업 비연구 0 | F3 실패 2
+모듈러리티 미평가(간선 < 2): 0개 | 그래프 노드 수 분포: {'count': 149.0, 'mean': 30.0, 'std': 0.5, 'min': 24.0, '25%': 30.0, '50%': 30.0, '75%': 30.0, 'max': 30.0}
+모듈러리티 분포: {'count': 149.0, 'mean': 0.145, 'std': 0.083, 'min': 0.029, '25%': 0.094, '50%': 0.13, '75%': 0.174, 'max': 0.759}
+상위 모듈러리티 10개 토픽:
+  topic  n_papers  graph_nodes  graph_edges  communities  modularity  F3_fail
+    49       389           24           28            7       0.759     True
+     0       411           30          134            3       0.436     True
+   132       464           30          155            3       0.336    False
+    60       290           30          158            4       0.328    False
+   135       169           30          125            4       0.324    False
+   126       394           30          189            4       0.289    False
+   117       318           30          144            3       0.278    False
+    90       418           30          198            4       0.263    False
+    40       506           30          264            3       0.263    False
+    36       422           30          245            3       0.262    False
+반복 제목 플래그 토픽: 없음
+
+[38/49 확인: 동결 자동 플래그가 이 두 토픽을 잡는가]
+ topic  top_title_share  unique_ratio  graph_nodes  graph_edges  communities  modularity  flag_repeated_title  flag_composite_auto              manual_decision  F3_fail
+    38            0.003         1.000           30          234            3       0.194                False                False 비연구 아님(복합 여부는 L5 자동 플래그로 판정)    False
+    49            0.033         0.967           24           28            7       0.759                False                 True 비연구 아님(복합 여부는 L5 자동 플래그로 판정)     True
+
+저장: L5_topic_flags.csv, L5_meta.json, CHANGELOG 기록
+
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# S3 / L2 대표 논문. OpenAlex 호출 없음. 임계값은 동결된 S3_0_PREREG.json에서 읽는다.
+# 규칙: 구별 점수 상위 candidate_pool(50)편 -> 연도x저널 내 인용 백분위 상위 final_n(10)편, year >= recent_cutoff_year 제외
+# 구현 선택(규칙이 정의하지 않음, CHANGELOG에 기록):
+#   - 논문 점수 = sum(토큰 빈도 x max(z_w,0)) / sqrt(토큰 수). z_w는 L1과 같은 방식('토픽 k 대 나머지', 2000~2025 합산, unigram+bigram),
+#     z>0 조건은 delta>0 이고 토픽 내 빈도 >= min_word_count
+#   - 인용 백분위 = 분석 집합 내 연도x저널 셀의 평균 순위 (rank-0.5)/n. 셀 n<10이면 표시(low_cell)
+#   - cited_by_count 결측 논문은 후보에서 제외(건수 보고). 인용 수는 수집 시점 단일 스냅샷
+#   - 최종 정렬: 인용 백분위 내림차순, 동률이면 구별 점수 내림차순
+# =====================================================================================
+import json, hashlib, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+import scipy.sparse as sp
+from sklearn.feature_extraction.text import CountVectorizer
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30); pd.set_option("display.max_colwidth", 80)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"
+DATA, S0, S3 = ROOT / "analysis_data/final", ROOT / "paper1/00_S0", ROOT / "paper1/03_S3"
+SPEC_FILE = S3 / "S3_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+truthy = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+class Halt(Exception): pass
+
+def main():
+    if not SPEC_FILE.exists(): raise Halt("S3_0_PREREG.json 없음")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8")); L1, L2, txt = spec["L1"], spec["L2"], spec["text"]
+    periods = [tuple(p) for p in spec["periods"]]; a0 = float(L1["alpha0"]); min_c = L1["min_word_count_in_topic_period"]
+    pool, final_n, cutoff = int(L2["candidate_pool"]), int(L2["final_n"]), int(L2["recent_cutoff_year"])
+
+    # ---- 분석 집합 (L1·L3·L5와 동일) ----
+    F = pd.read_csv(DATA / "F1_papers.csv", low_memory=False); F["pid"] = F.pid.astype(str)
+    EXC = set(pd.read_csv(S0 / "EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+    F = F[~F.pid.isin(EXC)]; F = F[truthy(F.in_sample) & truthy(F.has_topic) & F.topic150.notna()]
+    F = F[F.year.between(periods[0][0], periods[-1][1])].copy().reset_index(drop=True)
+    print(f"분석 집합 {len(F):,}편 (L1과 같아야 함: 76,984)")
+    if len(F) != 76984: print("⚠ 건수가 다릅니다. 정의를 점검하세요.")
+    F["topic"] = F.topic150.astype(int); F["title"] = F.title.fillna("").astype(str)
+    F["cited_by_count"] = pd.to_numeric(F.cited_by_count, errors="coerce")
+
+    # ---- 인용 백분위 (연도 x 저널, 평균 순위) ----
+    g = F.groupby(["year", "venue_short"]).cited_by_count
+    F["cell_n"] = g.transform("count")
+    F["cit_pct"] = (g.rank(method="average") - 0.5) / F.cell_n
+    print(f"인용 결측 {int(F.cited_by_count.isna().sum()):,}편 | 셀 n<10인 논문 {int((F.cell_n < 10).sum()):,}편 | 2023년 이후 {int((F.year >= cutoff).sum()):,}편(후보 제외)")
+
+    # ---- 단어 행렬과 토픽별 z ----
+    cv = CountVectorizer(lowercase=txt["lowercase"], ngram_range=tuple(txt["ngram"]), stop_words="english", min_df=txt["min_df_corpus"])
+    X = cv.fit_transform(F.title).tocsr(); vocab = np.array(cv.get_feature_names_out())
+    freq = np.asarray(X.sum(0)).ravel().astype(float); a_w = a0 * freq / freq.sum()
+    topics = np.sort(F.topic.unique()); tidx = {t: i for i, t in enumerate(topics)}; ti = F.topic.map(tidx).values
+    Y = (sp.csr_matrix((np.ones(len(ti)), (ti, np.arange(len(ti)))), shape=(len(topics), len(ti))) @ X).tocsr()
+    ntok = np.maximum(np.asarray(X.sum(1)).ravel(), 1.0)
+
+    F["score"] = np.nan
+    for k, t in enumerate(topics):
+        Yk = Y[k].toarray().ravel(); Yr = freq - Yk; nk, nr = Yk.sum(), Yr.sum()
+        d = np.log((Yk + a_w) / (nk + a0 - Yk - a_w)) - np.log((Yr + a_w) / (nr + a0 - Yr - a_w))
+        z = d / np.sqrt(1 / (Yk + a_w) + 1 / (Yr + a_w)); zpos = np.where((Yk >= min_c) & (d > 0), z, 0.0)
+        m = np.where(ti == k)[0]
+        F.loc[m, "score"] = (X[m] @ zpos) / np.sqrt(ntok[m])
+
+    # ---- 후보 50 -> 최종 10 ----
+    rows, short = [], []
+    for t in topics:
+        c = F[(F.topic == t) & (F.year < cutoff) & F.cited_by_count.notna()]
+        c = c.sort_values("score", ascending=False).head(pool)
+        if len(c) < final_n: short.append((int(t), len(c)))
+        c = c.assign(cand_rank=np.arange(1, len(c) + 1)).sort_values(["cit_pct", "score"], ascending=False).head(final_n)
+        for r, x in enumerate(c.itertuples(), 1):
+            rows.append(dict(topic=int(t), rank=r, pid=x.pid, year=int(x.year), venue=x.venue_short, title=x.title[:200], score=round(float(x.score), 3),
+                             score_rank_in_topic=int(x.cand_rank), cited_by_count=int(x.cited_by_count), cit_pct=round(float(x.cit_pct), 3),
+                             cell_n=int(x.cell_n), low_cell=bool(x.cell_n < 10)))
+    R = pd.DataFrame(rows); R.to_csv(S3 / "L2_representative_papers.csv", index=False, encoding="utf-8-sig")
+
+    # ---- 요약 ----
+    cnt = R.groupby("topic").size()
+    print(f"\n토픽 {R.topic.nunique()}개 | 후보 부족(<{final_n}편): {short if short else '없음'}")
+    print(f"선정 논문 {len(R):,}편 | cit_pct 중앙값 {R.cit_pct.median():.2f} | low_cell 비율 {R.low_cell.mean():.1%}")
+    ven = R.groupby("topic").venue.nunique(); print(f"토픽별 대표 논문의 저널 수: 중앙값 {int(ven.median())}, 1개 저널뿐인 토픽 {int((ven == 1).sum())}개")
+    yrs = R.groupby("topic").year.agg(["min", "max"]); print(f"대표 논문 연도 범위: 전체 {int(R.year.min())}~{int(R.year.max())}, 토픽 내 단일 연도뿐인 토픽 {int((yrs['min'] == yrs['max']).sum())}개")
+    for t in (0, 38, 49):
+        print(f"\n[토픽 {t}] 대표 논문")
+        print(R[R.topic == t][["rank", "year", "venue", "cit_pct", "score", "title"]].to_string(index=False))
+
+    meta = dict(spec_sha256=spec["sha256"], at=now(), n_docs=len(F), pool=pool, final_n=final_n, cutoff=cutoff, output_sha256=sha_f(S3 / "L2_representative_papers.csv"))
+    (S3 / "L2_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    cl = S3 / "CHANGELOG_S3.md"
+    if "L2 실행" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | L2 실행(규칙 해시 {spec['sha256'][:12]}): 구현 선택(규칙이 정의하지 않음) 논문 점수=양의 z 합/sqrt(토큰 수), 인용 백분위=분석 집합 내 연도x저널 평균 순위, "
+                    f"2023년 이후와 인용 결측은 후보 제외, 최종 정렬은 cit_pct 후 score. 후보 부족 토픽 {len(short)}개 | L2 | 대표 논문\n")
+    print("\n저장: L2_representative_papers.csv, L2_meta.json, CHANGELOG 기록")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+분석 집합 76,984편 (L1과 같아야 함: 76,984)
+인용 결측 0편 | 셀 n<10인 논문 94편 | 2023년 이후 20,618편(후보 제외)
+
+토픽 149개 | 후보 부족(<10편): 없음
+선정 논문 1,490편 | cit_pct 중앙값 0.93 | low_cell 비율 0.0%
+토픽별 대표 논문의 저널 수: 중앙값 4, 1개 저널뿐인 토픽 26개
+대표 논문 연도 범위: 전체 2000~2022, 토픽 내 단일 연도뿐인 토픽 0개
+
+[토픽 0] 대표 논문
+ rank  year venue  cit_pct  score                                                                                                                                                         title
+    1  2013   TRR    0.985 33.751                                                                                                                                           Parking in the City
+    2  2014   JPT    0.979 27.137 Commuter Mode Choice and Free Car Parking, Public Transportation Benefits, Showers/Lockers, and Bike Parking at Work: Evidence from the Washington, DC Region
+    3  2008   TRR    0.903 30.345                                                                                                                                 Reassessing On-Street Parking
+    4  2019   TRR    0.899 29.233                                                                           Commercial Vehicle Parking in Downtown Seattle: Insights on the Battle for the Curb
+    5  2014  TR-A    0.894 30.002                                                        Is the curb 80% full or 20% empty? Assessing the impacts of San Francisco’s parking pricing experiment
+    6  2015   TRR    0.887 38.381                                       Disaggregate Analysis of Relationships between Commercial Vehicle Parking Citations, Parking Supply, and Parking Demand
+    7  2010   TRR    0.864 32.628                                                                                                                                     Carsharing Parking Policy
+    8  2005   TRR    0.861 31.740                                                                   Study of Park-and-Ride Facilities and Their Use in the San Francisco Bay Area of California
+    9  2012   TRR    0.832 39.432                                                                                                              Willingness to Pay for High-Occupancy Toll Lanes
+   10  2019   TRR    0.706 31.340                                          Comparison of Overnight Truck Parking Counts with GPS-Derived Counts for Truck Parking Facility Utilization Analysis
+
+[토픽 38] 대표 논문
+ rank  year  venue  cit_pct  score                                                                                                                                           title
+    1  2019 VT Mag    0.986 38.640                                                                  6G Wireless Networks: Vision, Requirements, Architecture, and Key Technologies
+    2  2016 VT Mag    0.976 36.354                                                               Massive MIMO and mmWave for 5G Wireless HetNet: Potential Benefits and Challenges
+    3  2020 VT Mag    0.966 36.220           Machine Learning for 6G Wireless Networks: Carrying Forward Enhanced Bandwidth, Massive Access, and Ultrareliable/Low-Latency Service
+    4  2013 VT Mag    0.958 37.100                                                                                  5G on the Horizon: Key Challenges for the Radio-Access Network
+    5  2020 VT Mag    0.920 44.622                                       Perceptive Mobile Networks: Cellular Networks With Radio Vision via Joint Communication and Radar Sensing
+    6  2009 VT Mag    0.900 36.210                                                                                                                        Cognitive radio networks
+    7  2011 VT Mag    0.854 38.828                                                                                                                 Future Wireless Mobile Networks
+    8  2018 VT Mag    0.838 36.270                                      Mobile Edge Computing-Enabled 5G Vehicular Networks: Toward the Integration of Communication and Computing
+    9  2018 VT Mag    0.812 37.620 Signature-Based Nonorthogonal Massive Multiple Access for Future Wireless Networks: Uplink Massive Connectivity for Machine-Type Communications
+   10  2007 VT Mag    0.750 41.972                                                                                            WiTricity-The Wireless Power Transfer [Mobile Radio]
+
+[토픽 49] 대표 논문
+ rank  year venue  cit_pct  score                                                                                               title
+    1  2020  TR-B    0.979 10.761           Fifty years of the bottleneck model: A bibliometric review and future research directions
+    2  2011  TR-B    0.955 14.199 Clockwise hysteresis loops in the Macroscopic Fundamental Diagram: An effect of network instability
+    3  2005   AAP    0.917 11.733                                           Experimental evaluation of hotspot identification methods
+    4  2013  TR-B    0.912 14.044                                                               Simulation based population synthesis
+    5  2015  TR-C    0.889 12.344                                                A Bayesian network approach for population synthesis
+    6  2014  TR-B    0.880 14.719                          Macroscopic Fundamental Diagrams: A cross-comparison of estimation methods
+    7  2015  TR-C    0.720 13.001            Deriving macroscopic fundamental diagrams from probe data: Issues and proposed solutions
+    8  2019  TR-C    0.720 12.463           How to generate micro-agents? A deep generative modeling approach to population synthesis
+    9  2020  TR-B    0.675 13.752        Macroscopic fundamental diagram based perimeter control considering dynamic user equilibrium
+   10  2018  TR-B    0.662 10.669                                  A hierarchical mixture modeling framework for population synthesis
+
+저장: L2_representative_papers.csv, L2_meta.json, CHANGELOG 기록
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# S3 / L4 구조 지문 (기술 정보, 등급 계산에 쓰지 않음). OpenAlex 호출 없음.
+# 분석 집합은 L1·L2·L3·L5와 동일(76,984편). 임계값 없음(규칙은 S3_0_PREREG L4 필드 목록).
+# 정의(규칙이 세부를 정하지 않아 여기서 정함, CHANGELOG에 기록):
+#   - 저널 엔트로피: 토픽 내 저널 비중의 Shannon 엔트로피(자연로그), 1위 저널 비율
+#   - 정점 연도: 토픽 연간 비중(해당 연도 분석 집합 논문 대비)이 최대인 해. 연도 비중은 3년 이동평균 후 최대(잡음 완화), 원값 최대연도도 병기
+#   - 성장 기울기: 연간 비중(%)을 연도에 OLS한 기울기(퍼센트포인트/년), 2000~2025
+#   - 비고정 저널 비율: F1.fixed_venue == True가 아닌 논문 비중
+#   - DOI 결측 비율: doi_norm 결측 비중
+#   - 평균 팀 규모(provisional): 토픽 논문의 n_authors 평균과 중앙값 (BASE 정의 확인 전 임시)
+#   - 신규 저자 비율(provisional): F2에서 토픽 논문 저자 행 중 '저자의 first_year(F4) == 논문 연도' 비중(저자 행 기준, w 미사용)
+#     F2는 위험군 이름을 포함하므로 F7/F2_risk_names의 ambiguous 또는 heavy 이름을 제외한 값과 전체 값을 둘 다 저장
+# =====================================================================================
+import json, hashlib, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"
+DATA, S0, S3 = ROOT / "analysis_data/final", ROOT / "paper1/00_S0", ROOT / "paper1/03_S3"
+SPEC_FILE = S3 / "S3_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+truthy = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+class Halt(Exception): pass
+
+def entropy(p):
+    p = np.asarray(p, float); p = p[p > 0]; return float(-(p * np.log(p)).sum())
+
+def main():
+    if not SPEC_FILE.exists(): raise Halt("S3_0_PREREG.json 없음")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8")); periods = [tuple(p) for p in spec["periods"]]
+    y0, y1 = periods[0][0], periods[-1][1]
+    F = pd.read_csv(DATA / "F1_papers.csv", low_memory=False); F["pid"] = F.pid.astype(str)
+    EXC = set(pd.read_csv(S0 / "EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+    F = F[~F.pid.isin(EXC)]; F = F[truthy(F.in_sample) & truthy(F.has_topic) & F.topic150.notna()]
+    F = F[F.year.between(y0, y1)].copy(); F["topic"] = F.topic150.astype(int)
+    print(f"분석 집합 {len(F):,}편 (76,984여야 함)")
+    if len(F) != 76984: print("⚠ 건수가 다릅니다")
+    F["fixed"] = truthy(F.fixed_venue); F["no_doi"] = F.doi_norm.isna() | (F.doi_norm.astype(str).str.strip() == "")
+    F["n_authors"] = pd.to_numeric(F.n_authors, errors="coerce")
+    year_tot = F.groupby("year").size()
+
+    # ---- 저자 층 (신규 저자 비율, provisional) ----
+    A = pd.read_csv(DATA / "F2_author_paper.csv", usecols=["pid", "name_norm", "year"], low_memory=False); A["pid"] = A.pid.astype(str)
+    A = A[A.pid.isin(set(F.pid))]
+    F4 = pd.read_csv(DATA / "F4_authors.csv", usecols=["name_norm", "first_year"])
+    A = A.merge(F4, on="name_norm", how="left"); A["is_new"] = (A.year == A.first_year)
+    R_ = pd.read_csv(DATA / "F2_risk_names.csv"); risk = set(R_[truthy(R_.ambiguous) | truthy(R_.heavy)].name_norm)
+    A["risk"] = A.name_norm.isin(risk); A = A.merge(F[["pid", "topic"]], on="pid", how="left")
+    print(f"저자 행 {len(A):,} | F4 first_year 결측 {int(A.first_year.isna().sum()):,} | 위험군 행 {int(A.risk.sum()):,}")
+    new_all = A.groupby("topic").is_new.mean()
+    new_clean = A[~A.risk].groupby("topic").is_new.mean()
+
+    rows = []
+    yrs = np.arange(y0, y1 + 1)
+    for t, g in F.groupby("topic"):
+        vs = g.venue_short.value_counts(); pv = vs / vs.sum()
+        cnt = g.groupby("year").size().reindex(yrs, fill_value=0)
+        share = (cnt / year_tot.reindex(yrs)).values * 100
+        sm = pd.Series(share).rolling(3, center=True, min_periods=1).mean().values
+        slope = float(np.polyfit(yrs, share, 1)[0])
+        rows.append(dict(topic=int(t), n_papers=len(g), journal_entropy=round(entropy(pv.values), 3), journal_entropy_norm=round(entropy(pv.values) / np.log(len(pv)) if len(pv) > 1 else 0.0, 3),
+                         n_journals=len(pv), top_journal=vs.index[0], top_journal_share=round(float(pv.iloc[0]), 3),
+                         peak_year_smoothed=int(yrs[int(np.argmax(sm))]), peak_year_raw=int(yrs[int(np.argmax(share))]),
+                         growth_slope_pp_per_year=round(slope, 5), nonfixed_share=round(float((~g.fixed).mean()), 3), doi_missing_share=round(float(g.no_doi.mean()), 3),
+                         team_mean_provisional=round(float(g.n_authors.mean()), 2), team_median_provisional=float(g.n_authors.median()),
+                         new_author_share_all_provisional=round(float(new_all.get(t, np.nan)), 3), new_author_share_nonrisk_provisional=round(float(new_clean.get(t, np.nan)), 3)))
+    R = pd.DataFrame(rows).sort_values("topic"); R.to_csv(S3 / "L4_structure_fingerprint.csv", index=False, encoding="utf-8-sig")
+
+    print(f"\n토픽 {len(R)}개")
+    print("1위 저널 비율>=0.9 토픽:", int((R.top_journal_share >= 0.9).sum()), "| 단일 저널(n_journals=1):", int((R.n_journals == 1).sum()), "| L2 '대표 논문 1개 저널' 26개와 대조하세요")
+    print("비고정 저널 비율>=0.9 토픽:", int((R.nonfixed_share >= 0.9).sum()))
+    print("성장 기울기 상위 5:\n", R.sort_values("growth_slope_pp_per_year", ascending=False)[["topic", "n_papers", "growth_slope_pp_per_year", "peak_year_smoothed", "top_journal", "top_journal_share"]].head(5).to_string(index=False))
+    print("성장 기울기 하위 5:\n", R.sort_values("growth_slope_pp_per_year")[["topic", "n_papers", "growth_slope_pp_per_year", "peak_year_smoothed", "top_journal", "top_journal_share"]].head(5).to_string(index=False))
+    print("신규 저자 비율(전체 vs 위험군 제외) 상관:", round(float(R.new_author_share_all_provisional.corr(R.new_author_share_nonrisk_provisional)), 3))
+    print(R[R.topic.isin([0, 38, 49])].T.to_string(header=False))
+
+    meta = dict(spec_sha256=spec["sha256"], at=now(), n_docs=len(F), output_sha256=sha_f(S3 / "L4_structure_fingerprint.csv"),
+                provisional_columns=["team_*_provisional", "new_author_share_*_provisional"])
+    (S3 / "L4_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    cl = S3 / "CHANGELOG_S3.md"
+    if "L4 실행" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | L4 실행(규칙 해시 {spec['sha256'][:12]}): 구현 선택(규칙이 정의하지 않음) 정점 연도=3년 이동평균 최대(원값 병기), 성장 기울기=연간 비중 OLS(pp/년), 엔트로피=자연로그. "
+                    f"팀 규모와 신규 저자 비율은 BASE 정의 확인 전 임시 정의(F1 n_authors, F4 first_year==논문 연도)로 provisional 표시. L4는 등급에 쓰지 않음 | L4 | 카드 기술 정보\n")
+    print("\n저장: L4_structure_fingerprint.csv, L4_meta.json, CHANGELOG 기록")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+분석 집합 76,984편 (76,984여야 함)
+저자 행 255,354 | F4 first_year 결측 0 | 위험군 행 0
+
+토픽 149개
+1위 저널 비율>=0.9 토픽: 16 | 단일 저널(n_journals=1): 0 | L2 '대표 논문 1개 저널' 26개와 대조하세요
+비고정 저널 비율>=0.9 토픽: 5
+성장 기울기 상위 5:
+  topic  n_papers  growth_slope_pp_per_year  peak_year_smoothed top_journal  top_journal_share
+    50       882                   0.08992                2024       T-ITS              0.223
+    69       783                   0.08536                2025       T-ITS              0.596
+    66       891                   0.07939                2022       T-ITS              0.263
+    88       653                   0.07283                2025        T-TE              0.988
+   123       835                   0.06684                2025         TRR              0.156
+성장 기울기 하위 5:
+  topic  n_papers  growth_slope_pp_per_year  peak_year_smoothed top_journal  top_journal_share
+    72       788                  -0.13425                2004         TRR              0.900
+   137       860                  -0.11385                2000         TRR              0.884
+    10       448                  -0.10941                2000         TRR              0.750
+   147       305                  -0.10804                2000         TRR              0.839
+   143       331                  -0.08724                2000         TRR              0.927
+신규 저자 비율(전체 vs 위험군 제외) 상관: 1.0
+topic                                       0       38       49
+n_papers                                  411      392      389
+journal_entropy                         1.124    1.163     2.68
+journal_entropy_norm                    0.426    0.395    0.833
+n_journals                                 14       19       25
+top_journal                               TRR   VT Mag    CACIE
+top_journal_share                       0.747    0.673    0.154
+peak_year_smoothed                       2005     2019     2003
+peak_year_raw                            2005     2018     2002
+growth_slope_pp_per_year             -0.05671  0.02103 -0.01281
+nonfixed_share                          0.068    0.709    0.111
+doi_missing_share                       0.002    0.005    0.008
+team_mean_provisional                     3.0     4.57     2.85
+team_median_provisional                   3.0      4.0      3.0
+new_author_share_all_provisional        0.337    0.579    0.315
+new_author_share_nonrisk_provisional    0.337    0.579    0.315
+
+저장: L4_structure_fingerprint.csv, L4_meta.json, CHANGELOG 기록
+
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# S3 / L7 신뢰 등급 A/B/C. OpenAlex 호출 없음. 임계값은 동결된 S3_0_PREREG.json에서 읽는다.
+# 입력: L1_F4_inputs.csv, L3_topic_metrics.csv, L5_topic_flags.csv (모두 03_S3)
+# 규칙: 실패 0개 A, 1개 B, 2개 이상 C. 통과: A 비율 >= 0.50 (분모: 유효 토픽 중 등급 보류 제외)
+# 구현 선택(CHANGELOG 기록):
+#   - F2는 L3에서 이미 상대 기준(하위 25%)으로 계산된 플래그를 그대로 사용
+#   - 입력 파일 간 토픽 집합이 다르면 중단
+#   - 등급 보류: L5 manual_decision에 '미결'이 포함된 토픽(현재 없을 것으로 예상)
+#   - 변별력 진단(통과 기준 아님): 기준별 실패 수, 실패 조합, F3만으로 등급이 갈리는 정도
+#   - 민감도: (a) F2 제외 (b) F2·F4 제외(작동 기준만) 시 A 비율. 사후 보고용이며 동결 판정은 바꾸지 않음
+# =====================================================================================
+import json, hashlib, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"
+S3 = ROOT / "paper1/03_S3"; SPEC_FILE = S3 / "S3_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+truthy = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+class Halt(Exception): pass
+
+def wilson(k, n, z=1.96):
+    p = k / n; d = 1 + z * z / n; c = p + z * z / (2 * n); h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)); return round((c - h) / d, 3), round((c + h) / d, 3)
+
+def main():
+    if not SPEC_FILE.exists(): raise Halt("S3_0_PREREG.json 없음")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8")); L7 = spec["L7"]
+    need = ["L1_F4_inputs.csv", "L3_topic_metrics.csv", "L5_topic_flags.csv"]
+    for f in need:
+        if not (S3 / f).exists(): raise Halt(f"{f} 없음")
+    f4 = pd.read_csv(S3 / "L1_F4_inputs.csv"); f4 = f4.rename(columns={f4.columns[0]: "topic"})
+    l3 = pd.read_csv(S3 / "L3_topic_metrics.csv"); l5 = pd.read_csv(S3 / "L5_topic_flags.csv")
+    sets = [set(f4.topic), set(l3.topic), set(l5.topic)]
+    if not (sets[0] == sets[1] == sets[2]): raise Halt(f"입력 파일 간 토픽 집합이 다릅니다: {[len(s) for s in sets]}")
+    D = f4[["topic", "n_eval", "share_ge"]].merge(l3[["topic", "n_papers", "jaccard_median", "npmi_mean", "F1_stability_fail", "F2_coherence_fail"]], on="topic") \
+        .merge(l5[["topic", "F3_fail", "manual_decision", "modularity"]], on="topic")
+    D["F1"] = truthy(D.F1_stability_fail); D["F2"] = truthy(D.F2_coherence_fail); D["F3"] = truthy(D.F3_fail)
+    D["F4"] = (D.n_eval == 0) | (D.share_ge < L7["distinct_period_share_min"])
+    D["n_fail"] = D[["F1", "F2", "F3", "F4"]].sum(axis=1)
+    D["grade"] = np.where(D.n_fail == 0, "A", np.where(D.n_fail == 1, "B", "C"))
+    D["held"] = D.manual_decision.astype(str).str.contains("미결")
+    V = D[~D.held]; n = len(V)
+    print(f"유효 토픽 {len(D)}개 | 등급 보류 {int(D.held.sum())}개 | 분모 {n}")
+    print("\n[기준별 실패 수]"); print({k: int(V[k].sum()) for k in ["F1", "F2", "F3", "F4"]})
+    cnt = V.grade.value_counts().reindex(["A", "B", "C"], fill_value=0); share = cnt / n
+    print("\n[등급 분포]"); print(pd.DataFrame({"n": cnt, "share": share.round(3)}).to_string())
+    kA = int(cnt["A"]); lo, hi = wilson(kA, n); thr = L7["pass_rule"]
+    passed = (kA / n) >= 0.50
+    print(f"\nA등급 비율 {kA/n:.3f} (Wilson 95% [{lo}, {hi}]) | 통과 기준 0.50 -> {'통과' if passed else '미달'}")
+    print("\n[실패 조합]"); print(V.groupby(["F1", "F2", "F3", "F4"]).size().rename("n").reset_index().sort_values("n", ascending=False).to_string(index=False))
+    print("\n[변별력 진단(통과 기준 아님)]")
+    only_f2 = int(((V.n_fail == 1) & V.F2).sum())
+    print(f"B등급 중 F2만 실패: {only_f2}개 / B등급 {int(cnt['B'])}개 -> F2(상대 기준)가 등급을 좌우하는 정도")
+    for name, cols in {"F2 제외": ["F1", "F3", "F4"], "F2·F4 제외(F1·F3만)": ["F1", "F3"]}.items():
+        a = int((V[cols].sum(axis=1) == 0).sum()); print(f"  {name}: A {a}개 ({a/n:.3f})")
+    print("\n[C등급 토픽]"); print(V[V.grade == "C"][["topic", "n_papers", "F1", "F2", "F3", "F4", "jaccard_median", "npmi_mean", "modularity"]].to_string(index=False))
+    print("\n[F3 실패 토픽]"); print(V[V.F3][["topic", "n_papers", "grade", "n_fail", "modularity"]].to_string(index=False))
+    out = D.drop(columns=["F1_stability_fail", "F2_coherence_fail", "F3_fail"]); out.to_csv(S3 / "L7_topic_grade.csv", index=False, encoding="utf-8-sig")
+    meta = dict(spec_sha256=spec["sha256"], at=now(), n_valid=int(len(D)), n_held=int(D.held.sum()), denominator=int(n), grade_counts=cnt.to_dict(),
+                A_share=round(kA / n, 3), A_wilson=[lo, hi], passed=bool(passed), fail_counts={k: int(V[k].sum()) for k in ["F1", "F2", "F3", "F4"]},
+                output_sha256=sha_f(S3 / "L7_topic_grade.csv"))
+    (S3 / "L7_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    cl = S3 / "CHANGELOG_S3.md"
+    if "L7 실행" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | L7 실행(규칙 해시 {spec['sha256'][:12]}): F1~F4 실패 수로 등급, 분모 {n}. A {kA}개({kA/n:.3f}), B {int(cnt['B'])}개, C {int(cnt['C'])}개, 통과 {'예' if passed else '아니오'}. "
+                    f"기준별 실패 {meta['fail_counts']}. F2는 상대 기준, F4는 전부 통과로 변별력 낮음(진단 보고). 민감도(F2 제외 등)는 사후 보고용 | L7 | S3 통과 판정\n")
+    print("\n저장: L7_topic_grade.csv, L7_meta.json, CHANGELOG 기록")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+유효 토픽 149개 | 등급 보류 0개 | 분모 149
+
+[기준별 실패 수]
+{'F1': 2, 'F2': 37, 'F3': 2, 'F4': 0}
+
+[등급 분포]
+         n  share
+grade            
+A      112  0.752
+B       33  0.221
+C        4  0.027
+
+A등급 비율 0.752 (Wilson 95% [0.677, 0.814]) | 통과 기준 0.50 -> 통과
+
+[실패 조합]
+   F1    F2    F3    F4   n
+False False False False 112
+False  True False False  33
+False  True  True False   2
+ True  True False False   2
+
+[변별력 진단(통과 기준 아님)]
+B등급 중 F2만 실패: 33개 / B등급 33개 -> F2(상대 기준)가 등급을 좌우하는 정도
+  F2 제외: A 145개 (0.973)
+  F2·F4 제외(F1·F3만): A 145개 (0.973)
+
+[C등급 토픽]
+ topic  n_papers    F1   F2    F3    F4  jaccard_median  npmi_mean  modularity
+     0       411 False True  True False           0.667    -0.4155       0.436
+    28       185  True True False False           0.429    -0.3890       0.245
+    49       389 False True  True False           0.538    -0.8356       0.759
+   147       305  True True False False           0.429    -0.6041       0.228
+
+[F3 실패 토픽]
+ topic  n_papers grade  n_fail  modularity
+     0       411     C       2       0.436
+    49       389     C       2       0.759
+
+저장: L7_topic_grade.csv, L7_meta.json, CHANGELOG 기록
+
+
+# -*- coding: utf-8 -*-
+# s3_close_checks.py: 위험군 행 0 원인, 토픽 28/147 카드, git 상태. 읽기 전용.
+import subprocess, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_colwidth", 90); pd.set_option("display.max_columns", 30)
+ROOT = Path.home() / "Research/Minnesota_Transport"; DATA, S3 = ROOT / "analysis_data/final", ROOT / "paper1/03_S3"
+
+print("=== 1. 위험군 행 0 원인 ===")
+R_ = pd.read_csv(DATA / "F2_risk_names.csv")
+print("행", len(R_), "| dtypes:", R_.dtypes.to_dict()); print(R_.head(5).to_string(index=False))
+for c in ["ambiguous", "heavy"]: print(f"[{c}] 값 분포:\n{R_[c].value_counts(dropna=False).head(8).to_string()}")
+A = pd.read_csv(DATA / "F2_author_paper.csv", usecols=["name_norm"], low_memory=False)
+a_names, r_names = set(A.name_norm.astype(str)), set(R_.name_norm.astype(str))
+print(f"F2 고유 이름 {len(a_names):,} | 위험군 파일 이름 {len(r_names):,} | 교집합 {len(a_names & r_names):,}")
+print("F2 이름 예:", list(a_names)[:3], "| 위험군 이름 예:", list(r_names)[:3])
+num = lambda s: pd.to_numeric(s, errors="coerce").fillna(0) > 0
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+for c in ["ambiguous", "heavy"]:
+    print(f"{c}: truthy 해석 {int(tf(R_[c]).sum()):,} | 숫자>0 해석 {int(num(R_[c]).sum()):,}")
+print("→ truthy 0인데 숫자>0이 크면 열이 개수형입니다. 교집합이 0이면 name_norm 정규화 차이입니다.")
+
+print("\n=== 2. 토픽 28, 147 카드 ===")
+L1 = pd.read_csv(S3 / "L1_distinct_words.csv"); L2 = pd.read_csv(S3 / "L2_representative_papers.csv")
+L3 = pd.read_csv(S3 / "L3_topic_metrics.csv"); L4 = pd.read_csv(S3 / "L4_structure_fingerprint.csv")
+for t in (28, 147):
+    print(f"\n[토픽 {t}] L3 top10: {L3[L3.topic == t].top10.iloc[0]}")
+    print(L3[L3.topic == t][["n_papers", "npmi_mean", "jaccard_median", "jaccard_p10"]].to_string(index=False))
+    print(L4[L4.topic == t][["top_journal", "top_journal_share", "peak_year_smoothed", "growth_slope_pp_per_year"]].to_string(index=False))
+    for per, g in L1[L1.topic == t].groupby("period"): print(f"  {per}:", ", ".join(g.sort_values("rank").word.head(6)))
+    print(L2[L2.topic == t][["rank", "year", "venue", "cit_pct", "title"]].to_string(index=False))
+
+print("\n=== 3. git 상태 ===")
+print(subprocess.run(["git", "-C", str(ROOT), "status", "--short", "paper1/03_S3"], capture_output=True, text=True).stdout or "(변경 없음)")
+print(subprocess.run(["git", "-C", str(ROOT), "tag", "-l", "S2-*", "S3-*"], capture_output=True, text=True).stdout or "(S2/S3 태그 없음)")
+
+=== 1. 위험군 행 0 원인 ===
+행 1431 | dtypes: {'name_norm': dtype('O'), 'ambiguous': dtype('bool'), 'heavy': dtype('bool')}
+                name_norm  ambiguous  heavy
+         a scott mcknight       True  False
+         ahmed el geneidy      False   True
+               ajay kumar       True  False
+alejandra medina flintsch       True  False
+           alfredo garcia       True  False
+[ambiguous] 값 분포:
+ambiguous
+True     1313
+False     118
+[heavy] 값 분포:
+heavy
+False    1223
+True      208
+F2 고유 이름 101,842 | 위험군 파일 이름 1,431 | 교집합 0
+F2 이름 예: ['tianqi mao', 'brian d stemper', 'anita chandrasekharan'] | 위험군 이름 예: ['zheyuan wang', 'ying zhao', 'wenbo li']
+ambiguous: truthy 해석 1,313 | 숫자>0 해석 1,313
+heavy: truthy 해석 208 | 숫자>0 해석 208
+→ truthy 0인데 숫자>0이 크면 열이 개수형입니다. 교집합이 0이면 name_norm 정규화 차이입니다.
+
+=== 2. 토픽 28, 147 카드 ===
+
+[토픽 28] L3 top10: aerial, unmanned, radar, detection, inspection, monitoring, measurement, ranging, millimeter, sensing
+ n_papers  npmi_mean  jaccard_median  jaccard_p10
+      185     -0.389           0.429        0.333
+top_journal  top_journal_share  peak_year_smoothed  growth_slope_pp_per_year
+        TRR              0.319                2018                   0.00319
+  2015-2019: aerial, unmanned, unmanned aerial, aerial vehicles, remote sensing, remote
+  2020-2025: aerial, unmanned aerial, unmanned, aerial vehicle, aerial vehicles, radar
+ rank  year   venue  cit_pct                                                                                                                                       title
+    1  2020    TR-A    0.998 Applications of unmanned aerial vehicle (UAV) in road safety, traffic and highway infrastructure management: Recent advances and challenges
+    2  2021     TRR    0.992                                                                          Revealing Safety Risks of Unmanned Aerial Vehicles in Construction
+    3  2017   T-ITS    0.988                         Video Processing From Electro-Optical Sensors for Object Detection and Tracking in a Maritime Environment: A Survey
+    4  2016   IJTST    0.978                                     Unmanned Aerial Aircraft Systems for transportation engineering: Current practice and future challenges
+    5  2017     TRR    0.978                   Unmanned Aerial Vehicle–Based Traffic Analysis: Methodological Framework for Automated Multivehicle Trajectory Extraction
+    6  2019   CACIE    0.977                      Image-based crack assessment of bridge piers using unmanned aerial vehicles and three-dimensional scene reconstruction
+    7  2020   CACIE    0.948                                                          Noncontact cable force estimation with unmanned aerial vehicle and computer vision
+    8  2017   CACIE    0.920                                                                         Structural Displacement Measurement Using an Unmanned Aerial System
+    9  2019     TRR    0.910                                              Use of Multi-Rotor Unmanned Aerial Vehicles for Fine-Grained Roadside Air Pollution Monitoring
+   10  2022 ITS Mag    0.900                                                                     Sea-Surface Object Detection Based on Electro-Optical Sensors: A Review
+
+[토픽 147] L3 top10: transit, transportation, paratransit, california, north, traveler, successful, american, information, tribal
+ n_papers  npmi_mean  jaccard_median  jaccard_p10
+      305    -0.6041           0.429         0.25
+top_journal  top_journal_share  peak_year_smoothed  growth_slope_pp_per_year
+        TRR              0.839                2000                  -0.10804
+  2000-2004: transit, public transit, systems, transportation, public, bus
+  2005-2009: transit, transportation, services, employer, security, regional
+  2010-2014: commuter, traveler, york city, transit, public transit, york
+  2015-2019: century, surveys, transit, california, public transportation, future
+ rank  year venue  cit_pct                                                                                                                                           title
+    1  2019   TRR    0.881 Uber Economics: Evaluating the Monetary and Travel Time Trade-Offs of Transportation Network Companies and Transit Service in Chicago, Illinois
+    2  2008   TRR    0.871                                                                          Transit Use at Transit-Oriented Developments in Portland, Oregon, Area
+    3  2003   TRR    0.767                               Transit Use and Proximity to Rail: Results from Large Employment Sites in the San Francisco, California, Bay Area
+    4  2000   TRR    0.764                                                                       Transit Passenger Perceptions of Transit-Related Crime Reduction Measures
+    5  2003   TRR    0.704                                                 Understanding Transit Ridership Growth: Case Studies of Successful Transit Systems in the 1990s
+    6  2000   TRR    0.688                                                                                     Bus Rapid Transit Technologies in the Americas: An Overview
+    7  2004   TRR    0.680                                                             Free Transit for Low-Income Youth: Experience in San Francisco Bay Area, California
+    8  2004   TRR    0.636                                                             Economic Benefits of Coordinating Human Service Transportation and Transit Services
+    9  2014   TRR    0.594                                                               Quantifying Transportation Benefits of Transit-Oriented Development in New Jersey
+   10  2006   TRR    0.546                                                             Developing Bus Transfer Facilities for Maximum Transit Agency and Community Benefit
+
+=== 3. git 상태 ===
+ M paper1/03_S3/CHANGELOG_S3.md
+?? paper1/03_S3/L1_F4_inputs.csv
+?? paper1/03_S3/L1_distinct_words.csv
+?? paper1/03_S3/L1_legacy_overlap.csv
+?? paper1/03_S3/L1_meta.json
+?? paper1/03_S3/L1_topic_period_summary.csv
+?? paper1/03_S3/L2_meta.json
+?? paper1/03_S3/L2_representative_papers.csv
+?? paper1/03_S3/L3_meta.json
+?? paper1/03_S3/L3_topic_metrics.csv
+?? paper1/03_S3/L4_meta.json
+?? paper1/03_S3/L4_structure_fingerprint.csv
+?? paper1/03_S3/L5_meta.json
+?? paper1/03_S3/L5_topic38_49_decision.csv
+?? paper1/03_S3/L5_topic38_49_meta.json
+?? paper1/03_S3/L5_topic38_49_sensitivity.csv
+?? paper1/03_S3/L5_topic_flags.csv
+?? paper1/03_S3/L7_meta.json
+?? paper1/03_S3/L7_topic_grade.csv
+
+S3-0-freeze-2026-10-16
+
+
+
+import pandas as pd
+from pathlib import Path
+D = Path.home()/"Research/Minnesota_Transport/analysis_data/final"
+R_ = pd.read_csv(D/"F2_risk_names.csv"); A = pd.read_csv(D/"F2_author_paper.csv", usecols=["name_norm"], low_memory=False)
+a = set(A.name_norm.astype(str)); r = list(R_.name_norm.astype(str))
+# 성(마지막 토큰)+이름 첫 토큰 키로 느슨하게 대조
+key = lambda s: (s.split()[0], s.split()[-1]) if s.split() else ("","")
+ak = {key(x) for x in a}; hit = [x for x in r if key(x) in ak]
+print("느슨한 키 일치:", len(hit), "/", len(r)); print(hit[:10])
+F7 = pd.read_csv(D/"F7_oa_author_ids.csv", usecols=["name_norm"]); print("F7 이름 중 위험군 파일과 겹침:", len(set(F7.name_norm.astype(str)) & set(r)), "| F2와 겹침:", len(set(F7.name_norm.astype(str)) & a))
+느슨한 키 일치: 302 / 1431
+['a scott mcknight', 'ahmed el geneidy', 'asad jan khattak', 'bin cao', 'bin yang', 'bing wu', 'bing zhu', 'bo chen', 'bo li', 'bo wang']
+F7 이름 중 위험군 파일과 겹침: 1371 | F2와 겹침: 50465
+
+
+import pandas as pd
+from pathlib import Path
+D = Path.home()/"Research/Minnesota_Transport/analysis_data/final"
+F1 = pd.read_csv(D/"F1_papers.csv", usecols=["pid","n_authors","in_sample"], low_memory=False); F1["pid"]=F1.pid.astype(str)
+A = pd.read_csv(D/"F2_author_paper.csv", usecols=["pid"], low_memory=False); A["pid"]=A.pid.astype(str)
+k = A.groupby("pid").size().rename("n_f2"); M = F1.merge(k, on="pid", how="left").fillna({"n_f2":0})
+M["n_authors"]=pd.to_numeric(M.n_authors, errors="coerce")
+print("F1 저자 합", int(M.n_authors.sum()), "| F2 행", int(M.n_f2.sum()), "| 행 보존율", round(M.n_f2.sum()/M.n_authors.sum(),3))
+print("저자가 전부 남은 논문 비율", round((M.n_f2>=M.n_authors).mean(),3), "| F2에 저자 0명인 논문", int((M.n_f2==0).sum()))
+print(A.pid.nunique(), "개 pid가 F2에 존재")
+F1 저자 합 373377 | F2 행 282040 | 행 보존율 0.755
+저자가 전부 남은 논문 비율 0.578 | F2에 저자 0명인 논문 24160
+87525 개 pid가 F2에 존재
+
+import pandas as pd
+from pathlib import Path
+R = Path.home()/"Research/Minnesota_Transport"; D = R/"analysis_data/final"
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1","1.0","true","t","yes"])
+F = pd.read_csv(D/"F1_papers.csv", low_memory=False); F["pid"]=F.pid.astype(str)
+EXC = set(pd.read_csv(R/"paper1/00_S0/EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+F = F[~F.pid.isin(EXC) & tf(F.in_sample) & F.year.between(2000,2025)].copy()
+A = pd.read_csv(D/"F2_author_paper.csv", usecols=["pid"], low_memory=False); A["pid"]=A.pid.astype(str)
+F = F.merge(A.groupby("pid").size().rename("n_f2"), on="pid", how="left").fillna({"n_f2":0})
+F["n_authors"]=pd.to_numeric(F.n_authors, errors="coerce"); F["ht"]=tf(F.has_topic)
+print("창 내 논문", len(F), "| 행 보존율", round(F.n_f2.sum()/F.n_authors.sum(),3), "| 전부 남은 논문", round((F.n_f2>=F.n_authors).mean(),3))
+print("저자 0명 논문", int((F.n_f2==0).sum()), "| has_topic 결측", int((~F.ht).sum()))
+print(pd.crosstab(F.n_f2==0, F.ht, margins=True))
+print("연도별 저자 0명 비율:\n", (F.n_f2==0).groupby(F.year).mean().round(3).to_string())
+print("저널별 저자 0명 비율 상위 8:\n", (F.n_f2==0).groupby(F.venue_short).mean().sort_values(ascending=False).head(8).round(3).to_string())
+
+창 내 논문 91794 | 행 보존율 0.77 | 전부 남은 논문 0.588
+저자 0명 논문 15424 | has_topic 결측 14810
+ht     False   True    All
+n_f2                      
+False      0  76370  76370
+True   14810    614  15424
+All    14810  76984  91794
+연도별 저자 0명 비율:
+ year
+2000    0.303
+2001    0.280
+2002    0.272
+2003    0.261
+2004    0.244
+2005    0.204
+2006    0.180
+2007    0.248
+2008    0.234
+2009    0.215
+2010    0.203
+2011    0.176
+2012    0.182
+2013    0.167
+2014    0.165
+2015    0.145
+2016    0.146
+2017    0.143
+2018    0.137
+2019    0.125
+2020    0.141
+2021    0.141
+2022    0.138
+2023    0.137
+2024    0.158
+2025    0.193
+저널별 저자 0명 비율 상위 8:
+ venue_short
+VT Mag     0.473
+RTBM       0.320
+CACIE      0.307
+GEIT       0.300
+JPT        0.296
+OJ-ITS     0.296
+TRIP       0.274
+RailEng    0.250
+
+
+import pandas as pd
+from pathlib import Path
+R = Path.home()/"Research/Minnesota_Transport"; D = R/"analysis_data/final"
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1","1.0","true","t","yes"])
+F = pd.read_csv(D/"F1_papers.csv", low_memory=False); F["pid"]=F.pid.astype(str)
+EXC = set(pd.read_csv(R/"paper1/00_S0/EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+F = F[~F.pid.isin(EXC) & tf(F.in_sample) & F.year.between(2000,2025)].copy()
+A = pd.read_csv(D/"F2_author_paper.csv", usecols=["pid"], low_memory=False); A["pid"]=A.pid.astype(str)
+F["n_f2"]=F.pid.map(A.groupby("pid").size()).fillna(0); F["n_authors"]=pd.to_numeric(F.n_authors, errors="coerce")
+Z = F[F.n_f2==0]
+print("저자 0명 논문의 n_authors 분포(F1 기준):\n", Z.n_authors.describe().round(2).to_string())
+print("n_authors 결측 또는 0:", int((Z.n_authors.fillna(0)==0).sum()), "/", len(Z), "| 단독 저자:", int((Z.n_authors==1).sum()))
+F7 = pd.read_csv(D/"F7_oa_author_ids.csv", usecols=["pid"]); F7["pid"]=F7.pid.astype(str)
+print("저자 0명 논문 중 F7에 pid가 있는 비율:", round(Z.pid.isin(set(F7.pid)).mean(),3), "| 저자 있는 논문:", round(F[F.n_f2>0].pid.isin(set(F7.pid)).mean(),3))
+print("2007년 저자 0명 비율 상위 저널:\n", (F[F.year==2007].assign(z=lambda d: d.n_f2==0).groupby("venue_short").z.agg(["mean","size"]).sort_values("mean",ascending=False).head(6).round(3).to_string()))
+저자 0명 논문의 n_authors 분포(F1 기준):
+ count    15424.00
+mean         2.82
+std          1.69
+min          1.00
+25%          2.00
+50%          2.00
+75%          4.00
+max         35.00
+n_authors 결측 또는 0: 0 / 15424 | 단독 저자: 3526
+저자 0명 논문 중 F7에 pid가 있는 비율: 0.335 | 저자 있는 논문: 0.398
+2007년 저자 0명 비율 상위 저널:
+               mean  size
+venue_short             
+VT Mag       0.750    36
+CACIE        0.486    35
+JTG          0.420    50
+JPT          0.357    28
+TranspRev    0.333    24
+TR-B         0.322    59
+
+import pandas as pd
+from pathlib import Path
+R = Path.home()/"Research/Minnesota_Transport"; D = R/"analysis_data/final"
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1","1.0","true","t","yes"])
+F = pd.read_csv(D/"F1_papers.csv", low_memory=False); F["pid"]=F.pid.astype(str)
+EXC = set(pd.read_csv(R/"paper1/00_S0/EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+F = F[~F.pid.isin(EXC) & tf(F.in_sample) & F.year.between(2000,2025)].copy()
+A = pd.read_csv(D/"F2_author_paper.csv", usecols=["pid"], low_memory=False)
+F["no_auth"] = ~F.pid.isin(set(A.pid.astype(str)))
+F["no_doi"] = F.doi_norm.isna() | (F.doi_norm.astype(str).str.strip()=="")
+F["no_topic"] = ~tf(F.has_topic)
+print(pd.crosstab([F.no_doi, F.no_auth], F.no_topic, margins=True))
+print("DOI 없음 중 저자 0명 비율:", round(F[F.no_doi].no_auth.mean(),3), "| DOI 있음 중:", round(F[~F.no_doi].no_auth.mean(),3))
+no_topic        False   True    All
+no_doi no_auth                     
+False  False    76187      0  76187
+       True       612  14687  15299
+True   False      183      0    183
+       True         2    123    125
+All             76984  14810  91794
+DOI 없음 중 저자 0명 비율: 0.406 | DOI 있음 중: 0.167
+
+
+import pandas as pd
+from pathlib import Path
+R = Path.home()/"Research/Minnesota_Transport"; D = R/"analysis_data/final"
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1","1.0","true","t","yes"])
+F = pd.read_csv(D/"F1_papers.csv", low_memory=False); F["pid"]=F.pid.astype(str)
+EXC = set(pd.read_csv(R/"paper1/00_S0/EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+F = F[~F.pid.isin(EXC) & tf(F.in_sample) & F.year.between(2000,2025)].copy()
+F["n_authors"]=pd.to_numeric(F.n_authors, errors="coerce")
+A = pd.read_csv(D/"F2_author_paper.csv", usecols=["pid"], low_memory=False); A["pid"]=A.pid.astype(str)
+F["n_f2"]=F.pid.map(A.groupby("pid").size()).fillna(0)
+# (a) F2 범위 안 논문만으로 행 보존율: 위험군 제외 등 '진짜 저자 탈락'의 크기
+G = F[F.n_f2>0]
+print("F2 안 논문", len(G), "| 행 보존율", round(G.n_f2.sum()/G.n_authors.sum(),3), "| 전부 남은 논문", round((G.n_f2>=G.n_authors).mean(),3))
+# (b) 614편: 위험군 이름 때문에 전원 탈락했는지(F7은 제외 전 목록)
+RISK = pd.read_csv(D/"F2_risk_names.csv"); risk = set(RISK.name_norm)
+F7 = pd.read_csv(D/"F7_oa_author_ids.csv", usecols=["pid","name_norm"]); F7["pid"]=F7.pid.astype(str)
+X = F[(F.n_f2==0) & tf(F.has_topic)]; f7 = F7[F7.pid.isin(set(X.pid))].copy(); f7["risk"]=f7.name_norm.isin(risk)
+allrisk = f7.groupby("pid").risk.all()
+print("토픽 있고 저자 0명:", len(X), "| F7에 pid 있음:", f7.pid.nunique(), "| 저자 전원이 위험군:", int(allrisk.sum()))
+# (c) 임베딩 없음(토픽 없음)의 연도·저널 편중은 이미 확인. 단독/다인 비교
+Z = F[~tf(F.has_topic)]; print("토픽 없음 논문 단독 저자 비율", round((Z.n_authors==1).mean(),3), "| 토픽 있음", round((F[tf(F.has_topic)].n_authors==1).mean(),3))
+F2 안 논문 76370 | 행 보존율 0.886 | 전부 남은 논문 0.706
+토픽 있고 저자 0명: 614 | F7에 pid 있음: 261 | 저자 전원이 위험군: 259
+토픽 없음 논문 단독 저자 비율 0.226 | 토픽 있음 0.044
+
+
+import pandas as pd
+from pathlib import Path
+R = Path.home()/"Research/Minnesota_Transport"; D = R/"analysis_data/final"
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1","1.0","true","t","yes"])
+F = pd.read_csv(D/"F1_papers.csv", low_memory=False); F["pid"]=F.pid.astype(str)
+A = pd.read_csv(D/"F2_author_paper.csv", usecols=["pid","name_norm"], low_memory=False); A["pid"]=A.pid.astype(str)
+n_f2 = A.groupby("name_norm").pid.nunique()
+print("F2 저자별 논문 수 분포:\n", n_f2.describe(percentiles=[.5,.9,.99,.999]).round(1).to_string())
+print("30편 이상 저자 수:", int((n_f2>=30).sum()), "| 31편 이상:", int((n_f2>30).sum()), "| 정확히 30편:", int((n_f2==30).sum()))
+print("논문 수 히스토그램(25~35):\n", n_f2[(n_f2>=25)&(n_f2<=35)].value_counts().sort_index().to_string())
+F["emb"] = tf(F.has_topic)
+print("\n연도별 임베딩 보유율:\n", F[F.in_sample.pipe(tf)].groupby("year").emb.mean().round(3).loc[2000:2025].to_string())
+F2 저자별 논문 수 분포:
+ count    101842.0
+mean          2.8
+std           5.2
+min           1.0
+50%           1.0
+90%           5.0
+99%          26.0
+99.9%        61.0
+max         138.0
+30편 이상 저자 수: 810 | 31편 이상: 765 | 정확히 30편: 45
+논문 수 히스토그램(25~35):
+ pid
+25    63
+26    75
+27    64
+28    51
+29    61
+30    45
+31    49
+32    46
+33    55
+34    45
+35    28
+
+연도별 임베딩 보유율:
+ year
+2000    0.698
+2001    0.720
+2002    0.729
+2003    0.738
+2004    0.758
+2005    0.799
+2006    0.821
+2007    0.756
+2008    0.772
+2009    0.790
+2010    0.803
+2011    0.828
+2012    0.822
+2013    0.839
+2014    0.842
+2015    0.862
+2016    0.859
+2017    0.861
+2018    0.870
+2019    0.881
+2020    0.864
+2021    0.866
+2022    0.870
+2023    0.870
+2024    0.848
+2025    0.811
+
+
+# # 해석: 30편 상한은 F2 저자 이력에 반영되지 않았고, 이 파일에는 임베딩 생성 코드도 없습니다
+
+# ## 확인된 것
+
+# | 관찰 | 의미 |
+# |---|---|
+# | 31편 이상 저자 765명, 최대 138편, 25~35편 구간에 30에서의 절단 없음 | **F2 저자 이력은 상한 30에 눌려 있지 않습니다.** `papers_per_author_cap=30`은 임베딩·리뷰어 인덱스 쪽 설정이고 F2에는 반영되지 않았습니다. 앞 턴의 "상한이 F2 활동량을 30으로 누를 수 있다"는 우려는 이 점에서 기각입니다. |
+# | grep 결과가 `nlargest` 한 줄뿐 (1074행, 예측 점수 상위 선택) | `transport_atlas_multiagent_pipeline.py`에는 임베딩 생성, 제목 입력, 상한 적용 코드가 없습니다. 이 파일은 임베딩을 **읽어 쓰는 쪽**입니다. 생성 코드는 다른 곳(저장소 밖, 또는 다른 `.py`/노트북)에 있고 아직 못 찾았습니다. |
+# | 연도별 임베딩 보유율: 2000년 0.698 → 2019년 0.881, 2007년 0.756 (2006년 0.821), 2025년 0.811 | 앞서 본 저자 0명 비율 패턴(2000년 30%, 2007년 급등)과 거울상입니다. 보유율은 시간에 따라 완만히 오르다 2007년에 꺾입니다. |
+
+# 따라서 상한 가설(다작 저자의 오래된 논문이 선택적으로 빠졌다)은 **지지되지 않았습니다.** 다만 상한이 임베딩 단계에서 논문 선택에 걸렸을 가능성은 이 데이터로 배제되지 않습니다. F2는 임베딩 보유 논문 위에서 만들어졌으므로, F2의 저자별 논문 수가 30을 넘는다는 사실은 상한이 "저자당 임베딩 논문 수"에는 걸리지 않았다는 쪽을 가리킵니다(추정). 단독 저자 22.6% 대 4.4%의 원인은 여전히 미설명입니다.
+
+# ## 결측 원인 추적은 여기서 멈추세요
+
+# 세 가지(임베딩 입력 텍스트, 단독 저자 편중, 2007년 꺾임)는 미확인으로 남기고 한계 문장으로 처리합니다. 추적 비용 대비 S4~S5의 결과가 바뀔 여지가 작고, 결측 보정 민감도가 이미 설계되어 있습니다. 2007년은 S5에서 측정 아티팩트 후보로 표시하세요.
+
+# 논문에 쓸 문장: "주제 라벨은 DOI로 SPECTER2 임베딩에 연결되는 논문에만 부여되며(창 내 83.9%), 보유율은 연도·저널·팀 규모에 따라 달랐다. 임베딩 입력 텍스트와 생성 시 표본 조건은 확인하지 못했다."
+
+# ## CHANGELOG_S3 추가 문구 (복사용)
+
+# ```
+# - 2026-10-16 | 상한 가설 점검: F2 저자별 논문 수 최대 138, 31편 이상 765명, 30에서 절단 없음 -> papers_per_author_cap=30은 F2 저자 이력에 반영되지 않음(가설 기각). transport_atlas_multiagent_pipeline.py에는 임베딩 생성·상한 적용 코드 없음(소비 쪽), 생성 코드 위치 미확인. 임베딩 보유율 2000년 0.698, 2019년 0.881, 2007년 0.756(2006년 0.821). 임베딩 입력 텍스트, 단독 저자 편중(22.6% 대 4.4%), 2007년 꺾임의 원인은 미확인으로 두고 한계에 기록 | S3, S4~S6 | 한계
+# ```
+
+# ## 이제 본 작업
+
+# 1. **S3 커밋·태그**
+#    ```bash
+#    cd ~/Research/Minnesota_Transport
+#    git add paper1/03_S3 && git commit -m "S3 L1-L7 완료: A 112/149 (0.752), C 4개(0,28,49,147); 결측 점검 기록" && git tag -a S3-final-2026-10-16 -m "S3 final"
+#    ```
+# 2. **`s4_0_freeze.py` 패치 후 `FREEZE=True`.** `SPEC` 정의 직후에 앞서 드린 `missingness_sensitivity` 블록을 넣고, `caveats` 리스트에 아래 한 줄을 추가하세요.
+#    ```python
+#    SPEC["caveats"].append("분석 집합은 임베딩 보유 논문(창 내 83.9%). 보유율은 연도(2000년 0.70, 2019년 0.88, 2007년 꺾임), 저널(VT Mag 낮음), 팀 규모(토픽 없는 논문의 단독 저자 22.6% 대 4.4%)에 따라 다름. 임베딩 입력 텍스트와 생성 조건은 미확인")
+#    ```
+# 3. **S4 본 계산 → `s4_missing_sens.py`** 순으로 실행해 두 출력을 붙여 주세요. 쇠퇴 토픽의 저널 간 성분 비중, 4분면 안정성(기준 0.70), 결측 보정 후 라벨 유지율을 해석하겠습니다.
+# -*- coding: utf-8 -*-
+# s4_0_freeze.py: S4 규칙 동결(데이터 미열람). FREEZE=False로 점검 후 True.
+import json, hashlib, subprocess
+from pathlib import Path
+import pandas as pd
+
+FREEZE, COMMIT = True , True          # 점검 후 FREEZE=True
+ROOT = Path.home() / "Research/Minnesota_Transport"; S4 = ROOT / "paper1/04_S4"; S3 = ROOT / "paper1/03_S3"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_b = lambda b: hashlib.sha256(b).hexdigest()
+
+SPEC = dict(
+    version=1, seed=2026, decision_status="모든 수치는 임의 출발값. S4 결과 열람 전에 동결.",
+    valid_topics="S3 L7 기준 유효 149개(토픽 18 제외). 등급은 L7_topic_grade.csv",
+    sample="L1·L2·L3과 같은 분석 집합(76,984편, has_topic 논문). 창 내 in_sample 91,794편 중 83.9%",
+    periods={"P0509": [2005, 2009], "P1519": [2015, 2019], "P2024": [2020, 2024], "P2025": [2020, 2025]},
+    main_contrast=["P0509", "P2025"], sens_contrast=["P1519", "P2024"],
+    quantity=dict(delta="기간 간 토픽 비중 차이 Delta_s(비율 아님)", log_ratio="log((s1+0.5/N1)/(s0+0.5/N0)), N=기간 분석 집합 논문 수",
+                  big_change_rule="|Delta_s|가 유효 토픽 분포의 상위 3분위(상위 1/3)"),
+    quality=dict(percentile="연도x저널 셀 내 평균 순위 (rank-0.5)/n, L2와 같은 정의", max_year=2022, excluded="2023년 이후 논문은 질 계산에서 제외",
+                 high_rule="토픽 평균 백분위 > 0.50 이고 논문 부트스트랩 95% 구간 하한 > 0.50", bootstrap_B=1000, top_decile_cut=0.90,
+                 note="출판 후 3년 고정 창(OpenAlex counts_by_year)은 제공 연도 범위 확인 후 별도 민감도로 이월"),
+    quadrants="big_change x sign(Delta) x quality_high -> growth_highQ, growth_notHighQ, decline_highQ, decline_notHighQ, small_change",
+    decomposition=dict(main="Griliches-Regev 중점 가중 정확 분해: dS_k = sum_j wbar_j*ds_jk(저널 내) + sum_j sbar_jk*dw_j(저널 간)",
+                       invariants="내+간 = 총변화 (허용오차 1e-9), 저널 비중 합 1", sensitivity_later="FHK, Price는 S6에서"),
+    emerging_defs={"D1": "F6 원본 emerging 열", "D2": "주 대비 평활 로그 비율 상위 14개",
+                   "D3": "주 대비 Delta_s 상위 14개", "D4": "민감도 대비(2015-19 대 2020-24) Delta_s 상위 14개"},
+    stability=dict(quadrant_within_component_min=0.70,
+                   rule="저널 내 성분만으로 같은 규칙을 적용했을 때 big_change 토픽의 라벨 유지 비율 >= 0.70 (S4 통과 기준)"),
+    grade_split="모든 요약을 전체 149개와 A등급 112개로 병행 보고",
+    deferred=["4.1 기간별 키워드 Jaccard(L1 결과 재사용)", "4.6 히트맵·회전 지수",
+              "4.7 지속 저자 따라감 비율(저자 층, S6 직전)"],
+    caveats=["제목 기반 임베딩 토픽이라 비중 변화에는 SPECTER2 순환 가능성: 인용으로 토픽을 예측하는 모형은 쓰지 않음",
+             "인용은 단일 스냅샷"],
+)
+
+# ---- 패치 1: 결측 보정 민감도(정식 항목) ----
+SPEC["missingness_sensitivity"] = dict(
+    population="F1 창 내(2000~2025) in_sample, 오염 269편 제외 (91,794편 예상)",
+    model="로지스틱 회귀 P(has_topic=1 | 연도 범주, 저널 범주, 기간(5개)x저널 상호작용, log(n_authors), is_solo), L2 정규화 C=1.0",
+    covariate_exclusion="F2 파생 변수는 공변량으로 쓰지 않음(F2는 임베딩 보유 논문만으로 구축되어 결측의 직접 원인과 얽힘, 순환)",
+    weights="안정화 역확률 w = P(has_topic=1)/p_hat, 1·99 백분위 절단, 유효 표본 수 보고",
+    positivity="p_hat < 0.05 인 논문 비중 보고. 위반 시 분리 보고",
+    outputs="가중 Delta_s로 big_change 상위 3분위를 다시 정하고, 원 big_change 토픽의 라벨 유지 비율을 전체와 A등급으로 보고",
+    pass_note="통과 기준 아님. 유지 비율이 0.70 미만이면 4분면 결과를 결측 민감 결과로 표기",
+    limitation="저널x연도 안에서도 결측이 선택적이면 보정은 불완전. 임베딩 입력 텍스트와 생성 조건은 미확인")
+
+# ---- 패치 2: 결측 메커니즘 점검 결과를 caveats에 ----
+SPEC["caveats"].append(
+    "분석 집합은 임베딩 보유 논문(창 내 83.9%). 토픽 결측 14,810편은 전부 F2 저자 0명(F2는 임베딩 보유 논문 위에서 구축된 것으로 추정). "
+    "보유율은 연도(2000년 0.70, 2019년 0.88, 2007년 꺾임), 저널(VT Mag 낮음), 팀 규모(토픽 없는 논문의 단독 저자 22.6% 대 4.4%)에 따라 다름. "
+    "임베딩 입력 텍스트(제목 기반 추정)와 생성 조건은 미확인")
+SPEC["caveats"].append("2007년 하락, T-IV 2025, T-ITS 2008은 측정 아티팩트 후보로 S5에서 표시")
+
+h = sha_b(json.dumps(SPEC, sort_keys=True, ensure_ascii=False).encode()); print("S4-0 해시(예정)", h[:12])
+p = S4 / "S4_0_PREREG.json"
+if p.exists():
+    old = json.loads(p.read_text(encoding="utf-8"))
+    if old["sha256"] != h: raise SystemExit("⛔ 동결된 규칙과 다릅니다. 새 버전으로 분리하고 CHANGELOG에 사유를 쓰세요")
+    raise SystemExit("이미 동결됨: 동일")
+if not FREEZE: raise SystemExit("(점검만) 확정 후 FREEZE=True")
+
+S4.mkdir(parents=True, exist_ok=True)
+refs = {f: hashlib.sha256((S3 / f).read_bytes()).hexdigest() for f in ["L7_topic_grade.csv", "S3_0_PREREG.json"] if (S3 / f).exists()}
+p.write_text(json.dumps(dict(SPEC, created=now(), sha256=h, reference_hashes_at_freeze=refs), ensure_ascii=False, indent=1), encoding="utf-8")
+(S4 / "CHANGELOG_S4.md").write_text(
+    f"# CHANGELOG S4 (날짜 | 변경 | 사유 | 영향)\n\n- {now()} | S4-0 동결(해시 {h[:12]}): 기간, 양·질·4분면 규칙, 정확 분해, 신생 정의 4종, "
+    f"결측 보정 민감도(역확률 가중), 결측 메커니즘 caveats. 모든 수치는 임의 출발값 | S4 설계 | S4 전체\n", encoding="utf-8")
+print("저장:", p.name, "| 참조 해시", list(refs))
+if COMMIT:
+    g = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+    tag = f"S4-0-freeze-{pd.Timestamp.now().strftime('%Y-%m-%d')}"
+    if g("tag", "-l", tag).stdout.strip(): raise SystemExit(f"⛔ 태그 {tag} 이미 있음")
+    g("add", "--", "paper1/04_S4"); print(g("commit", "-m", "S4-0 freeze").stdout.strip()[:200])
+    g("tag", "-a", tag, "-m", "S4-0 freeze"); print("태그:", tag)
+S4-0 해시(예정) 44a9e523c565
+저장: S4_0_PREREG.json | 참조 해시 ['L7_topic_grade.csv', 'S3_0_PREREG.json']
+[main 1f36d60] S4-0 freeze
+ 2 files changed, 94 insertions(+)
+ create mode 100644 paper1/04_S4/CHANGELOG_S4.md
+ create mode 100644 paper1/04_S4/S4_0_PREREG.json
+태그: S4-0-freeze-2026-10-16
+
+# # S3 커밋·태그 완료, 이제 S4 본 계산 차례입니다
+
+# 세 태그가 모두 생겼습니다 (`S3-0-freeze`, `S3-final`, `S4-0-freeze`). 커밋 `8628594`는 S3 산출물 19개 파일만 담고 있어 S4-0 커밋(`1f36d60`)과 섞이지 않았습니다.
+
+# ## 기록 하나만 남기세요
+
+# S3-final이 S4-0 동결보다 늦게 만들어졌으므로, 순서를 나중에 설명할 수 있게 CHANGELOG_S3에 한 줄 추가합니다. S4-0 동결 파일에 `L7_topic_grade.csv` 해시가 들어 있어, 파일 내용이 S4-0 시점과 같다는 것은 대조로 확인됩니다.
+
+# ```bash
+# cd ~/Research/Minnesota_Transport
+# echo "- 2026-10-16 | S3 최종 커밋(8628594)·태그(S3-final-2026-10-16)가 S4-0 동결(1f36d60) 이후에 생성됨. S3 산출물 내용은 S4-0 동결 전에 확정되어 있었고, S4_0_PREREG.json의 reference_hashes_at_freeze(L7_topic_grade.csv)로 대조 가능 | S3 | 기록 순서" >> paper1/03_S3/CHANGELOG_S3.md
+# git add paper1/03_S3/CHANGELOG_S3.md && git commit -m "CHANGELOG_S3: S3-final 생성 순서 기록"
+# ```
+
+# 선택 사항이지만, 해시 대조를 지금 한 번 해 두면 안전합니다.
+
+# ```bash
+# python3 - <<'EOF'
+# import json, hashlib
+# from pathlib import Path
+# R = Path.home()/"Research/Minnesota_Transport/paper1"
+# ref = json.load(open(R/"04_S4/S4_0_PREREG.json", encoding="utf-8"))["reference_hashes_at_freeze"]
+# for f, h in ref.items():
+#     cur = hashlib.sha256((R/"03_S3"/f).read_bytes()).hexdigest()
+#     print(f, "일치" if cur == h else "⚠ 불일치")
+# EOF
+# ```
+
+# 둘 다 "일치"여야 합니다.
+
+# ## 다음 실행
+
+# 1. **S4 본 계산:** 앞서 제시한 "③ S4 본 계산" 코드를 `paper1/s4_main.py`로 저장해 실행합니다. 출력 첫머리에서 `분석 집합 76,984편`과 `불변식 통과`를 확인하세요. 불변식이 실패하면 이후 수치는 쓰지 마세요.
+# 2. **결측 민감도:** 앞서 제시한 `s4_missing_sens.py`를 실행합니다. 본 계산이 만드는 `topic_quadrants.csv`가 필요하므로 반드시 1번 다음입니다.
+
+# 두 코드를 한 파일로 다시 정리해 드릴 수도 있습니다. 필요하면 말씀해 주세요. 두 출력을 붙여 주시면 4분면 안정성(기준 0.70), 쇠퇴 토픽의 저널 간 성분 비중, 결측 보정 후 라벨 유지율을 해석하고 S5 설계로 넘어가겠습니다.
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# S4 본 계산: 양 x 질 4분면, 저널 내/간 정확 분해, 신생 정의 4종, 결측 보정 민감도.
+# 규칙은 동결된 S4_0_PREREG.json에서 읽는다. OpenAlex 호출 없음.
+# 구현 선택(CHANGELOG 기록): has_topic 기준 비중, 부재 저널 w=0·s=0, 안정성은 저널 내 성분으로
+#   상위 3분위 규칙 재적용, 질 부트스트랩은 토픽 내 논문 복원추출, D1=F6.emerging
+# =====================================================================================
+import json, hashlib, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+import scipy.sparse as sp
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
+from sklearn.preprocessing import OneHotEncoder
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 220); pd.set_option("display.max_columns", 30)
+
+ROOT = Path.home() / "Research/Minnesota_Transport"
+DATA, S0, S3, S4 = ROOT / "analysis_data/final", ROOT / "paper1/00_S0", ROOT / "paper1/03_S3", ROOT / "paper1/04_S4"
+SPEC_FILE = S4 / "S4_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+sha_b = lambda b: hashlib.sha256(b).hexdigest()
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+class Halt(Exception): pass
+
+def changelog_once(key, line):
+    cl = S4 / "CHANGELOG_S4.md"
+    if key in cl.read_text(encoding="utf-8"): return
+    with cl.open("a", encoding="utf-8") as f: f.write(line + "\n")
+
+def main():
+    # ---------- 0. 동결 검증 ----------
+    if not SPEC_FILE.exists(): raise Halt("S4_0_PREREG.json 없음")
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8"))
+    core = {k: v for k, v in spec.items() if k not in ("created", "sha256", "reference_hashes_at_freeze")}
+    if sha_b(json.dumps(core, sort_keys=True, ensure_ascii=False).encode()) != spec["sha256"]: raise Halt("동결 해시 불일치: SPEC이 변경됨")
+    for f, h in spec["reference_hashes_at_freeze"].items():
+        if sha_f(S3 / f) != h: raise Halt(f"참조 파일 {f} 해시가 동결 시점과 다름")
+    print(f"동결 검증 통과 (해시 {spec['sha256'][:12]})")
+    P = {k: tuple(v) for k, v in spec["periods"].items()}; Q = spec["quality"]; seed = int(spec["seed"]); B = int(Q["bootstrap_B"])
+    rng = np.random.default_rng(seed); main0, main1 = spec["main_contrast"]; sens0, sens1 = spec["sens_contrast"]
+
+    # ---------- 1. 데이터 ----------
+    W = pd.read_csv(DATA / "F1_papers.csv", low_memory=False); W["pid"] = W.pid.astype(str)
+    EXC = set(pd.read_csv(S0 / "EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+    W = W[~W.pid.isin(EXC) & tf(W.in_sample) & W.year.between(2000, 2025)].copy().reset_index(drop=True)
+    W["ht"] = tf(W.has_topic) & W.topic150.notna()
+    F = W[W.ht].copy().reset_index(drop=True)
+    print(f"창 내 {len(W):,}편 | 분석 집합(has_topic) {len(F):,}편")
+    if len(F) != 76984: raise Halt("분석 집합이 76,984편이 아닙니다")
+    F["topic"] = F.topic150.astype(int); F["cited_by_count"] = pd.to_numeric(F.cited_by_count, errors="coerce")
+    g = F.groupby(["year", "venue_short"]).cited_by_count
+    F["cit_pct"] = (g.rank(method="average") - 0.5) / g.transform("count")
+    G = pd.read_csv(S3 / "L7_topic_grade.csv"); grade = dict(zip(G.topic.astype(int), G.grade))
+    topics = np.array(sorted(grade)); venues = np.array(sorted(F.venue_short.unique()))
+    if set(F.topic) != set(topics): raise Halt("토픽 집합이 L7과 다릅니다")
+
+    # ---------- 2. 양 + 정확 분해 ----------
+    def mats(lo, hi):
+        d = F[F.year.between(lo, hi)]
+        ct = pd.crosstab(d.venue_short, d.topic).reindex(index=venues, columns=topics, fill_value=0)
+        nj = ct.sum(1).values.astype(float); w = nj / nj.sum()
+        s = np.divide(ct.values, nj[:, None], out=np.zeros(ct.shape), where=nj[:, None] > 0)
+        return w, s, ct.values.sum(0) / ct.values.sum(), int(nj.sum())
+    def decomp(a, b):
+        w0, s0, S0_, N0 = mats(*P[a]); w1, s1, S1_, N1 = mats(*P[b])
+        if abs(w0 @ s0 - S0_).max() > 1e-9 or abs(w1 @ s1 - S1_).max() > 1e-9: raise Halt("불변식 실패: 질량 보존")
+        within = (((w0 + w1) / 2)[:, None] * (s1 - s0)).sum(0)
+        between = (((s0 + s1) / 2) * (w1 - w0)[:, None]).sum(0); tot = S1_ - S0_
+        if abs(within + between - tot).max() > 1e-9: raise Halt("불변식 실패: 내+간 != 총변화")
+        lr = np.log((S1_ + 0.5 / N1) / (S0_ + 0.5 / N0))
+        return pd.DataFrame(dict(topic=topics, s0=S0_, s1=S1_, delta=tot, within=within, between=between, log_ratio=lr)), (N0, N1)
+    M, (n0, n1) = decomp(main0, main1); Ms, _ = decomp(sens0, sens1)
+    print(f"불변식 통과(질량 보존, 내+간=총변화) | 주 대비 {main0}->{main1}: N={n0:,}/{n1:,}")
+    M["between_share"] = M.between.abs() / (M.within.abs() + M.between.abs()).replace(0, np.nan)
+
+    # ---------- 3. 질 ----------
+    Fq = F[F.year <= int(Q["max_year"])]; rows = []
+    for t in topics:
+        x = Fq.loc[Fq.topic == t, "cit_pct"].values; n = len(x)
+        if n == 0: rows.append(dict(topic=t, q_n=0)); continue
+        bm = x[rng.integers(0, n, (B, n))].mean(1)
+        rows.append(dict(topic=t, q_n=n, q_mean=x.mean(), q_lo=np.percentile(bm, 2.5), q_hi=np.percentile(bm, 97.5), q_top10=(x >= Q["top_decile_cut"]).mean()))
+    M = M.merge(pd.DataFrame(rows), on="topic"); M["quality_high"] = (M.q_mean > 0.5) & (M.q_lo > 0.5)
+
+    # ---------- 4. 4분면 ----------
+    def label(df, col, quality_high):
+        cut = df[col].abs().quantile(2 / 3); big = df[col].abs() >= cut
+        lab = ["small_change" if not b else ("growth" if d > 0 else "decline") + ("_highQ" if q else "_notHighQ")
+               for b, d, q in zip(big, df[col], quality_high)]
+        return pd.Series(lab, index=df.index), big, cut
+    M["quadrant"], M["big"], cut_tot = label(M, "delta", M.quality_high)
+    M["quadrant_within"], M["big_within"], cut_w = label(M, "within", M.quality_high)
+    M["grade"] = M.topic.map(grade)
+    stab = lambda d: float((d[d.big].quadrant == d[d.big].quadrant_within).mean()) if d.big.any() else np.nan
+    s_all, s_A = stab(M), stab(M[M.grade == "A"]); thr = spec["stability"]["quadrant_within_component_min"]
+    print(f"\n[4분면 분포 전체]\n{M.quadrant.value_counts().to_string()}")
+    print(f"\n[A등급만]\n{M[M.grade == 'A'].quadrant.value_counts().to_string()}")
+    print(f"\n|Delta| 상위 3분위 경계 {cut_tot:.5f} | 저널 내 성분 경계 {cut_w:.5f}")
+    print(f"4분면 안정성(저널 내 성분으로 재분류 시 big_change 라벨 유지): 전체 {s_all:.3f} | A등급만 {s_A:.3f} | 기준 {thr} -> {'통과' if s_all >= thr else '미달'}")
+    bg = M[M.big]; print("big_change 토픽의 부호 유지율(저널 내 부호 = 총변화 부호):", round(float((np.sign(bg.within) == np.sign(bg.delta)).mean()), 3))
+    dec, gro = M[M.big & (M.delta < 0)], M[M.big & (M.delta > 0)]
+    print(f"\n[저널 구성 분해] 쇠퇴 big {len(dec)}개: 저널 간 성분 비중 중앙값 {dec.between_share.median():.2f} (A등급만 {dec[dec.grade=='A'].between_share.median():.2f})"
+          f" | 성장 big {len(gro)}개: {gro.between_share.median():.2f} (A등급만 {gro[gro.grade=='A'].between_share.median():.2f})")
+    print(f"저널 간 성분이 총변화와 반대 부호인 토픽: {int((np.sign(M.between) != np.sign(M.delta)).sum())}개")
+    cols = ["topic", "grade", "delta", "within", "between", "between_share", "q_mean", "quadrant"]
+    print("\n쇠퇴 상위 8:\n", M.sort_values("delta").head(8)[cols].round(4).to_string(index=False))
+    print("\n성장 상위 8:\n", M.sort_values("delta", ascending=False).head(8)[cols].round(4).to_string(index=False))
+    print("\n[토픽 0, 38, 49, 147, 88, 69]\n", M[M.topic.isin([0, 38, 49, 147, 88, 69])][["topic", "grade", "delta", "within", "between", "q_mean", "q_lo", "q_hi", "quadrant", "quadrant_within"]].round(4).to_string(index=False))
+
+    # ---------- 5. 신생 정의 4종 ----------
+    E = {}
+    try:
+        F6 = pd.read_csv(DATA / "F6_topics.csv"); E["D1"] = set(F6.loc[tf(F6.emerging), "topic150"].astype(int)) & set(topics)
+    except Exception as e: print("※ D1 생략:", e); E["D1"] = set()
+    E["D2"] = set(M.sort_values("log_ratio", ascending=False).head(14).topic); E["D3"] = set(M.sort_values("delta", ascending=False).head(14).topic)
+    E["D4"] = set(Ms.sort_values("delta", ascending=False).head(14).topic)
+    ks = list(E); J = pd.DataFrame([[len(E[a] & E[b]) / len(E[a] | E[b]) if E[a] | E[b] else np.nan for b in ks] for a in ks], index=ks, columns=ks).round(2)
+    print("\n[신생 정의별 토픽 수와 Jaccard]", {k: len(v) for k, v in E.items()}); print(J.to_string())
+    DS = pd.DataFrame([dict(topic=t, grade=grade[t], **{k: t in E[k] for k in ks}, n_defs=sum(t in E[k] for k in ks))
+                       for t in sorted(set().union(*E.values()))]).sort_values("n_defs", ascending=False)
+    print("신생 후보 중 4종 모두:", int((DS.n_defs == 4).sum()), "| 1종만:", int((DS.n_defs == 1).sum()), "| C등급 포함:", DS[DS.grade == "C"].topic.tolist())
+
+    # ---------- 6. 저장(본 계산) ----------
+    M.to_csv(S4 / "topic_quadrants.csv", index=False, encoding="utf-8-sig")
+    M[["topic", "grade", "s0", "s1", "delta", "within", "between", "between_share", "log_ratio"]].to_csv(S4 / "journal_decomposition.csv", index=False, encoding="utf-8-sig")
+    Ms.assign(grade=Ms.topic.map(grade)).to_csv(S4 / "journal_decomposition_sens_1519_2024.csv", index=False, encoding="utf-8-sig")
+    DS.to_csv(S4 / "definition_sensitivity.csv", index=False, encoding="utf-8-sig")
+
+    # ---------- 7. 결측 보정 민감도 ----------
+    print("\n=== 결측 보정 민감도 (역확률 가중) ===")
+    W["n_authors"] = pd.to_numeric(W.n_authors, errors="coerce").fillna(1)
+    W["solo"] = tf(W.is_solo).astype(float); W["lna"] = np.log(W.n_authors.clip(lower=1))
+    W["per"] = pd.cut(W.year, [1999, 2004, 2009, 2014, 2019, 2025], labels=False).astype(str)
+    enc = OneHotEncoder(handle_unknown="ignore", min_frequency=5)
+    C = enc.fit_transform(pd.DataFrame({"y": W.year.astype(str), "v": W.venue_short, "pv": W.per + "_" + W.venue_short}))
+    X = sp.hstack([C, sp.csr_matrix(W[["lna", "solo"]].values)]).tocsr()
+    m = LogisticRegression(C=1.0, max_iter=2000, random_state=seed).fit(X, W.ht.astype(int))
+    p = m.predict_proba(X)[:, 1]; auc = roc_auc_score(W.ht, p); W["p"] = p
+    w = W.ht.mean() / p; lo, hi = np.percentile(w[W.ht], [1, 99]); W["w"] = np.clip(w, lo, hi)
+    T = W[W.ht].copy(); T["topic"] = T.topic150.astype(int); ess = T.w.sum() ** 2 / (T.w ** 2).sum()
+    print(f"AUC {auc:.3f} (S2: 0.73) | 유효 표본 {ess:,.0f}/{len(T):,} | p_hat<0.05 비중 {(T.p < 0.05).mean():.3%} | 가중치 범위 {lo:.2f}~{hi:.2f}")
+    def shares(lo_, hi_, weighted):
+        d = T[T.year.between(lo_, hi_)]; wt = d.w if weighted else pd.Series(1.0, index=d.index)
+        return wt.groupby(d.topic).sum().reindex(topics, fill_value=0).values / wt.sum()
+    d_u = shares(*P[main1], False) - shares(*P[main0], False); d_w = shares(*P[main1], True) - shares(*P[main0], True)
+    if abs(d_u - M.delta.values).max() > 1e-9: raise Halt("가중 없는 Delta가 본 계산과 다릅니다")
+    print("원 Delta와 보정 Delta 상관:", round(float(np.corrcoef(d_u, d_w)[0, 1]), 3), "| 부호 일치율:", round(float((np.sign(d_u) == np.sign(d_w)).mean()), 3))
+    Mw = M[["topic", "grade", "delta", "big", "quadrant", "quality_high"]].copy(); Mw["delta_w"] = d_w
+    Mw["quad_w"], Mw["big_w"], _ = label(Mw, "delta_w", Mw.quality_high)
+    for name, sub in {"전체": Mw, "A등급": Mw[Mw.grade == "A"]}.items():
+        s = sub[sub.big]; print(f"[{name}] 원 big {len(s)}개 중 보정 후 같은 라벨 유지: {(s.quadrant == s.quad_w).mean():.3f} | big 유지(라벨 무관): {s.big_w.mean():.3f}")
+    keep_all = float((Mw[Mw.big].quadrant == Mw[Mw.big].quad_w).mean()); keep_A = float((Mw[Mw.big & (Mw.grade == "A")].quadrant == Mw[Mw.big & (Mw.grade == "A")].quad_w).mean())
+    print("보정 후 라벨이 바뀐 big 토픽:\n", Mw[Mw.big & (Mw.quadrant != Mw.quad_w)][["topic", "grade", "delta", "delta_w", "quadrant", "quad_w"]].round(4).to_string(index=False))
+    Mw.to_csv(S4 / "missingness_sensitivity.csv", index=False, encoding="utf-8-sig")
+
+    # ---------- 8. 메타·기록 ----------
+    outs = ["topic_quadrants.csv", "journal_decomposition.csv", "journal_decomposition_sens_1519_2024.csv", "definition_sensitivity.csv", "missingness_sensitivity.csv"]
+    meta = dict(spec_sha256=spec["sha256"], at=now(), n_docs=len(F), stability_all=round(s_all, 3), stability_A=round(s_A, 3), passed=bool(s_all >= thr),
+                miss_auc=round(float(auc), 3), miss_ess=round(float(ess)), miss_keep_all=round(keep_all, 3), miss_keep_A=round(keep_A, 3), outputs={f: sha_f(S4 / f) for f in outs})
+    (S4 / "S4_meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    changelog_once("S4 실행", f"- {now()} | S4 실행(규칙 해시 {spec['sha256'][:12]}): 구현 선택(규칙이 정의하지 않음) has_topic 기준 비중, 부재 저널 w=0·s=0, 안정성은 저널 내 성분으로 상위 3분위 규칙 재적용, D1=F6.emerging. "
+                   f"안정성 전체 {s_all:.3f}, A등급 {s_A:.3f}(기준 {thr}). 결측 보정: AUC {auc:.3f}, 유효 표본 {ess:,.0f}, 라벨 유지 전체 {keep_all:.3f}, A등급 {keep_A:.3f} | S4 | 4분면·분해·결측 민감도")
+    print("\n저장:", outs, "+ S4_meta.json, CHANGELOG 기록")
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+동결 검증 통과 (해시 44a9e523c565)
+창 내 91,794편 | 분석 집합(has_topic) 76,984편
+불변식 통과(질량 보존, 내+간=총변화) | 주 대비 P0509->P2025: N=7,182/36,501
+
+[4분면 분포 전체]
+quadrant
+small_change        99
+decline_notHighQ    23
+growth_highQ        18
+growth_notHighQ      7
+decline_highQ        2
+
+[A등급만]
+quadrant
+small_change        70
+growth_highQ        17
+decline_notHighQ    16
+growth_notHighQ      7
+decline_highQ        2
+
+|Delta| 상위 3분위 경계 0.00789 | 저널 내 성분 경계 0.00617
+4분면 안정성(저널 내 성분으로 재분류 시 big_change 라벨 유지): 전체 0.700 | A등급만 0.690 | 기준 0.7 -> 통과
+big_change 토픽의 부호 유지율(저널 내 부호 = 총변화 부호): 0.98
+
+[저널 구성 분해] 쇠퇴 big 25개: 저널 간 성분 비중 중앙값 0.50 (A등급만 0.51) | 성장 big 25개: 0.25 (A등급만 0.31)
+저널 간 성분이 총변화와 반대 부호인 토픽: 27개
+
+쇠퇴 상위 8:
+  topic grade   delta  within  between  between_share  q_mean         quadrant
+    72     A -0.0230 -0.0089  -0.0141         0.6147  0.3000 decline_notHighQ
+   137     A -0.0225 -0.0083  -0.0142         0.6300  0.4667 decline_notHighQ
+    10     A -0.0151 -0.0100  -0.0050         0.3345  0.5030 decline_notHighQ
+    40     B -0.0148 -0.0066  -0.0082         0.5516  0.4480 decline_notHighQ
+   147     C -0.0148 -0.0087  -0.0061         0.4098  0.3114 decline_notHighQ
+    87     A -0.0139 -0.0070  -0.0069         0.4980  0.5375    decline_highQ
+   143     A -0.0134 -0.0077  -0.0056         0.4207  0.4917 decline_notHighQ
+    30     A -0.0133 -0.0093  -0.0041         0.3048  0.4874 decline_notHighQ
+
+성장 상위 8:
+  topic grade  delta  within  between  between_share  q_mean        quadrant
+    69     A 0.0182  0.0145   0.0037         0.2027  0.6384    growth_highQ
+    50     A 0.0178  0.0135   0.0043         0.2439  0.6466    growth_highQ
+    88     A 0.0165  0.0083   0.0083         0.4997  0.4478 growth_notHighQ
+    71     A 0.0148  0.0174  -0.0026         0.1300  0.6305    growth_highQ
+    66     A 0.0143  0.0116   0.0027         0.1889  0.5916    growth_highQ
+   133     A 0.0138  0.0086   0.0052         0.3788  0.5933    growth_highQ
+    45     A 0.0135  0.0067   0.0067         0.4995  0.4749 growth_notHighQ
+   123     A 0.0130  0.0125   0.0005         0.0372  0.6245    growth_highQ
+
+[토픽 0, 38, 49, 147, 88, 69]
+  topic grade   delta  within  between  q_mean   q_lo   q_hi         quadrant  quadrant_within
+     0     C -0.0133 -0.0069  -0.0064  0.4725 0.4451 0.5012 decline_notHighQ decline_notHighQ
+    38     A  0.0010 -0.0010   0.0020  0.4845 0.4517 0.5197     small_change     small_change
+    49     C -0.0021 -0.0023   0.0002  0.3058 0.2737 0.3393     small_change     small_change
+    69     A  0.0182  0.0145   0.0037  0.6384 0.6082 0.6688     growth_highQ     growth_highQ
+    88     A  0.0165  0.0083   0.0083  0.4478 0.4126 0.4826  growth_notHighQ  growth_notHighQ
+   147     C -0.0148 -0.0087  -0.0061  0.3114 0.2821 0.3411 decline_notHighQ decline_notHighQ
+
+[신생 정의별 토픽 수와 Jaccard] {'D1': 14, 'D2': 14, 'D3': 14, 'D4': 14}
+      D1    D2    D3    D4
+D1  1.00  0.08  0.27  0.04
+D2  0.08  1.00  0.33  0.47
+D3  0.27  0.33  1.00  0.47
+D4  0.04  0.47  0.47  1.00
+신생 후보 중 4종 모두: 1 | 1종만: 14 | C등급 포함: []
+
+=== 결측 보정 민감도 (역확률 가중) ===
+AUC 0.733 (S2: 0.73) | 유효 표본 74,830/76,984 | p_hat<0.05 비중 0.000% | 가중치 범위 0.86~1.94
+원 Delta와 보정 Delta 상관: 0.998 | 부호 일치율: 0.98
+[전체] 원 big 50개 중 보정 후 같은 라벨 유지: 0.980 | big 유지(라벨 무관): 0.980
+[A등급] 원 big 42개 중 보정 후 같은 라벨 유지: 0.976 | big 유지(라벨 무관): 0.976
+보정 후 라벨이 바뀐 big 토픽:
+  topic grade   delta  delta_w         quadrant       quad_w
+    26     A -0.0079  -0.0073 decline_notHighQ small_change
+
+저장: ['topic_quadrants.csv', 'journal_decomposition.csv', 'journal_decomposition_sens_1519_2024.csv', 'definition_sensitivity.csv', 'missingness_sensitivity.csv'] + S4_meta.json, CHANGELOG 기록
+
+
+# # S4 결과 해석
+# ## 한눈에 보기
+# | 항목 | 결과 | 판단 |
+# |---|---|---|
+# | 동결 검증, 분석 집합, 불변식 | 모두 통과 (76,984편) | 정상 |
+# | 4분면 안정성 | 전체 **0.700**, A등급 0.690 (기준 0.70) | **경계 통과**. 사실상 기준선 위에 걸려 있음 |
+# | 부호 유지율 | 0.98 | 양호 |
+# | 쇠퇴 big 25개의 저널 간 성분 비중 중앙값 | **0.50** (A등급 0.51) | 구성과 내재가 반반 |
+# | 성장 big 25개 | 0.25 (A등급 0.31) | 대체로 저널 내 변화 |
+# | 결측 보정 후 라벨 유지 | 전체 0.980, A등급 0.976 | 강건 |
+# | 결측 모형 | AUC 0.733, 유효 표본 74,830/76,984, 양수성 위반 0% | 가중치 범위 0.86~1.94로 영향 작음 |
+# | 신생 정의 Jaccard | 0.04~0.47 | **정의 의존성 큼** |
+
+# ## 핵심 해석
+# **1. 안정성 통과는 약한 증거로 쓰세요.** 전체 0.700은 기준과 정확히 같고, A등급만은 0.690으로 기준 미만입니다. 동결 규칙의 통과 판정은 "통과"가 맞지만, 논문에는 "경계 통과, A등급만으로는 0.69"로 함께 적어야 합니다. 이 값은 big 50개 중 35개 유지라는 뜻이라 토픽 1~2개로 뒤집힙니다.
+# **2. 쇠퇴는 TRR 구성 효과와 저널 내 변화가 절반씩입니다.** 앞서 쇠퇴 토픽의 93.8%가 TRR이라는 관찰 때문에 구성 효과를 우려했는데, 저널 간 성분이 중앙값 0.50이면 "쇠퇴는 전부 구성 효과"는 기각되고 "전부 내재"도 기각됩니다. 쇠퇴 상위 8개를 보면 저널 내 성분도 전부 음수(-0.0066~-0.0100)입니다. TRR 안에서도 이 주제들의 비중이 줄었다는 뜻입니다. 반면 성장은 저널 내 성분이 지배적(중앙값 0.25)입니다. 비대칭이라 흥미롭지만, 의미 해석은 S5에서 저널 내 성분만으로 변화점을 탐지한 뒤 하세요.
+# **3. 저널 간 성분이 총변화와 반대 부호인 토픽이 27개입니다.** 전체 149개의 18%입니다. 이 토픽들은 구성 변화가 내재 변화를 일부 상쇄합니다. 토픽 71(within +0.0174, between -0.0026)이 예입니다. 반대 부호 토픽의 목록은 `journal_decomposition.csv`에서 뽑아 두세요.
+# **4. 질이 높은 쇠퇴가 2개뿐이고(토픽 87 등), 쇠퇴 25개 중 23개는 평균 백분위 0.5 이하입니다.** 다만 이는 "토픽 평균 > 0.5이고 부트스트랩 하한 > 0.5"라는 엄격한 규칙의 결과입니다. 토픽 10(q_mean 0.503)과 87(0.5375)이 경계에 있고, 규칙이 사전 동결이라 바꾸지 마세요. 해석 때 "질 라벨은 0.5 근처에서 불안정"이라고 쓰세요.
+# **5. 성장 상위에서 토픽 88, 45는 `growth_notHighQ`이고 between_share가 약 0.50입니다.** 토픽 88은 L4에서 T-TE 비중 0.988이므로 사실상 한 저널의 성장입니다. 성장의 절반이 저널 구성 변화(T-TE 비중 증가)로 설명됩니다. 전기모터 관련일 가능성은 있으나 내용은 카드로 직접 확인하세요.
+# **6. 특정 토픽 결과:**
+# - **토픽 0, 147 (C등급):** 둘 다 `decline_notHighQ`이며 저널 내 성분이 음수입니다. 전체 결과에는 들어 있으므로, A등급만 보고는 C 토픽 2개가 쇠퇴 big에서 빠집니다(전체 25개, A등급 18개).
+# - **토픽 38 (VT Mag):** 총변화 +0.0010, within -0.0010, between +0.0020. 사실상 `small_change`이고 부호가 갈립니다. 앞서 "구성 효과의 전형"이라 추정했는데, 이 대비 구간에서는 변화 자체가 작아 **추정은 이 결과로 지지되지 않았습니다.** VT Mag 논문의 비중 증가가 between +0.002로 약하게 나타날 뿐입니다.
+# - **토픽 49:** `small_change`로 핵심 결과에 영향이 없습니다.
+# **7. 신생 정의 Jaccard가 낮습니다.** D1(F6 원본)은 D2와 0.08, D4와 0.04입니다. 4종 모두에 해당하는 토픽은 1개뿐이고, 1종만 해당하는 토픽이 14개입니다. 4.7의 "범위로 보고" 원칙대로, **"신생 토픽" 단일 목록으로 논문의 주장을 세우면 안 됩니다.** D2~D4 사이(0.33~0.47)는 중간 수준이므로, 최소한 D1과 D2~D4는 서로 다른 개념으로 취급하세요. D1이 왜 다른지(F6 원본은 2005-09 대 2015-19 대비였을 가능성)는 F6 정의를 확인해야 합니다. 이것은 추정입니다.
+# **8. 결측 보정은 결과를 거의 바꾸지 않았습니다.** 원 Delta와 보정 Delta 상관이 0.998이고 라벨이 바뀐 토픽은 26번 하나뿐입니다. 다만 이것은 "저널×연도로 설명되는 선택"만 보정한 것이므로, 앞서 정리한 한계(저널×연도 안의 선택, 단독 저자 편중, 임베딩 입력 미확인)는 그대로 남습니다. 가중치 범위가 0.86~1.94로 좁다는 점은 공변량이 결측을 약하게만 설명한다는 신호이기도 합니다. AUC 0.733은 중간 정도의 설명력입니다.
+
+# ## 정리: 논문에 쓸 문장 방향
+# - 주제 비중 변화 big 50개 중 쇠퇴 25개, 성장 25개이며, 쇠퇴의 절반(중앙값)은 저널 구성, 절반은 저널 내 변화로 나뉘고 성장은 저널 내 변화가 지배적이다.
+# - 4분면 라벨은 저널 내 성분으로 재분류하면 70%(A등급 69%)만 유지되어 **저널 구성에 민감한 편**이다.
+# - 신생 토픽 목록은 정의 4종 간 일치도가 낮아 단일 목록 대신 범위로 보고한다.
+
+# ## 남은 작업과 다음 단계
+# 1. **커밋·태그:**
+#    ```bash
+#    cd ~/Research/Minnesota_Transport
+#    git add paper1/04_S4 paper1/s4_main.py
+#    git commit -m "S4 본 계산: 안정성 0.700(A 0.690), 결측 보정 라벨 유지 0.980"
+#    git tag -a S4-main-2026-10-16 -m "S4 main"
+#    ```
+# 2. **CHANGELOG_S4 사후 관찰 기록(복사용):**
+#    ```
+#    - 2026-10-16 | S4 사후 관찰(동결 판정 변경 없음): 안정성 전체 0.700(경계), A등급 0.690. 쇠퇴 big 25개 저널 간 성분 중앙값 0.50, 성장 0.25. 저널 간 성분이 총변화와 반대 부호인 토픽 27개. 토픽 38은 이 대비 구간에서 small_change(구성 효과 전형이라는 사전 추정은 미지지). 신생 정의 Jaccard 0.04~0.47, D1이 가장 이질적. 결측 보정 라벨 유지 0.980 | S4 | 해석 한계
+#    ```
+# 3. **4.1(기간별 키워드 Jaccard), 4.6(히트맵·회전 지수)** 은 동결 파일에서 이월한 항목입니다. S5 전에 4.6의 회전 지수(인접 기간 JS 거리)를 계산하면 S5 설계의 입력이 됩니다.
+# 4. **다음 단계는 S5(체제 식별)** 입니다. 설계상 유의점은 다음과 같습니다. 2007년·2025년의 결측 급변은 측정 아티팩트로 표시하고, 3개 표본(전체 / 고정 14개 저널 / 저널 내 성분만)으로 각각 탐지하며, 두 귀무(라벨 순열, 완만 추세)를 병행합니다. S4에서 쇠퇴의 절반이 구성 효과로 나왔으므로 "저널 내 성분만" 표본이 특히 중요합니다.
+# S5 사전등록(S5-0 동결) 초안과 코드를 원하시면 말씀해 주세요. 사건 목록(E1, E2)은 동결 전에 확정해야 하므로 S1.9의 저널 창간 연도 확인 상태를 먼저 알려 주시면 좋습니다.
+
+# # 논문 1 진행 현황과 남은 일 (2026-10-16, S4 본 계산 반영)
+
+# ## 지금까지 한 일
+
+# | 단계 | 상태 | 핵심 결과 |
+# |---|---|---|
+# | **S0** 사전등록 | 완료 | 오염 269편 제외(F1X 111,416편), 고정 저널 14개. 주 시나리오 NONE이라 사건 대조는 민감도 |
+# | **S1** 국가 층 | 완료·동결 | 창 2007~, 81,645편, 국가 보유율 94.7%, 수작업 200/200, 원문 대조 41/41 |
+# | **S2** 측정 교정 | 도구·점검 완료, 일부 이월 | 가중치 4종 부호 일치 23/24(검정력 낮음), 위험군 검증은 순환적, 제목 분류기 0.508, 토픽 18번은 빈 군집(유효 149개) |
+# | **S3** 증거 카드 | 완료(커밋 `8628594`, 태그 `S3-final`) | A 112(75.2%), B 33, C 4(토픽 0, 28, 49, 147). 통과했으나 약한 증거: F2는 상대 기준, F4는 전부 통과, 실질 변별은 F1·F3뿐(F2 제외 시 A 97.3%) |
+# | **S4-0** 동결 | 완료(해시 `44a9e523c565`, 태그 `S4-0-freeze`) | 결측 보정 민감도를 정식 항목으로 포함 |
+# | **S4 본 계산** | 실행 완료, **커밋 전** | 아래 |
+
+# **S4 결과**
+# - 4분면 안정성: 전체 0.700(기준 0.70, 경계 통과), A등급만 0.690. 부호 유지율 0.98
+# - 쇠퇴 big 25개의 저널 간 성분 중앙값 0.50(구성·내재 반반), 성장 big 25개는 0.25(저널 내 지배). 총변화와 반대 부호인 토픽 27개
+# - 결측 보정 후 라벨 유지 0.980(AUC 0.733, 유효 표본 74,830). 라벨이 바뀐 토픽은 26번 하나
+# - 신생 정의 4종 Jaccard 0.04~0.47, 4종 모두 해당 1개뿐. 단일 신생 목록으로 주장하면 안 됨
+# - 토픽 38은 이 대비 구간에서 small_change라 "구성 효과 전형"이라는 사전 추정은 지지되지 않음
+
+# **결측 메커니즘 점검에서 확정된 것**
+# - 토픽 결측 14,810편은 전부 F2 저자 0명. F2는 임베딩 보유 논문 위에서 구축된 것으로 추정(구축 코드 미확인). 분석 집합은 창 내 83.9%
+# - 보유율은 연도(2000년 0.70, 2019년 0.88, 2007년 꺾임), 저널(VT Mag 낮음), 팀 규모(단독 저자 22.6% 대 4.4%)로 달라짐
+# - 위험군은 F2에서 이름 단위로 이미 제외됨(L4의 "위험군 행 0"은 사실). 저자당 30편 상한 가설은 기각
+
+# ## 앞으로 할 일
+
+# **A. 바로**
+# 1. S4 커밋·태그: `git add paper1/04_S4 paper1/s4_main.py` 후 커밋, 태그 `S4-main-2026-10-16`
+# 2. CHANGELOG_S4에 사후 관찰 기록(앞서 드린 복사용 문구)
+# 3. 토픽 0, 147, 88, 45의 카드·대표 논문을 읽고 해석 메모(동결 판정은 변경 금지)
+
+# **B. S4 이월 항목**
+# - 4.1 기간별 키워드 Jaccard, 4.6 히트맵·회전 지수(S5 입력이므로 S5 전에)
+# - 4.7 지속 저자 따라감 비율(저자 층, S6 직전)
+# - 신생 정의 D1이 다른 이유(F6 원본의 대비 구간) 확인
+
+# **C. S2 마무리**
+# - 수작업 라벨링(정리 규칙 91건, 미상 소속 30건), 위험군 변형 7종 보고서, S2 태그 미생성 여부 확인
+# - 미확인으로 한계에 기록할 것: 임베딩 입력 텍스트(제목 기반 추정), 단독 저자 편중 원인, 2007년 꺾임, 토픽 있고 저자 0명 353편
+# - L4의 팀 규모·신규 저자 비율은 `BASE` 정의 확인 전까지 provisional
+
+# **D. 다음 단계**
+# | 단계 | 내용 | 유의점 |
+# |---|---|---|
+# | **S5-0** 동결 | 사건 목록(E1, E2)을 탐지 전에 해시와 함께 확정 | S1.9 저널 창간 연도 확인 상태가 필요 |
+# | **S5** 체제 식별 | 변화점 탐지(전체 / 고정 14개 / 저널 내 성분), 라벨 순열·완만 추세 귀무, 주제 반분 재현, 4유형 분류 | 2007년, 2025년, T-IV 2025, T-ITS 2008은 아티팩트 후보로 표시. 쇠퇴의 절반이 구성 효과라 저널 내 성분 표본이 핵심. 지리는 2007년 이후 19개 연도만 |
+# | **S6** | 갱신 4항 분해, multiverse | 모집단은 임베딩 보유 논문의 저자. F3 기간 중복(`P12_14`⊂`P10_14`) 주의 |
+# | **S7~S8** | 지역 집중, 공급-부담 정렬 | S8 이중 코딩에 코더 2명 필요. 국가 층은 F2와 모집단이 달라 S6과 한 문장으로 엮을 때 주의 |
+# | **S9~S10** | 후보 풀·추출 규칙 동결, 투고 패키지 | AI 사용 선언에 검수 3종 판정 범위 기재 |
+
+# ## 논문에 쓸 한계 (누적)
+# - 소속 국가는 국적이 아니며 단일 출처(OpenAlex) 의존, 원문 대조 41건
+# - 분석 집합은 임베딩 보유 논문(83.9%)이며 결측은 연도·저널·팀 규모에 따라 체계적. 보정은 저널×연도로 설명되는 선택만 고침
+# - S3 등급은 변별력이 낮고(F1·F3만 작동) 통과는 약한 증거. 토픽 49처럼 규칙과 카드가 어긋나는 사례 존재
+# - 4분면 안정성은 경계 통과(0.700, A등급 0.690)이고 질 라벨은 0.5 근처에서 불안정
+# - 신생 토픽은 정의 의존적이라 범위로 보고
+# - 위험군 검증은 순환적, 38/49 라벨은 논문 유형이라 복합 비율을 측정하지 못함(판정자 1인)
+# - 토픽 단어 재료는 제목뿐, SPECTER2 인용 학습에 따른 순환 가능성
+
+# **제안 순서:** S4 커밋·태그 → 4.6 회전 지수 → S5-0 동결(사건 목록 확정 포함). S1.9 창간 연도 확인 상태를 알려 주시면 S5-0 초안과 코드를 드리겠습니다.
+
+# # 코드 3종: S4 커밋, 4.6 회전 지수, S5-0 동결
+
+# 순서는 ① 커밋, ② 4.6, ③ S5-0 동결입니다. ②는 S5 탐지에 쓸 연도별 시계열(전체, 고정 저널, 저널 내 성분)도 만들어 둡니다.
+
+# ## ① S4 커밋과 기록
+
+# ```bash
+# cd ~/Research/Minnesota_Transport
+# echo "- 2026-10-16 | S4 사후 관찰(동결 판정 변경 없음): 안정성 전체 0.700(경계), A등급 0.690. 쇠퇴 big 25개 저널 간 성분 중앙값 0.50, 성장 0.25. 총변화와 반대 부호 27개. 토픽 38은 이 대비 구간에서 small_change(구성 효과 전형이라는 사전 추정은 미지지). 신생 정의 Jaccard 0.04~0.47, D1이 가장 이질적. 결측 보정 라벨 유지 0.980 | S4 | 해석 한계" >> paper1/04_S4/CHANGELOG_S4.md
+# git add paper1/04_S4 paper1/s4_main.py
+# git commit -m "S4 본 계산: 안정성 0.700(A 0.690), 결측 보정 라벨 유지 0.980"
+# git tag -a S4-main-2026-10-16 -m "S4 main"
+# git tag -l "S4-*"
+# ```
+
+# ## ② 4.6 회전 지수와 S5 입력 시계열 (`paper1/s4_6_rotation.py`)
+
+# - **연도 JS 거리:** 인접 연도 비중 벡터 사이의 Jensen-Shannon 거리입니다. 연 3,000편 안팎에 토픽이 149개라 표집 잡음만으로도 거리가 0보다 큽니다. 같은 해를 무작위로 반분한 거리를 **잡음 바닥**으로 함께 저장하고, 보정값은 `JS − 바닥`으로 둡니다.
+# - **세 표본:** `all`(전체), `fixed`(고정 14개 저널), `within`(저널 가중을 전 기간 평균으로 고정하고 저널 내 토픽 비중만 변화시킨 시계열)입니다.
+# - **지문:** 주제 유효수(exp 엔트로피), HHI, D3 신생 점유율을 저장합니다.
+# - **기간 회전:** 5개 기간의 인접 JS와 토픽 순위상관(Spearman)입니다.
+
+# ```python
+# # -*- coding: utf-8 -*-
+# # s4_6_rotation.py: 4.6 회전 지수 + S5 입력 시계열. OpenAlex 호출 없음. 분석 집합 76,984편.
+# import json, warnings
+# from pathlib import Path
+# import numpy as np, pandas as pd
+# from scipy.spatial.distance import jensenshannon
+# from scipy.stats import spearmanr
+# warnings.filterwarnings("ignore"); pd.set_option("display.width", 200)
+# ROOT = Path.home() / "Research/Minnesota_Transport"
+# DATA, S0, S3, S4 = ROOT / "analysis_data/final", ROOT / "paper1/00_S0", ROOT / "paper1/03_S3", ROOT / "paper1/04_S4"
+# tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+# spec = json.loads((S4 / "S4_0_PREREG.json").read_text(encoding="utf-8")); seed = int(spec["seed"]); rng = np.random.default_rng(seed)
+# W = pd.read_csv(DATA / "F1_papers.csv", low_memory=False); W["pid"] = W.pid.astype(str)
+# EXC = set(pd.read_csv(S0 / "EXCLUDE_PIDS_FROZEN.csv", dtype=str, encoding="utf-8-sig").pid)
+# W = W[~W.pid.isin(EXC) & tf(W.in_sample) & W.year.between(2000, 2025) & tf(W.has_topic) & W.topic150.notna()].copy()
+# assert len(W) == 76984, len(W)
+# W["topic"] = W.topic150.astype(int); W["fixed"] = tf(W.fixed_venue)
+# topics = np.array(sorted(pd.read_csv(S3 / "L7_topic_grade.csv").topic.astype(int))); K = len(topics); tix = {t: i for i, t in enumerate(topics)}
+# W["ti"] = W.topic.map(tix); years = np.arange(2000, 2026)
+# venues = np.array(sorted(W.venue_short.unique())); vix = {v: i for i, v in enumerate(venues)}; W["vi"] = W.venue_short.map(vix)
+
+# def vec(d): return np.bincount(d.ti.values, minlength=K).astype(float)
+# def norm(c): return c / c.sum() if c.sum() > 0 else c
+# js = lambda a, b: float(jensenshannon(a, b, base=2))
+# def noise_floor(d, R=50):
+#     x = d.ti.values; out = []
+#     for _ in range(R):
+#         p = rng.permutation(len(x)); h = len(x) // 2
+#         out.append(js(norm(np.bincount(x[p[:h]], minlength=K).astype(float)), norm(np.bincount(x[p[h:]], minlength=K).astype(float))))
+#     return float(np.median(out))
+
+# # 연도 x 저널 x 토픽 개수, 저널 가중(전 기간 평균, 저널 내 성분 시계열용)
+# cnt = np.zeros((len(years), len(venues), K))
+# for (y, v), d in W.groupby(["year", "vi"]): cnt[y - 2000, v] = vec(d)
+# wbar = cnt.sum((0, 2)) / cnt.sum()
+# fixed_v = np.array([bool(W.loc[W.vi == i, "fixed"].mean() > 0.5) for i in range(len(venues))])
+# D3 = set()
+# try:
+#     DS = pd.read_csv(S4 / "definition_sensitivity.csv"); D3 = set(DS[tf(DS.D3)].topic.astype(int))
+# except Exception as e: print("※ D3 생략:", e)
+# d3m = np.array([t in D3 for t in topics])
+
+# series = {}
+# for name in ["all", "fixed", "within"]:
+#     S = []
+#     for yi in range(len(years)):
+#         c = cnt[yi]
+#         if name == "all": v = norm(c.sum(0))
+#         elif name == "fixed": v = norm(c[fixed_v].sum(0))
+#         else:
+#             nj = c.sum(1); ok = nj > 0; sj = np.zeros_like(c); sj[ok] = c[ok] / nj[ok, None]
+#             ww = np.where(ok, wbar, 0); v = norm((ww[:, None] * sj).sum(0))
+#         S.append(v)
+#     series[name] = np.array(S)
+# rows = []
+# for name, S in series.items():
+#     for yi, y in enumerate(years):
+#         s = S[yi]; p = s[s > 0]; H = -(p * np.log(p)).sum()
+#         r = dict(sample=name, year=int(y), n_papers=int(cnt[yi].sum() if name != "fixed" else cnt[yi][fixed_v].sum()), eff_topics=float(np.exp(H)), hhi=float((s ** 2).sum()), d3_share=float(s[d3m].sum()))
+#         if yi > 0:
+#             r["js_adj"] = js(S[yi - 1], s)
+#             sub = W[W.year == y] if name != "fixed" else W[(W.year == y) & W.fixed]
+#             sub0 = W[W.year == y - 1] if name != "fixed" else W[(W.year == y - 1) & W.fixed]
+#             r["noise_floor"] = float(np.mean([noise_floor(sub), noise_floor(sub0)])) if name != "within" else np.nan
+#             r["js_adj_corrected"] = r["js_adj"] - r["noise_floor"] if name != "within" else np.nan
+#         rows.append(r)
+# Y = pd.DataFrame(rows); Y.to_csv(S4 / "yearly_series_for_S5.csv", index=False, encoding="utf-8-sig")
+# np.save(S4 / "yearly_topic_shares_all.npy", series["all"]); np.save(S4 / "yearly_topic_shares_fixed.npy", series["fixed"]); np.save(S4 / "yearly_topic_shares_within.npy", series["within"])
+# np.save(S4 / "yearly_venue_topic_counts.npy", cnt); pd.Series(venues).to_csv(S4 / "venues_order.csv", index=False, header=["venue"]); pd.Series(topics).to_csv(S4 / "topics_order.csv", index=False, header=["topic"])
+# print("[연도 인접 JS: 보정값 상위 5, 표본별]")
+# for name in ["all", "fixed"]:
+#     print(name, Y[Y.sample == name].dropna(subset=["js_adj_corrected"]).sort_values("js_adj_corrected", ascending=False).head(5)[["year", "n_papers", "js_adj", "noise_floor", "js_adj_corrected"]].round(4).to_string(index=False))
+# print("within 인접 JS 상위 5:\n", Y[Y.sample == "within"].dropna(subset=["js_adj"]).sort_values("js_adj", ascending=False).head(5)[["year", "js_adj"]].round(4).to_string(index=False))
+# print("2006~2008, 2024~2025 (all):\n", Y[(Y.sample == "all") & Y.year.isin([2006, 2007, 2008, 2020, 2024, 2025])][["year", "n_papers", "js_adj", "noise_floor", "js_adj_corrected", "eff_topics", "hhi"]].round(4).to_string(index=False))
+
+# # 기간 회전 지수
+# per = {"P0004": (2000, 2004), "P0509": (2005, 2009), "P1014": (2010, 2014), "P1519": (2015, 2019), "P2025": (2020, 2025)}
+# pv = {k: norm(sum(cnt[y - 2000].sum(0) for y in range(a, b + 1))) for k, (a, b) in per.items()}; ks = list(per); rr = []
+# for a, b in zip(ks[:-1], ks[1:]):
+#     t0, t1 = set(np.argsort(-pv[a])[:20]), set(np.argsort(-pv[b])[:20])
+#     rr.append(dict(pair=f"{a}->{b}", js=js(pv[a], pv[b]), spearman=float(spearmanr(pv[a], pv[b])[0]), top20_entry=len(t1 - t0), top20_exit=len(t0 - t1)))
+# R = pd.DataFrame(rr); R.to_csv(S4 / "rotation_index_periods.csv", index=False, encoding="utf-8-sig"); print("\n[기간 회전 지수]\n", R.round(4).to_string(index=False))
+# # 토픽 x 저널 x 기간 (히트맵 입력)
+# H = []
+# for k, (a, b) in per.items():
+#     c = sum(cnt[y - 2000] for y in range(a, b + 1))
+#     for vi, v in enumerate(venues):
+#         for ti_, t in enumerate(topics):
+#             if c[vi, ti_] > 0: H.append((k, v, int(t), int(c[vi, ti_]), c[vi, ti_] / c[vi].sum()))
+# pd.DataFrame(H, columns=["period", "venue", "topic", "n", "share_in_venue"]).to_csv(S4 / "heatmap_topic_venue_period.csv", index=False, encoding="utf-8-sig")
+# with (S4 / "CHANGELOG_S4.md").open("a", encoding="utf-8") as f:
+#     f.write(f"- {pd.Timestamp.now().isoformat(timespec='seconds')} | 4.6 실행(이월 항목): 연도 인접 JS(잡음 바닥=같은 해 반분 중앙값 50회), 세 표본(all/fixed/within), 기간 회전 지수, 토픽x저널x기간 표. S5 입력 시계열 저장 | S4 4.6 | S5\n")
+# print("저장 완료")
+# ```
+
+# 실행은 `python3 paper1/s4_6_rotation.py 2>&1 | tee paper1/04_S4/s4_6_output.txt`입니다.
+
+# **볼 것**
+# - 2006~2008, 2020, 2024~2025의 보정 JS가 이웃 연도보다 튀는지(아티팩트 후보 점검).
+# - `within` 상위 연도와 `all` 상위 연도가 같은지. 같으면 변화가 저널 내 성분에서 나온 것입니다.
+# - 해당 연도의 `n_papers`가 작으면 잡음 바닥이 커서 보정값이 불안정합니다.
+
+# ## ③ S5-0 동결 (`paper1/s5_0_freeze.py`)
+
+# 사건 목록은 새로 만들지 않고 S0에서 동결한 파일을 찾아 해시만 기록합니다. 파일명과 위치는 제가 확인하지 못했으므로 `EVENTS_FROZEN*.csv`를 `paper1/00_S0`에서 탐색하고, 없으면 중단합니다. 모든 수치는 임의 출발값입니다.
+
+# ```python
+# # -*- coding: utf-8 -*-
+# # s5_0_freeze.py: S5 규칙 동결(탐지 코드 실행 전). FREEZE=False로 점검 후 True.
+# import json, hashlib, subprocess
+# from pathlib import Path
+# import pandas as pd
+# FREEZE, COMMIT = False, True
+# ROOT = Path.home() / "Research/Minnesota_Transport"; S0, S4, S5 = ROOT / "paper1/00_S0", ROOT / "paper1/04_S4", ROOT / "paper1/05_S5"
+# now = lambda: pd.Timestamp.now().isoformat(timespec="seconds"); sha_b = lambda b: hashlib.sha256(b).hexdigest(); sha_f = lambda p: sha_b(Path(p).read_bytes())
+# ev = sorted(S0.glob("EVENTS_FROZEN*")); ev_csv = [p for p in ev if p.suffix == ".csv"]
+# if not ev_csv: raise SystemExit("⛔ 00_S0에서 EVENTS_FROZEN*.csv를 찾지 못했습니다. 사건 목록 위치를 확인하세요(새로 만들지 마세요)")
+# SPEC = dict(
+#     version=1, seed=2026, decision_status="모든 수치는 임의 출발값. 탐지 결과 열람 전에 동결.",
+#     principle="탐지는 사건 정보 없이 데이터만으로. 사건은 탐지 뒤 대조에만 사용. 주 시나리오 NONE이므로 사건 대조는 민감도 보고.",
+#     inputs=dict(series="paper1/04_S4/yearly_topic_shares_{all,fixed,within}.npy, yearly_series_for_S5.csv", window=[2000, 2025],
+#                 geography="S1 창(2007~)만, 별도 시계열(S7 직전 구축). 이 동결에서는 주제 구조(a)만 탐지 대상", renewal="갱신 방식(b)은 저자 층이라 S6 직전으로 이월"),
+#     samples=["all", "fixed14", "within(저널 가중 고정, 저널 내 성분)"],
+#     detection=dict(method="인접 연도만 묶는 제약 군집화(동적계획 분할), 구간 비용=구간 내 연도 벡터의 제곱거리 합(JS 거리 제곱 근사 대신 sqrt-share Hellinger 변환 후 유클리드)",
+#                    n_segments="BIC형 벌점으로 선택, 벌점 = c * K_eff * log(T)", penalty_c=1.0, min_len=3, k_max=6,
+#                    secondary="변화점 위치는 단변량(주제 유효수, HHI) Bai-Perron형 분할로 교차 확인"),
+#     uncertainty=dict(block="논문 부트스트랩을 연도 x 저널 셀 안에서 복원추출", B=500, report="변화 시점의 90% 구간"),
+#     nulls=dict(label_permutation=dict(rule="주제 라벨을 저널 x 연도 셀 안에서 섞고 같은 탐지를 반복", B=500),
+#                gradual_trend=dict(rule="토픽 비중이 2000~2025 선형으로 변한다고 두고 연도별 표본 크기로 다항 표집", B=500, slope="관측 선형 기울기 추정치 사용"),
+#                pass="관측 구간 수가 두 귀무 분포의 상위 5% 밖(p<0.05) 또는 관측 최대 JS 점프가 귀무 상위 5% 밖"),
+#     split_half=dict(rule="유효 149개 토픽을 무작위 반분, 한쪽에서 찾은 변화점이 다른 쪽에서 +-1년 내 재현되는 비율", B=200, pass_min=0.50),
+#     detrended=dict(rule="각 토픽 비중에서 선형 추세 제거 후 재탐지, 변화점 유지 여부 비교"),
+#     artifact_flags=dict(years=[2007, 2020, 2025], reason="임베딩 보유율 꺾임(2007), 2020 논문 수 급증, 2025 보유율 하락·부분연도 가능성, T-IV 2025와 T-ITS 2008은 저널 단위 표시",
+#                         rule="탐지된 변화점이 표시 연도 +-1년이면 '측정 아티팩트 후보' 표기. 제거하지는 않음. 해당 연도 제외 재탐지를 민감도로 병행"),
+#     events=dict(file=ev_csv[0].name, sha256=sha_f(ev_csv[0]), E2_rule="연간 코퍼스 비중이 처음 2%를 넘는 해", tol_years=1, big_event="비중 증가폭 상위 50%",
+#                 circular_shift_B=2000, tests="(i) 변화점 중 큰 사건 +-1년 비율, (ii) 큰 사건 중 +-1년 내 변화점 비율, 귀무=사건 날짜 순환이동",
+#                 status="사건 목록은 S0 동결본을 그대로 사용. 탐지 결과 열람 후 수정 금지"),
+#     typology="구성 체제 / 내재 체제 / 미설명 전환 / 탐지 없음 (5.7 정의 그대로)",
+#     interpretation="체제 구간 비교는 기술적 비교이며 인과로 쓰지 않음. 2008 금융위기, 딥러닝, COVID는 탐색적 대조",
+#     fallback="귀무와 구분되지 않으면 '연속 변화' 서술로 전환",
+#     caveats=["분석 집합은 임베딩 보유 논문 83.9%, 보유율 연도 편중", "S4 안정성은 경계 통과(0.700)", "토픽은 제목 기반 K-means 150 고정(K 민감도는 별도)"],
+# )
+# h = sha_b(json.dumps(SPEC, sort_keys=True, ensure_ascii=False).encode()); print("S5-0 해시(예정)", h[:12], "| 사건 파일", ev_csv[0].name, SPEC["events"]["sha256"][:12])
+# p = S5 / "S5_0_PREREG.json"
+# if p.exists():
+#     old = json.loads(p.read_text(encoding="utf-8"))
+#     raise SystemExit("이미 동결됨: 동일" if old["sha256"] == h else "⛔ 동결된 규칙과 다릅니다. 새 버전으로 분리하고 CHANGELOG에 사유를 쓰세요")
+# if not FREEZE: raise SystemExit("(점검만) 확정 후 FREEZE=True")
+# need = ["yearly_series_for_S5.csv", "yearly_topic_shares_all.npy"]
+# if any(not (S4 / f).exists() for f in need): raise SystemExit("⛔ 4.6 산출물이 없습니다. s4_6_rotation.py를 먼저 실행하세요")
+# S5.mkdir(parents=True, exist_ok=True)
+# refs = {f: sha_f(S4 / f) for f in need + ["yearly_topic_shares_fixed.npy", "yearly_topic_shares_within.npy"]}
+# p.write_text(json.dumps(dict(SPEC, created=now(), sha256=h, reference_hashes_at_freeze=refs), ensure_ascii=False, indent=1), encoding="utf-8")
+# (S5 / "CHANGELOG_S5.md").write_text(f"# CHANGELOG S5\n\n- {now()} | S5-0 동결(해시 {h[:12]}): 제약 군집화, 두 귀무, 반분 재현, 아티팩트 표시, 사건 대조(S0 동결본 해시 {SPEC['events']['sha256'][:12]}). 4.6 산출물은 동결 전에 열람(시계열 JS 상위 연도 확인)했음. 모든 수치는 임의 출발값\n", encoding="utf-8")
+# print("저장:", p.name)
+# if COMMIT:
+#     g = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+#     tag = f"S5-0-freeze-{pd.Timestamp.now().strftime('%Y-%m-%d')}"
+#     g("add", "--", "paper1/05_S5"); print(g("commit", "-m", "S5-0 freeze").stdout.strip()[:200]); g("tag", "-a", tag, "-m", "S5-0 freeze"); print("태그:", tag)
+# ```
+
+# ## 주의
+
+# 1. **정직성 문제:** ②의 출력을 보고 ③을 동결하게 됩니다. 연도별 JS 상위 연도를 이미 본 상태가 되므로, 위 CHANGELOG 문구에 "4.6 산출물은 동결 전에 열람"이라고 적어 두었습니다. 이는 탐지 방법과 임계값이 완전한 비열람은 아니라는 뜻이며, 본문에서도 그렇게 쓰세요. 엄격하게 하려면 ③을 ② 실행 전에 동결하되, 4.6 산출물 해시 참조만 빼면 됩니다. 원하시면 그 버전을 드리겠습니다.
+# 2. **사건 파일:** `EVENTS_FROZEN*.csv`가 없으면 중단됩니다. 있는데 S1.9(창간 연도 확인)가 미완이면 동결본이 초안일 수 있으니 열어서 확인하세요. 이 상태를 알려 주시면 좋겠습니다.
+# 3. **탐지 코드는 아직 없습니다.** ③을 동결한 뒤, 같은 SPEC을 읽는 `s5_detect.py`(세 표본 분할, 두 귀무, 반분, 사건 대조)를 드리겠습니다.
+
+# ②의 출력과 ③ `FREEZE=False` 점검 출력을 붙여 주세요.
+
+
+# S3 토픽 증거 카드와 신뢰 등급: 진행 정도
+
+**결론: 계획서에 있는 항목은 L6(선택)을 뺀 전부 실행했고, 통과 기준도 충족했습니다.** 커밋 `8628594`, 태그 `S3-final-2026-10-16`까지 만들어졌습니다. 다만 계획서 PASS의 두 번째 조건은 아직 닫히지 않았습니다.
+
+## 항목별 상태
+
+| 항목 | 상태 | 결과 |
+|---|---|---|
+| **S3-0** 부록 동결 | 완료 | 규칙 해시 `c8cbfffc8194`, 태그 `S3-0-freeze-2026-10-16` |
+| **L1** 구별 단어 | 완료 | 분석 집합 76,984편, 평가 가능 칸 593/745(79.6%). 기존 lift와 Jaccard 중앙값 0.20(병기용) |
+| **L2** 대표 논문 | 완료 | 토픽 149개 × 10편 = 1,490편, 후보 부족 토픽 없음 |
+| **L3** 일관성·안정성 | 완료 | NPMI 중앙값 -0.109, Jaccard 중앙값 0.818. F1 실패 2개, F2 실패 37개 |
+| **L4** 구조 지문 | 완료(일부 임시) | 팀 규모와 신규 저자 비율은 `BASE` 정의 확인 전이라 provisional |
+| **L5** 비연구·복합 탐지 | 완료 | 자동 복합 플래그 2개(토픽 0, 49). 38/49 수작업 라벨 집계 포함 |
+| **L6** OpenAlex 토픽 대응표 | 보류 | 계획서상 선택 항목 |
+| **L7** A/B/C 등급 | 완료 | A 112개(75.2%), B 33개, C 4개 |
+
+## 통과 기준
+
+- **A등급 50% 이상:** 충족. 0.752, Wilson 95% [0.677, 0.814]입니다.
+- **핵심 결과가 A등급 재추정에서 유지(부호, 크기 ±30%):** 미완. 계획서대로 S5~S7 결과가 나온 뒤에 닫습니다. S4에서는 전체와 A등급을 병행 보고했고, 4분면 안정성은 전체 0.700, A등급 0.690이었습니다.
+
+## 주의: 통과는 약한 증거입니다
+
+- F4는 149개 전부 통과했고(변별력 없음), F1은 실패가 2개뿐입니다.
+- F2는 상대 기준(하위 25%)이라 구조상 약 25%가 실패합니다. F2를 빼면 A가 97.3%입니다. 실질 변별은 F1과 F3뿐입니다.
+- 토픽 49는 반복 제목 플래그에 걸리지 않았지만 모듈러리티 0.759와 NPMI -0.836으로 C등급입니다. 규칙 판정과 카드가 어긋난 사례입니다.
+- 38/49 수작업 라벨은 논문 유형(R/N/V/O)이라 동결 규칙의 복합 비율을 측정하지 못했습니다. 매핑은 사후 결정이고 판정자는 1인입니다.
+- 단어 재료는 제목뿐입니다.
+
+## S3에서 남은 것
+
+1. 핵심 결과의 A등급 재추정(S5~S7 이후)
+2. L4의 팀 규모·신규 저자 비율 확정(`grep -n "BASE" "(2) 데이터셋정의.ipynb"` 필요)
+3. 산출물 `topic_evidence_cards.csv`와 `supplement_label_grid.pdf`: 계획서의 [OUT]에 있는데, 첨부된 코드에서는 L1~L7 개별 CSV만 확인되고 이 두 파일을 만드는 코드는 보이지 않았습니다. 따로 만들었는지는 모릅니다.
+4. 토픽 0, 28, 49, 147(C등급)과 핵심 토픽의 카드를 사람이 읽는 일. 계획서에서 "하면 좋은 것"으로 적은 항목입니다.
+
+L6을 하지 않기로 하면 위 2~4번만 정리하면 S3는 실질적으로 닫힙니다.
+
+
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# s3_close.py: S3 마무리. 새 분석 없음(OpenAlex 호출 없음). 동결 규칙·기존 판정은 변경하지 않는다.
+# 사용법: 1) COMMIT=False로 실행해 출력 확인  2) 이상 없으면 COMMIT=True
+# =====================================================================================
+import json, hashlib, subprocess, textwrap, warnings
+from pathlib import Path
+import numpy as np, pandas as pd
+warnings.filterwarnings("ignore"); pd.set_option("display.width", 200)
+import matplotlib; matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib.patches import Rectangle
+
+# ---------------- 설정 ----------------
+COMMIT = False
+TAG_NAME = None                       # None이면 S3-close-YYYY-MM-DD
+REVIEW_EXTRA = [88, 45, 38, 69, 50]   # C등급·F3 실패 외에 사람이 읽을 토픽(S4 해석용)
+# --------------------------------------
+ROOT = Path.home() / "Research/Minnesota_Transport"
+DATA, S3 = ROOT / "analysis_data/final", ROOT / "paper1/03_S3"
+SPEC_FILE = S3 / "S3_0_PREREG.json"
+now = lambda: pd.Timestamp.now().isoformat(timespec="seconds")
+sha_f = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+tf = lambda s: s.astype(str).str.strip().str.lower().isin(["1", "1.0", "true", "t", "yes"])
+class Halt(Exception): pass
+
+def verify():
+    spec = json.loads(SPEC_FILE.read_text(encoding="utf-8"))
+    for f, h in {"L1_meta.json": None, "L2_meta.json": "L2_representative_papers.csv", "L3_meta.json": "L3_topic_metrics.csv",
+                 "L4_meta.json": "L4_structure_fingerprint.csv", "L5_meta.json": "L5_topic_flags.csv", "L7_meta.json": "L7_topic_grade.csv"}.items():
+        m = json.loads((S3 / f).read_text(encoding="utf-8"))
+        if m["spec_sha256"] != spec["sha256"]: raise Halt(f"{f}: 규칙 해시가 S3_0_PREREG와 다릅니다")
+        outs = m["outputs"] if h is None else {h: m["output_sha256"]}
+        for name, hh in outs.items():
+            if sha_f(S3 / name) != hh: raise Halt(f"{name}: 실행 시점과 해시가 다릅니다(파일이 수정됨)")
+    print(f"검증 통과: L1~L7 산출물 해시와 규칙 해시({spec['sha256'][:12]}) 일치")
+    return spec
+
+def main():
+    spec = verify(); periods = [f"{a}-{b}" for a, b in spec["periods"]]
+    L1 = pd.read_csv(S3 / "L1_distinct_words.csv"); L2 = pd.read_csv(S3 / "L2_representative_papers.csv")
+    L3 = pd.read_csv(S3 / "L3_topic_metrics.csv"); L4 = pd.read_csv(S3 / "L4_structure_fingerprint.csv")
+    L5 = pd.read_csv(S3 / "L5_topic_flags.csv"); L7 = pd.read_csv(S3 / "L7_topic_grade.csv")
+    sets = [set(d.topic) for d in (L3, L4, L5, L7)]
+    if not all(s == sets[0] for s in sets) or len(sets[0]) != 149: raise Halt(f"토픽 집합 불일치/149 아님: {[len(s) for s in sets]}")
+    for c in ["F1", "F2", "F3", "F4"]: L7[c] = tf(L7[c])
+    cnt = L7.grade.value_counts().reindex(["A", "B", "C"], fill_value=0)
+    m7 = json.loads((S3 / "L7_meta.json").read_text(encoding="utf-8"))
+    if cnt.to_dict() != m7["grade_counts"]: raise Halt("L7_topic_grade.csv 등급 분포가 L7_meta와 다릅니다")
+
+    # ---- 카드 조립 ----
+    topw = {}
+    for (t, per), g in L1.groupby(["topic", "period"]): topw[(t, per)] = ", ".join(g.sort_values("rank").word.head(5))
+    try:
+        F6 = pd.read_csv(DATA / "F6_topics.csv"); legacy = dict(zip(F6.topic150.astype(int), F6.top_words))
+    except Exception: legacy = {}
+    rep = {t: g.sort_values("rank").head(3) for t, g in L2.groupby("topic")}
+    C = L7[["topic", "grade", "n_fail", "F1", "F2", "F3", "F4", "n_papers", "jaccard_median", "npmi_mean"]].copy()
+    C = C.merge(L3[["topic", "top10", "jaccard_p10"]], on="topic")
+    C = C.merge(L4[["topic", "top_journal", "top_journal_share", "journal_entropy_norm", "peak_year_smoothed", "growth_slope_pp_per_year",
+                    "nonfixed_share", "doi_missing_share", "team_mean_provisional", "new_author_share_all_provisional"]], on="topic")
+    C = C.merge(L5[["topic", "top_title_share", "unique_ratio", "modularity", "flag_composite_auto", "manual_decision"]], on="topic")
+    for per in periods: C[f"words_{per}"] = [topw.get((t, per), "(평가 불가)") for t in C.topic]
+    C["legacy_lift_top_words"] = C.topic.map(legacy).fillna("")
+    for i in range(3):
+        C[f"rep{i+1}"] = [(f"{r.year.iloc[i]} {r.venue.iloc[i]} | {r.title.iloc[i][:110]}" if len(r) > i else "") for r in (rep.get(t, pd.DataFrame(columns=["year", "venue", "title"])) for t in C.topic)]
+    C["provisional_note"] = "team_mean·new_author_share는 BASE 정의 확인 전 임시값"
+    C = C.sort_values("topic"); C.to_csv(S3 / "topic_evidence_cards.csv", index=False, encoding="utf-8-sig")
+    L7.drop(columns=["manual_decision", "modularity"], errors="ignore").to_csv(S3 / "topic_grade.csv", index=False, encoding="utf-8-sig")
+    print(f"카드 {len(C)}개 저장 | 등급 {cnt.to_dict()}")
+
+    # ---- PDF 그리드 (영문 제목 위주라 기본 폰트 사용) ----
+    colr = {"A": "#2e7d32", "B": "#ef6c00", "C": "#c62828"}; per_page = 6
+    with PdfPages(S3 / "supplement_label_grid.pdf") as pdf:
+        for p0 in range(0, len(C), per_page):
+            fig = plt.figure(figsize=(8.27, 11.69))
+            for k, r in enumerate(C.iloc[p0:p0 + per_page].itertuples()):
+                col, row = k % 2, k // 2; x0, y0 = 0.02 + col * 0.49, 0.985 - (row + 1) * 0.328
+                ax = fig.add_axes([x0, y0, 0.47, 0.315]); ax.axis("off"); ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+                ax.add_patch(Rectangle((0, 0), 1, 1, fill=False, lw=0.6, ec="#888"))
+                ax.add_patch(Rectangle((0, 0.93), 1, 0.07, fc=colr[r.grade], ec="none"))
+                fails = ",".join(f for f in ["F1", "F2", "F3", "F4"] if getattr(r, f)) or "none"
+                ax.text(0.015, 0.965, f"Topic {r.topic} | grade {r.grade} | fails: {fails} | n={r.n_papers}", color="w", fontsize=6.5, weight="bold", va="center")
+                L = [f"NPMI {r.npmi_mean:.3f} | Jaccard {r.jaccard_median:.3f} | modularity {r.modularity:.3f}",
+                     f"Top-10: {r.top10}"]
+                for per in periods: L.append(f"{per}: {getattr(r, 'words_' + per.replace('-', '_'))}" if hasattr(r, 'words_' + per.replace('-', '_')) else "")
+                L += [f"Journal: {r.top_journal} {r.top_journal_share:.2f} | peak {r.peak_year_smoothed} | slope {r.growth_slope_pp_per_year:+.3f}pp/yr | nonfixed {r.nonfixed_share:.2f}"]
+                L += [f"Rep{i+1}: {getattr(r, f'rep{i+1}')}" for i in range(3)]
+                txt = "\n".join(textwrap.fill(s, 88, subsequent_indent="   ", max_lines=2, placeholder=" ...") for s in L if s)
+                ax.text(0.015, 0.90, txt, fontsize=4.9, va="top", family="DejaVu Sans", linespacing=1.25)
+            pdf.savefig(fig); plt.close(fig)
+    print("PDF 저장: supplement_label_grid.pdf")
+
+    # ---- 사람 검토 체크리스트(등급·판정은 바꾸지 않음) ----
+    pick = sorted(set(L7[(L7.grade == "C") | L7.F3].topic) | set(REVIEW_EXTRA) & set(C.topic))
+    K = C[C.topic.isin(pick)][["topic", "grade", "F1", "F2", "F3", "F4", "top10", "rep1", "rep2", "rep3"]].copy()
+    K["why_listed"] = ["C등급" if g == "C" else ("F3 실패" if f else "S4 해석용") for g, f in zip(K.grade, K.F3)]
+    for c in ["reviewed(Y/N)", "topic_name_memo", "single_or_composite_memo", "note"]: K[c] = ""
+    K.to_csv(S3 / "S3_human_review_checklist.csv", index=False, encoding="utf-8-sig")
+    print(f"검토 체크리스트 {len(K)}개 토픽: {pick}")
+
+    # ---- 요약 문서 ----
+    n = len(L7); kA = int(cnt["A"]); fc = {k: int(L7[k].sum()) for k in ["F1", "F2", "F3", "F4"]}
+    a_noF2 = int((L7[["F1", "F3", "F4"]].sum(axis=1) == 0).sum())
+    md = f"""# S3 최종 요약 ({now()})
+- 규칙 해시 `{spec['sha256'][:12]}` (동결 후 변경 없음). 분석 집합 76,984편, 유효 토픽 {n}개(토픽 18 제외).
+- 등급: A {kA} ({kA/n:.3f}), B {int(cnt['B'])}, C {int(cnt['C'])} (C 토픽: {sorted(L7[L7.grade=='C'].topic.tolist())}). 통과 기준(A >= 0.50): **통과**.
+- 기준별 실패 수: {fc}. F2는 상대 기준(하위 25%)이라 구조상 일부 실패, F4는 전부 통과(변별력 없음). F2 제외 시 A {a_noF2}개({a_noF2/n:.3f}). 통과는 약한 증거로 보고.
+- 규칙 판정과 카드가 어긋난 사례: 토픽 49(반복 제목 플래그 미해당, 모듈러리티 0.759, NPMI -0.836).
+- 38/49 수작업 라벨은 논문 유형(R/N/V/O)이라 복합 비율을 측정하지 못함(복합은 미측정, 판정자 1인, 매핑은 사후 결정).
+## 닫히지 않은 것
+- 핵심 결과의 A등급 재추정(부호, 크기 +-30%): S5~S7 결과 후. S4에서는 전체/A등급 병행 보고(안정성 0.700 / 0.690).
+- L4 팀 규모·신규 저자 비율은 provisional(BASE 정의 미확인). L6은 보류(선택 항목).
+- 카드 사람 검토: `S3_human_review_checklist.csv` 작성 필요.
+## 한계
+단어 재료는 제목뿐 / 고정 저널은 PREREG 14개 / Scimago 변수는 등급에 쓰지 않음 / 38/49 라벨은 동결 전 작성(완전 비열람 아님)
+"""
+    (S3 / "S3_final_summary.md").write_text(md, encoding="utf-8")
+
+    # ---- CHANGELOG, MANIFEST ----
+    cl = S3 / "CHANGELOG_S3.md"
+    if "S3 마무리" not in cl.read_text(encoding="utf-8"):
+        with cl.open("a", encoding="utf-8") as f:
+            f.write(f"- {now()} | S3 마무리: L1~L7 산출물·규칙 해시 검증 후 topic_evidence_cards.csv, topic_grade.csv, supplement_label_grid.pdf, 검토 체크리스트, 요약 생성. "
+                    f"새 분석·규칙 변경 없음. L6 보류, L4 provisional 유지, 핵심 결과 A등급 재추정은 S5~S7 후 | S3 | 산출물 완결\n")
+    man = {p.name: sha_f(p) for p in sorted(S3.iterdir()) if p.is_file() and p.name != "S3_MANIFEST.json"}
+    (S3 / "S3_MANIFEST.json").write_text(json.dumps(dict(at=now(), spec_sha256=spec["sha256"], files=man), ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"매니페스트 {len(man)}개 파일 | 요약: S3_final_summary.md")
+
+    # ---- 커밋 ----
+    if not COMMIT: print("\n(COMMIT=False: git은 건드리지 않았습니다. 확인 후 COMMIT=True)"); return
+    g = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True)
+    tag = TAG_NAME or f"S3-close-{pd.Timestamp.now().strftime('%Y-%m-%d')}"
+    if g("tag", "-l", tag).stdout.strip(): raise Halt(f"태그 {tag}가 이미 있습니다")
+    g("add", "--", "paper1/03_S3", "paper1/s3_close.py")
+    c = g("commit", "-m", "S3 마무리: 증거 카드·등급표·PDF 그리드·검토 체크리스트·매니페스트"); print((c.stdout or c.stderr).strip()[:300])
+    g("tag", "-a", tag, "-m", "S3 close"); print("태그:", tag)
+
+try: main()
+except Halt as e: print(f"⛔ 중단: {e}")
+
+검증 통과: L1~L7 산출물 해시와 규칙 해시(c8cbfffc8194) 일치
+카드 149개 저장 | 등급 {'A': 112, 'B': 33, 'C': 4}
+PDF 저장: supplement_label_grid.pdf
+검토 체크리스트 9개 토픽: [0, 28, 38, 45, 49, 50, 69, 88, 147]
+매니페스트 25개 파일 | 요약: S3_final_summary.md
+
+(COMMIT=False: git은 건드리지 않았습니다. 확인 후 COMMIT=True)
+
+
+
+
+
+
+
+
