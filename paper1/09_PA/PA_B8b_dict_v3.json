@@ -1,0 +1,6 @@
+{
+ "electrification_env": "\\b(electric vehicles?|evs?|(ev|electric|battery) charging|charging (stations?|infrastructure|demand|facilit\\w*)|batter(y|ies)|hybrid (electric|vehicles?|buses?|powertrains?)|electrif\\w*|emissions?|carbon|co2|greenhouse|fuel consumption|energy consumption|air quality|pollut\\w*|decarboni\\w*|hydrogen|fuel cell)\\b",
+ "freight": "\\b(freight|logistics?|trucks?|trucking|cargo|goods movement|supply chains?|ports?|drayage|cold chain|hazmat|ocean carrier|(same-day|parcel|meal) delivery|container\\w*|last[- ]mile|warehouse\\w*|shipping|intermodal (freight|transport|terminals?))\\b",
+ "active_urban": "\\b(walk\\w*|pedestrians?|cyclists?|cycling|bicycl\\w*|bikes?|micromobility|scooters?|land use|(pedestrian|bicycle|walking|active travel|transport|transit|geographic) accessibility|urban form|transit[- ]oriented|parking|sidewalks?)\\b",
+ "infrastructure": "\\b(pavements?|(?<!half[- ])bridges?|asphalt|concrete (pavements?|bridges?|decks?)|road maintenance|highway design|geometric design|structural health|tunnels?|rutting|roughness|unpaved|infrastructure (maintenance|management|asset))\\b"
+}

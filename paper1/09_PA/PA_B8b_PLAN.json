@@ -1,0 +1,34 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(지침서 B8-2). 미달 4개 도메인 precision(0.76~0.84, n=25)과 오탐 패턴(예: active_urban의 accessibility) 열람 후 사전 v3 작성. 새 표본 결과 미열람. 사후 개정 사전이라 본 결과와 섞지 않음. S0~S8 판정 불변.",
+ "dict_v3": {
+  "electrification_env": "\\b(electric vehicles?|evs?|(ev|electric|battery) charging|charging (stations?|infrastructure|demand|facilit\\w*)|batter(y|ies)|hybrid (electric|vehicles?|buses?|powertrains?)|electrif\\w*|emissions?|carbon|co2|greenhouse|fuel consumption|energy consumption|air quality|pollut\\w*|decarboni\\w*|hydrogen|fuel cell)\\b",
+  "freight": "\\b(freight|logistics?|trucks?|trucking|cargo|goods movement|supply chains?|ports?|drayage|cold chain|hazmat|ocean carrier|(same-day|parcel|meal) delivery|container\\w*|last[- ]mile|warehouse\\w*|shipping|intermodal (freight|transport|terminals?))\\b",
+  "active_urban": "\\b(walk\\w*|pedestrians?|cyclists?|cycling|bicycl\\w*|bikes?|micromobility|scooters?|land use|(pedestrian|bicycle|walking|active travel|transport|transit|geographic) accessibility|urban form|transit[- ]oriented|parking|sidewalks?)\\b",
+  "infrastructure": "\\b(pavements?|(?<!half[- ])bridges?|asphalt|concrete (pavements?|bridges?|decks?)|road maintenance|highway design|geometric design|structural health|tunnels?|rutting|roughness|unpaved|infrastructure (maintenance|management|asset))\\b"
+ },
+ "domains": [
+  "electrification_env",
+  "freight",
+  "active_urban",
+  "infrastructure"
+ ],
+ "sampling": "분석 집합(F1에서 EXCLUDE_PIDS_FROZEN 제외, year>=2007, title 있음) 중 v3 정규식(re.I)이 제목에 매칭되는 논문에서 도메인별 25편을 seed 2026으로 비복원 추출. 이전 S8 검증 표본에 있던 pid는 제외(표본 파일은 08_S8/*sample*.csv의 pid 열). 시트 순서는 섞음",
+ "coding": "coder1, coder2가 서로 보지 않고 각 논문 제목이 해당 도메인의 S8 정의에 속하는지 1/0으로 코딩. 불일치는 final 칸에 합의로 기록(일치하면 final도 같은 값). 코더 구성(저자 1인+제2코더)은 note에 기록",
+ "stats": "도메인별 precision=mean(final)과 Wilson 95%, Cohen kappa(coder1, coder2), 불일치 수, 이전 v2 precision 병기. 도메인 합산도 병기",
+ "reading": "통과/실패 판정 없음. 수치와 구간만 보고하며 S8 판정(2/6 통과)을 바꾸지 않음. 합산과 도메인별을 합치지 않음. 'v3으로 개정한 사전'임을 모든 표에 표기",
+ "caveat": "n=25는 구간이 넓어 0.85 기준과 구분이 어려움(참 precision 0.80이어도 22편 이상 나올 확률 약 23%). 오탐 패턴을 보고 만든 사전이라 정밀도에 낙관 편향. recall은 추정하지 않음. 코더 독립성 한계 가능",
+ "forbidden": "결과를 본 뒤 사전·표본·판독 변경(변경 시 v2 계획으로 분리)",
+ "created": "2026-10-21T16:43:54",
+ "sha256": "6df16e1886d00f91641a26d16fb8467de6fb82b82760ef848d368b2373939b0d",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "pa_common.py": "94010d7067cc23a1d00f511ba0e4e9f8a459f9995322b217594f9c5437e2d64e",
+  "pa_b8b.py": "b8fa4f8cbfc40a30ab945d25e7d5375c1dc9560308dc42000d91726b310270f9",
+  "PA_B8b_dict_v3.json": "a0ec253e00c7b4748d7d1334d313fa060364612ec5de954142c0253589576711",
+  "domain_precision_recall.csv": "ebfc0f1beae9d0e3c357e2eab9d609ee2d5e6a009d2b71c1c8351e9165f730fd",
+  "pa_extra.py": "72f45d678a5db15143c11dbdea88fe1850969a3a54185d78a5451d83e2d667a1"
+ }
+}
