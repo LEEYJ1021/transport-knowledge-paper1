@@ -1,0 +1,445 @@
+﻿topic,grade,pair,jaccard_top10,n_born,n_died,born,died
+0,C,2000-2004->2005-2009,0.42857142857142855,2,3,"carsharing, feasibility","value, diego, san diego"
+2,A,2000-2004->2005-2009,0.05263157894736842,8,7,"geometric, friction, hydroplaning, geometric design, horizontal, optimization, modeling, new","curve, vertical, vehicles, construction, spatial, approach, freeway"
+3,A,2000-2004->2005-2009,0.3333333333333333,5,4,"charging, congestion charging, charge, london, user charging","cordon, welfare, review, optimal"
+6,B,2000-2004->2005-2009,0.25,5,3,"mechanistic, mechanistic empirical, pavement design, pressure, empirical","flexible pavements, configurations, tires"
+7,A,2000-2004->2005-2009,0.3333333333333333,3,5,"time series, series, predicting","neural network, regression, incident detection, traffic prediction, incident"
+10,A,2000-2004->2005-2009,0.5384615384615384,2,0,"transmission, cell transmission",
+11,A,2000-2004->2005-2009,0.25,4,3,"bayesian, multivariate, crash data, count","bayes, injury severity, ordered"
+13,A,2000-2004->2005-2009,0.17647058823529413,6,2,"macroscopic, network loading, traffic information, signalized arterials, bottlenecks, dynamic network","traffic counts, counts"
+14,A,2000-2004->2005-2009,0.3333333333333333,0,0,,
+16,A,2000-2004->2005-2009,0.1111111111111111,7,5,"dispatching, bus, paratransit, passenger, online, optimal, planning","dynamic vehicle, vehicle routing, intermodal, routing, vehicle"
+22,A,2000-2004->2005-2009,0.25,4,3,"based data, based travel, gps, mobile","matrices, destination trip, trip matrices"
+23,A,2000-2004->2005-2009,0.25,6,4,"high speed, speed rail, high, speed, rail freight, rail service","freight transport, economy, london, urban rail"
+24,A,2000-2004->2005-2009,0.25,5,5,"wisconsin, tools, electronic, computer, network level","geographic information, geographic, pavement management, winter, decision support"
+25,B,2000-2004->2005-2009,0.25,4,4,"slab, loads, retrofit, culverts","report, median, nchrp, absorbing"
+26,A,2000-2004->2005-2009,0.3333333333333333,2,3,"reflective, hot","performance, whitetopping, ultrathin"
+30,A,2000-2004->2005-2009,0.5384615384615384,1,1,older,passenger
+31,A,2000-2004->2005-2009,0.3333333333333333,0,0,,
+32,B,2000-2004->2005-2009,0.17647058823529413,6,4,"factor, load resistance, resistance factor, rating, preservation, historic","scour, volume road, effective, bridge scour"
+35,A,2000-2004->2005-2009,0.17647058823529413,6,3,"perceptions, phone use, adolescents, beliefs, does, safety climate","knowledge, australia, behaviour"
+40,B,2000-2004->2005-2009,0.3333333333333333,0,2,,"understanding, warning"
+41,A,2000-2004->2005-2009,0.17647058823529413,7,6,"shipping, liner, container terminal, liner shipping, port, repositioning, marine","barge, seaports, container terminals, transshipment, automated, truck"
+43,B,2000-2004->2005-2009,0.25,3,5,"tests, bituminous, compaction","stone, compacted, open, friction, void"
+46,A,2000-2004->2005-2009,0.42857142857142855,0,2,,"link, guidance"
+47,A,2000-2004->2005-2009,0.05263157894736842,9,2,"ridership, transit ridership, modes, transport modes, users, preferences, structural equation, equation, telecommunications","choice model, logit"
+49,C,2000-2004->2005-2009,0.4166666666666667,5,2,"research, identification, value, hotspot, hotspot identification","networks, using"
+51,A,2000-2004->2005-2009,0.25,6,4,"avoidance, trajectory, autonomous, brake, following models, collision avoidance","steering, adaptive, fuzzy, vehicles"
+52,A,2000-2004->2005-2009,0.17647058823529413,7,2,"accidents, regression, prediction models, crash prediction, poisson, injury crashes, segment","truck, traffic"
+56,B,2000-2004->2005-2009,0.3333333333333333,3,2,"incident detection, incident, sensors","intelligent, warning"
+59,B,2000-2004->2005-2009,0.17647058823529413,5,4,"transportation planning, developing countries, climate change, india, urban transport","world, transport policy, transport systems, volume"
+60,B,2000-2004->2005-2009,0.17647058823529413,6,4,"ash, fly, fly ash, chloride, storm, dust","materials, frost, aggregate, gravel"
+61,A,2000-2004->2005-2009,0.42857142857142855,4,3,"driver behavior, maneuvers, intersection, turn","car, based, passenger"
+63,B,2000-2004->2005-2009,0.17647058823529413,7,5,"impairment, drug, drink, driving influence, roadside, status, drink driving","young, adults, fatal, alcohol related, young adults"
+67,A,2000-2004->2005-2009,0.3333333333333333,4,3,"cognitive, workload, sleep, distraction","older, subjective, older drivers"
+70,A,2000-2004->2005-2009,0.42857142857142855,2,3,"freight transportation, urban freight","transportation network, flows, intermodal transportation"
+72,A,2000-2004->2005-2009,0.42857142857142855,4,2,"construction, transportation systems, sensitive, context sensitive","state, highway"
+73,A,2000-2004->2005-2009,0.17647058823529413,7,7,"residential, household, built environment, neighborhood, environment, commuting, built","hong, kong, hong kong, car use, public transport, urban areas, panel"
+74,A,2000-2004->2005-2009,0.3333333333333333,3,3,"low cost, productivity, domestic","market, flights, japanese"
+75,B,2000-2004->2005-2009,0.3333333333333333,4,4,"travel surveys, personal travel, voluntary travel, voluntary","structural equation, 50, equation, daily"
+78,A,2000-2004->2005-2009,0.3333333333333333,5,3,"perception, risk perception, risk, driver behavior, adaptation","cognitive, novice drivers, simulated"
+80,A,2000-2004->2005-2009,0.6666666666666666,1,1,search,problem time
+81,A,2000-2004->2005-2009,0.14285714285714285,4,8,"shipping, industry, quality, analysis","supply chain, supply, chain, firms, isbn, information, impact, performance"
+83,B,2000-2004->2005-2009,0.25,4,2,"safety performance, crossings, grade, grade crossings","diagnostic, identification"
+84,A,2000-2004->2005-2009,0.5384615384615384,3,1,"structures, girder bridges, slab",concrete bridge
+86,A,2000-2004->2005-2009,0.17647058823529413,3,4,"frontal, vehicle crashes, prevention","end, rear end, collisions, low speed"
+87,A,2000-2004->2005-2009,0.3333333333333333,0,3,,"travel patterns, individual, participation"
+89,A,2000-2004->2005-2009,0.17647058823529413,7,4,"friction, tire, index, image, international, noise, rigid","smoothness, pavement smoothness, based, application"
+90,B,2000-2004->2005-2009,0.11764705882352941,8,2,"reliability, weather, winter, infrastructure, reliable, schedule, time reliability, design problem","breakdown, simulation"
+92,A,2000-2004->2005-2009,0.42857142857142855,3,1,"ridership, transit ridership, light rail",bus transit
+93,A,2000-2004->2005-2009,0.3333333333333333,2,2,"specifications, culvert","quality control, ride quality"
+94,A,2000-2004->2005-2009,0.1111111111111111,4,7,"transport policy, transport policies, innovation, park ride","exclusion, special issue, social exclusion, issue, governance, sustainable transport, corridors"
+96,B,2000-2004->2005-2009,0.3333333333333333,4,3,"cohesive, embankment, penetration, buried","drilled, pressure, resistance"
+97,A,2000-2004->2005-2009,0.25,4,3,"preference, stated, stated preference, public transport","perceived, quality service, level service"
+98,A,2000-2004->2005-2009,0.42857142857142855,4,3,"scheduling, crane, logistics, berth","storage, dispatching, routing"
+100,A,2000-2004->2005-2009,0.42857142857142855,1,1,mixed logit,logit model
+101,A,2000-2004->2005-2009,0.3333333333333333,4,3,"form, urban form, use transport, accessibility","values, built, property"
+102,B,2000-2004->2005-2009,0.17647058823529413,3,4,"design guide, empirical pavement, guide","pavement management, preventive, roughness, preventive maintenance"
+103,A,2000-2004->2005-2009,0.1111111111111111,6,7,"reclaimed, mixtures, reclaimed asphalt, material, recycling, recycled concrete","place, cold place, depth, waste, fly, fly ash, ash"
+104,A,2000-2004->2005-2009,0.6666666666666666,0,0,,
+106,A,2000-2004->2005-2009,0.6666666666666666,1,1,testing,tests
+107,A,2000-2004->2005-2009,0.8181818181818182,0,1,,adaptive
+108,B,2000-2004->2005-2009,0.11764705882352941,8,2,"visibility, red light, red, eye, cameras, lighting, experienced, lane change","perception, conditions"
+109,B,2000-2004->2005-2009,0.1111111111111111,4,4,"aging, reaction, properties, temperature","strength, fly, fly ash, modification"
+110,A,2000-2004->2005-2009,0.17647058823529413,6,4,"freeway traffic, bottleneck, volumes, german, calibrating, congested","detector, detector data, single loop, loop detector"
+111,A,2000-2004->2005-2009,0.42857142857142855,3,4,"delays, scenario, flow management","workload, international airport, controller, traffic management"
+114,B,2000-2004->2005-2009,0.42857142857142855,3,2,"air quality, roadside, concentrations","vehicular, source emissions"
+116,A,2000-2004->2005-2009,0.1111111111111111,6,5,"public transit, feeder, based transit, public, transit services, minimizing","bus transit, scheduling, urban transit, transit vehicle, optimization model"
+117,B,2000-2004->2005-2009,0.25,5,5,"helmet, licensing, dui, helmet use, outcomes","seat belt, seat, 08, legislation, safety belt"
+119,A,2000-2004->2005-2009,0.3333333333333333,4,2,"phase, cellular, automata, anisotropic","gas, model traffic"
+126,A,2000-2004->2005-2009,0.05263157894736842,6,6,"ground, vibration, health monitoring, health, structural, modal","weigh motion, neural networks, weigh, condition assessment, motion, condition"
+128,A,2000-2004->2005-2009,0.25,3,3,"genetic algorithm, horizon, resolution","schedule, programming, recovery"
+132,B,2000-2004->2005-2009,0.25,6,2,"children, workplace, safety climate, factors influencing, occupational, influencing","restraint, fatigue"
+135,B,2000-2004->2005-2009,0.17647058823529413,6,4,"wet, marking, night, pavement marking, dry, horizontal curves","nighttime, minimum, overhead, retroreflectivity"
+136,A,2000-2004->2005-2009,0.25,3,3,"coefficient, expansion, finite","layer, deflectometer, weight deflectometer"
+137,A,2000-2004->2005-2009,0.42857142857142855,1,3,median,"operating, left, left turn"
+138,A,2000-2004->2005-2009,0.6666666666666666,2,2,"risky, australian","novice, aggressive"
+140,A,2000-2004->2005-2009,0.42857142857142855,2,4,"private, concessions","financing, netherlands, europe, uk"
+141,A,2000-2004->2005-2009,0.3333333333333333,3,3,"bottlenecks, corridor, adaptive","strategy, feedback, control strategy"
+142,A,2000-2004->2005-2009,0.25,3,1,"buses, consumption, fuel consumption",alternative
+143,A,2000-2004->2005-2009,0.6666666666666666,1,0,demand model,
+145,A,2000-2004->2005-2009,0.17647058823529413,5,3,"crossing, walking, exposure, signals, accessible","crossings, pedestrian crashes, child"
+146,A,2000-2004->2005-2009,0.3333333333333333,2,3,"carbon, testing","high performance, performance concrete, decks"
+147,C,2000-2004->2005-2009,0.17647058823529413,6,4,"services, employer, security, regional, new mexico, oregon","public transit, systems, public, advanced"
+0,C,2005-2009->2010-2014,0.3333333333333333,1,1,rest,feasibility
+2,A,2005-2009->2010-2014,0.17647058823529413,7,2,"curve, sight distance, sight, geometry, maneuver, distance, dimensional","friction, hydroplaning"
+3,A,2005-2009->2010-2014,0.25,4,3,"transport, welfare, tradable, pay","charge, london, user charging"
+4,B,2005-2009->2010-2014,0.1111111111111111,5,5,"walking, older, adults, poverty, older people","working, built environment, built, ict, women"
+6,B,2005-2009->2010-2014,0.42857142857142855,0,2,,"pressure, measured"
+7,A,2005-2009->2010-2014,0.3333333333333333,1,3,prediction using,"neural networks, time series, series"
+8,A,2005-2009->2010-2014,0.25,4,3,"equity, transit accessibility, measuring, residential","ridership, does, cities"
+10,A,2005-2009->2010-2014,0.3333333333333333,3,3,"mesoscopic, vissim, sensitivity analysis","simulation model, transmission, cell transmission"
+11,A,2005-2009->2010-2014,0.42857142857142855,3,0,"injury severity, crash severity, crash frequency",
+13,A,2005-2009->2010-2014,0.05263157894736842,3,6,"diagram, fundamental diagram, fundamental","network loading, traffic information, traffic assignment, signalized arterials, bottlenecks, dynamic network"
+14,A,2005-2009->2010-2014,0.42857142857142855,0,1,,resilient modulus
+16,A,2005-2009->2010-2014,0.1111111111111111,8,4,"public transport, services, timetable, bus services, vehicle scheduling, schedule, control strategies, transfers","dispatching, paratransit, online, stochastic"
+19,A,2005-2009->2010-2014,0.42857142857142855,1,1,co2 emissions,fuel
+22,A,2005-2009->2010-2014,0.25,5,2,"taxi, card, travel survey, smart card, card data","based data, based travel"
+23,A,2005-2009->2010-2014,0.42857142857142855,3,2,"impacts high, border, economic","rail freight, rail service"
+24,A,2005-2009->2010-2014,0.05263157894736842,3,9,"equipment, construction, road","implementation, information, wisconsin, tools, maintenance, electronic, computer, network level, highway"
+25,B,2005-2009->2010-2014,0.3333333333333333,2,5,"steel, transition","cable, slab, loads, culverts, barriers"
+26,A,2005-2009->2010-2014,0.5384615384615384,1,3,cost effectiveness,"rehabilitation, reflective, hot"
+27,B,2005-2009->2010-2014,0.1111111111111111,7,8,"elasticities, price, trade, econometric, air passenger, freight demand, price elasticities","demand estimation, transport demand, river, air transport, air travel, grain, waterway, quantifying"
+30,A,2005-2009->2010-2014,0.6666666666666666,0,0,,
+31,A,2005-2009->2010-2014,0.42857142857142855,1,2,properties,"hot, hot mix"
+32,B,2005-2009->2010-2014,0.5384615384615384,3,3,"steel, span, highway","preservation, historic, inspection"
+34,A,2005-2009->2010-2014,0.05263157894736842,4,4,"emission, co2, energy, co2 emissions","supply chain, supply, chain, environmental impacts"
+35,A,2005-2009->2010-2014,0.3333333333333333,3,4,"perception, cyclists, risk perception","mobile phone, adolescents, beliefs, does"
+38,A,2005-2009->2010-2014,0.5384615384615384,3,2,"lte, advanced, challenges","ultra, communication"
+40,B,2005-2009->2010-2014,0.42857142857142855,3,1,"intervals, signals, flashing",speed
+41,A,2005-2009->2010-2014,0.42857142857142855,4,0,"ship, cargo, container terminals, maritime",
+42,A,2005-2009->2010-2014,0.1111111111111111,7,7,"machine, expressways, urban expressways, mining, vector machine, crash risk, trees","prediction model, predicting, road accidents, identify, identifying, conditions, freeways"
+43,B,2005-2009->2010-2014,0.1111111111111111,8,4,"porous, chip, noise, ballast, friction, seal, seals, chip seals","coarse, bituminous, fine, compaction"
+46,A,2005-2009->2010-2014,0.5384615384615384,1,0,bluetooth,
+47,A,2005-2009->2010-2014,0.0,4,6,"fare, prices, shanghai china, demand management","modes, transport modes, users, structural equation, equation, telecommunications"
+49,C,2005-2009->2010-2014,0.05263157894736842,9,7,"papers, selected, conference, selected papers, paradox, fundamental, data, based, model","research, identification, value, hotspot, evaluation, hotspot identification, analysis"
+51,A,2005-2009->2010-2014,0.05263157894736842,6,3,"cooperative, steering, assistance, driver assistance, lateral, architecture","trajectory, brake, following models"
+52,A,2005-2009->2010-2014,0.17647058823529413,3,4,"crash frequency, frequency, highway safety","regression, crash prediction, injury crashes, segment"
+53,A,2005-2009->2010-2014,0.25,5,2,"vehicular networks, vanets, channel, vehicle vehicle, message","transportation applications, wireless communications"
+56,B,2005-2009->2010-2014,0.3333333333333333,3,3,"detectors, signalized, signalized intersection","automated, incident detection, incident"
+59,B,2005-2009->2010-2014,0.3333333333333333,0,1,,india
+60,B,2005-2009->2010-2014,0.42857142857142855,1,3,nitrogen,"chloride, storm, dust"
+61,A,2005-2009->2010-2014,0.42857142857142855,2,2,"lane rural, rural","intersection, turn"
+62,A,2005-2009->2010-2014,0.17647058823529413,7,4,"rail transit, rail, urban rail, timetable, rescheduling, subway, energy efficient","freight trains, intermodal freight, stations, intermodal"
+63,B,2005-2009->2010-2014,0.25,5,4,"impaired, prevalence, traffic crashes, case control, queensland","impairment, drink, status, drink driving"
+64,A,2005-2009->2010-2014,0.05263157894736842,8,4,"china, motorcycle, culture, violation, riders, traffic safety, planned, speeding","students, injuries, use, study"
+66,A,2005-2009->2010-2014,0.1111111111111111,7,7,"cellular, cellular automata, automata, vehicle, automated, intersection, car following","transactions, mixed traffic, cruise control, adaptive cruise, cruise, adaptive, transportation systems"
+67,A,2005-2009->2010-2014,0.5384615384615384,2,0,"driver distraction, older",
+70,A,2005-2009->2010-2014,0.5384615384615384,3,2,"transportation network, rail network, multi","commodity, trip"
+72,A,2005-2009->2010-2014,0.25,4,3,"highway, sustainability, funding, plans","transportation systems, sensitive, context sensitive"
+73,A,2005-2009->2010-2014,0.6666666666666666,1,1,urban form,neighborhood
+74,A,2005-2009->2010-2014,0.5384615384615384,1,0,market,
+75,B,2005-2009->2010-2014,0.25,2,4,"commuters, household","change, personal travel, voluntary travel, voluntary"
+76,B,2005-2009->2010-2014,0.0,10,5,"tradable, contracts, markets, credit, credits, bottleneck, shipping, concession, private partnership, tradable credit","yield, distribution, optimization, airline, low"
+78,A,2005-2009->2010-2014,0.25,3,2,"hazard, hazard perception, naturalistic","risk perception, risk"
+79,A,2005-2009->2010-2014,0.1111111111111111,6,6,"routing problem, facility, hub, hub location, problems, multi objective","shortest, search, demand uncertainty, shortest path, ant, ant colony"
+80,A,2005-2009->2010-2014,0.6666666666666666,0,1,,search
+81,A,2005-2009->2010-2014,0.14285714285714285,8,0,"green, providers, companies, service providers, corporate, green supply, private partnerships, partnerships",
+82,B,2005-2009->2010-2014,0.25,4,3,"earthquake, disasters, incident, evacuations","network optimization, evacuation planning, based network"
+83,B,2005-2009->2010-2014,0.25,4,3,"surrogate, safety effects, rear end, safety analysis","accident, grade, grade crossings"
+84,A,2005-2009->2010-2014,0.3333333333333333,5,3,"curved, steel bridges, reinforced, box, frame","structures, deck, slab"
+86,A,2005-2009->2010-2014,0.3333333333333333,5,2,"occupant, collisions, fatal, helmet, severity","prevention, restraint"
+87,A,2005-2009->2010-2014,0.6666666666666666,1,1,choice models,activities
+89,A,2005-2009->2010-2014,0.17647058823529413,5,7,"texture, skid, measurements, pavement surface, surfaces","tire, index, profile, image, international, noise, rigid"
+90,B,2005-2009->2010-2014,0.17647058823529413,3,5,"incident, road maintenance, hazardous materials","weather, winter, reliable, schedule, design problem"
+92,A,2005-2009->2010-2014,0.5384615384615384,2,0,"public transit, connectivity",
+93,A,2005-2009->2010-2014,0.3333333333333333,2,3,"pavement preservation, measurements","maintenance, specifications, culvert"
+94,A,2005-2009->2010-2014,0.42857142857142855,2,2,"sustainable mobility, stakeholder","transport policies, park ride"
+95,B,2005-2009->2010-2014,0.17647058823529413,6,2,"chains, supply chains, green supply, biofuel, uncertainty, green","managed, vendor"
+96,B,2005-2009->2010-2014,0.1111111111111111,7,6,"resistance, stabilized, drilled, seismic, shafts, drilled shafts, stabilized earth","compaction, pipe, cohesive, embankment, penetration, buried"
+97,A,2005-2009->2010-2014,0.42857142857142855,1,0,transit service,
+98,A,2005-2009->2010-2014,0.8181818181818182,1,0,transshipment,
+100,A,2005-2009->2010-2014,0.6666666666666666,2,0,"multinomial, latent",
+101,A,2005-2009->2010-2014,0.6666666666666666,1,0,values,
+102,B,2005-2009->2010-2014,0.5384615384615384,0,0,,
+103,A,2005-2009->2010-2014,0.5384615384615384,1,0,content,
+104,A,2005-2009->2010-2014,0.6666666666666666,0,0,,
+105,A,2005-2009->2010-2014,0.3333333333333333,5,4,"detection tracking, particle, vision based, maps, fusion","matching, driver assistance, segmentation, sensing"
+106,A,2005-2009->2010-2014,0.42857142857142855,0,0,,
+107,A,2005-2009->2010-2014,0.5384615384615384,0,0,,
+108,B,2005-2009->2010-2014,0.5384615384615384,3,3,"night, conspicuity, motorcycles","eye, experienced, lane change"
+109,B,2005-2009->2010-2014,0.3333333333333333,0,2,,"reaction, alkali"
+110,A,2005-2009->2010-2014,0.3333333333333333,2,5,"vehicle data, probe vehicle","bottleneck, volumes, german, calibrating, congested"
+111,A,2005-2009->2010-2014,0.5384615384615384,1,1,international airport,scenario
+114,B,2005-2009->2010-2014,0.5384615384615384,1,2,dispersion,"roadside, source"
+116,A,2005-2009->2010-2014,0.3333333333333333,2,2,"schedule, transit networks","public, minimizing"
+117,B,2005-2009->2010-2014,0.3333333333333333,4,4,"speeding, violations, police, traffic violations","helmet, dui, helmet use, outcomes"
+118,A,2005-2009->2010-2014,0.3333333333333333,5,5,"electric, alternative fuel, alternative, cars, purchase","hybrid, diesel, automobiles, conventional, pay"
+119,A,2005-2009->2010-2014,0.3333333333333333,1,2,order,"phase, anisotropic"
+121,A,2005-2009->2010-2014,0.17647058823529413,7,3,"hinterland, seaport, container port, inland, brazilian, authority, maritime","status, perspective, cities"
+122,A,2005-2009->2010-2014,0.17647058823529413,3,6,"steering, haptic, assistance","driving simulator, information systems, acceptance, vehicle information, driving performance, simulated driving"
+123,A,2005-2009->2010-2014,0.1111111111111111,7,6,"people, modes, requirements, potential, space, bus, environment","carsharing, issues, travel behavior, change, behavior, new"
+126,A,2005-2009->2010-2014,0.3333333333333333,4,0,"updating, concrete bridge, tomography, detecting",
+128,A,2005-2009->2010-2014,0.17647058823529413,4,4,"programming, timetabling, column, dynamic programming","genetic, genetic algorithm, algorithms, resolution"
+132,B,2005-2009->2010-2014,0.3333333333333333,3,3,"sleep, job, restraint","workplace, factors influencing, influencing"
+135,B,2005-2009->2010-2014,0.25,4,6,"led, warning, assessment, roadway","wet, marking, night, pavement marking, dry, horizontal curves"
+136,A,2005-2009->2010-2014,0.3333333333333333,2,4,"heat, asphalt pavement","moisture, coefficient, expansion, finite"
+137,A,2005-2009->2010-2014,0.42857142857142855,1,1,manual,median
+138,A,2005-2009->2010-2014,0.5384615384615384,0,1,,australian
+140,A,2005-2009->2010-2014,0.3333333333333333,0,0,,
+141,A,2005-2009->2010-2014,0.42857142857142855,0,3,,"optimal, bottlenecks, corridor"
+142,A,2005-2009->2010-2014,0.5384615384615384,2,2,"heavy duty, gas","buses, trucks"
+143,A,2005-2009->2010-2014,0.42857142857142855,2,1,"vehicle fleet, california",demand model
+144,B,2005-2009->2010-2014,0.3333333333333333,5,5,"cyclists, bicyclists, riding, bike, walking cycling","gender, use, work, activity, urban"
+145,A,2005-2009->2010-2014,0.3333333333333333,1,3,crossings,"walking, exposure, accessible"
+146,A,2005-2009->2010-2014,0.3333333333333333,3,2,"portland cement, cement concrete, portland","carbon, early"
+147,C,2005-2009->2010-2014,0.05263157894736842,9,7,"commuter, traveler, york city, public transit, york, new york, information, state, implementation","services, employer, security, regional, new mexico, oregon, successful"
+0,C,2010-2014->2015-2019,0.17647058823529413,6,5,"commercial vehicle, washington, streetcars, vehicle parking, workplace, national park","carsharing, occupancy toll, san, toll lanes, rest"
+1,A,2010-2014->2015-2019,0.5384615384615384,3,0,"electrification, buses, plug electric",
+2,A,2010-2014->2015-2019,0.05263157894736842,8,6,"alignment, horizontal curves, vertical, mountain, horizontal alignment, scour, road design, alignments","curve, sight distance, sight, geometric design, maneuver, geometric"
+3,A,2010-2014->2015-2019,0.42857142857142855,2,2,"public, credits","welfare, pay"
+4,B,2010-2014->2015-2019,0.25,4,2,"children, older adults, built environment, built","home, poverty"
+5,A,2010-2014->2015-2019,0.42857142857142855,2,1,"radar, position",filter
+6,B,2010-2014->2015-2019,0.1111111111111111,6,6,"overweight, weigh, weigh motion, airfield pavement, overweight trucks, configuration","pavement design, mechanistic, mechanistic empirical, empirical pavement, tire, design guide"
+7,A,2010-2014->2015-2019,0.5384615384615384,1,1,machine learning,prediction using
+8,A,2010-2014->2015-2019,0.3333333333333333,0,1,,residential
+9,B,2010-2014->2015-2019,0.17647058823529413,7,3,"big, big data, media, social media, clustering, analytics, sources","temporal, information systems, online"
+10,A,2010-2014->2015-2019,0.42857142857142855,0,3,,"simulation models, mesoscopic, sensitivity analysis"
+11,A,2010-2014->2015-2019,0.42857142857142855,1,1,parameters,crash severity
+13,A,2010-2014->2015-2019,0.5384615384615384,1,1,calibration,dynamic
+14,A,2010-2014->2015-2019,0.3333333333333333,1,0,resilient modulus,
+16,A,2010-2014->2015-2019,0.25,3,2,"bus service, line, responsive","control strategies, transfers"
+17,A,2010-2014->2015-2019,0.17647058823529413,7,2,"autonomous, autonomous vehicles, vehicles, testing, automated vehicles, accelerated, vehicle safety","vehicle, driver"
+19,A,2010-2014->2015-2019,0.42857142857142855,2,0,"ghg, air",
+21,A,2010-2014->2015-2019,0.1111111111111111,8,6,"autonomous, autonomous vehicles, vehicles, automated, automated vehicles, trust, theory planned, planned","toll collection, electronic toll, electronic, behavioral, collection, toll"
+22,A,2010-2014->2015-2019,0.42857142857142855,0,1,,global positioning
+23,A,2010-2014->2015-2019,0.6666666666666666,1,1,investment,border
+25,B,2010-2014->2015-2019,0.3333333333333333,1,4,hardware,"beam, retrofit, midwest, bridge rail"
+26,A,2010-2014->2015-2019,0.3333333333333333,4,3,"term performance, concrete overlays, bonded concrete, concrete overlay","concrete pavements, cracking, cost effectiveness"
+27,B,2010-2014->2015-2019,0.25,3,5,"commodity, tanker, copula","trade, econometric, air passenger, freight demand, price elasticities"
+30,A,2010-2014->2015-2019,0.5384615384615384,2,0,"fault, contributing",
+31,A,2010-2014->2015-2019,0.6666666666666666,0,0,,
+32,B,2010-2014->2015-2019,0.1111111111111111,6,7,"element, condition, deterioration, decks, bridge decks, index","load, load resistance, resistance factor, steel, span, rating, factor"
+33,A,2010-2014->2015-2019,0.25,6,4,"ridesharing, bike sharing, bike, dial, dial ride, ride sharing","morning commute, morning, commute, joint"
+34,A,2010-2014->2015-2019,0.42857142857142855,3,2,"carbon emissions, life cycle, abatement","carbon dioxide, dioxide"
+35,A,2010-2014->2015-2019,0.42857142857142855,1,1,parents,perception
+36,A,2010-2014->2015-2019,0.07142857142857142,9,4,"online, delivery, store, commerce, goods, mile, brand, products, nanjing","stated, influence, time, travel"
+37,A,2010-2014->2015-2019,0.5384615384615384,1,2,connected,"heavy duty, communications"
+38,A,2010-2014->2015-2019,0.3333333333333333,3,4,"channel, resource, device","lte, cognitive, advanced, challenges"
+40,B,2010-2014->2015-2019,0.3333333333333333,3,2,"way, wrong, wrong way","effectiveness, intervals"
+41,A,2010-2014->2015-2019,0.5384615384615384,1,0,inland,
+42,A,2010-2014->2015-2019,0.17647058823529413,3,4,"tree, machine learning, learning","expressways, urban expressways, mining, trees"
+43,B,2010-2014->2015-2019,0.1111111111111111,4,2,"base, compaction, concrete, skid resistance","noise, ballast"
+44,A,2010-2014->2015-2019,0.5384615384615384,2,0,"adoption, charging infrastructure",
+46,A,2010-2014->2015-2019,0.42857142857142855,1,1,gps,bluetooth
+47,A,2010-2014->2015-2019,0.3333333333333333,3,3,"passengers, intercity, transport","prices, shanghai china, demand management"
+48,A,2010-2014->2015-2019,0.25,3,3,"bike sharing, bikeshare, bicycles","commuting, north, north america"
+49,C,2010-2014->2015-2019,0.1111111111111111,8,5,"lab, research lab, population synthesis, world conference, research, dupuit, synthesis, 2015","page, selected, selected papers, paradox, fundamental"
+50,A,2010-2014->2015-2019,0.6666666666666666,2,0,"station, charging infrastructure",
+51,A,2010-2014->2015-2019,0.3333333333333333,1,1,human,driver assistance
+52,A,2010-2014->2015-2019,0.42857142857142855,1,0,crash severity,
+53,A,2010-2014->2015-2019,0.42857142857142855,0,2,,"ieee, message"
+55,A,2010-2014->2015-2019,0.05263157894736842,9,2,"railway, electrical, traction, power, aircraft, speed railway, energy, magnetic, fault","wheel, temperature"
+56,B,2010-2014->2015-2019,0.1111111111111111,3,4,"warning, real time, identification","detector, intersection, signalized, signalized intersection"
+57,B,2010-2014->2015-2019,0.0,10,4,"automated, vehicles, automated vehicles, autonomous, automated vehicle, fully, autonomous vehicles, connected vehicles, driving systems, fully automated","transport systems, intelligent, car, transport"
+59,B,2010-2014->2015-2019,0.5384615384615384,0,0,,
+60,B,2010-2014->2015-2019,0.25,6,6,"unpaved, dust, ice, unpaved roads, scour, installation","water, nitrogen, ash, corrosion, fly ash, fly"
+61,A,2010-2014->2015-2019,0.25,1,0,naturalistic,
+62,A,2010-2014->2015-2019,0.42857142857142855,1,1,timetabling,subway
+63,B,2010-2014->2015-2019,0.25,2,3,"drink, injured","traffic crashes, case control, queensland"
+64,A,2010-2014->2015-2019,0.05263157894736842,4,5,"aberrant, vietnam, aberrant driving, working conditions","culture, violation, attitudes, planned, speeding"
+65,B,2010-2014->2015-2019,0.05263157894736842,9,4,"learning, airport, flight, terminal, multi airport, machine learning, climb, air traffic, probabilistic","trajectory prediction, resolution, based trajectory, detection"
+66,A,2010-2014->2015-2019,0.17647058823529413,5,2,"connected, connected automated, automated vehicles, autonomous, connected vehicles","intersection, car following"
+67,A,2010-2014->2015-2019,0.5384615384615384,0,0,,
+70,A,2010-2014->2015-2019,0.5384615384615384,1,1,intermodal freight,rail network
+72,A,2010-2014->2015-2019,0.3333333333333333,2,1,"state, highway construction",sustainability
+73,A,2010-2014->2015-2019,0.6666666666666666,0,1,,automobile
+74,A,2010-2014->2015-2019,0.5384615384615384,1,0,carrier,
+75,B,2010-2014->2015-2019,0.42857142857142855,0,1,,commuters
+76,B,2010-2014->2015-2019,0.17647058823529413,4,5,"contracting, carriers, sourcing, industry","credits, bottleneck, concession, private partnership, tradable credit"
+78,A,2010-2014->2015-2019,0.5384615384615384,1,0,ability,
+79,A,2010-2014->2015-2019,0.42857142857142855,3,0,"location problem, shortest, neighborhood search",
+80,A,2010-2014->2015-2019,0.5384615384615384,0,0,,
+81,A,2010-2014->2015-2019,0.25,4,4,"innovation, practices, firms, logistics performance","providers, service providers, private partnerships, partnerships"
+82,B,2010-2014->2015-2019,0.3333333333333333,3,2,"emergency response, medical, emergency medical","earthquake, incident"
+83,B,2010-2014->2015-2019,0.3333333333333333,1,0,safety assessment,
+84,A,2010-2014->2015-2019,0.3333333333333333,2,4,"prestressed, beam","curved, steel bridges, box, frame"
+85,A,2010-2014->2015-2019,0.05263157894736842,9,5,"fault, diagnosis, bayesian, railway, condition, fault detection, maintenance, fault diagnosis, health monitoring","neural networks, track, neural, structural, application"
+86,A,2010-2014->2015-2019,0.25,3,2,"finite element, finite, element","fatal, severity"
+87,A,2010-2014->2015-2019,0.5384615384615384,1,1,travel mode,activity travel
+89,A,2010-2014->2015-2019,0.6666666666666666,1,1,skid resistance,surfaces
+90,B,2010-2014->2015-2019,0.3333333333333333,3,4,"rail, ratio, risk management","maintenance, incident, road maintenance, hazardous materials"
+92,A,2010-2014->2015-2019,0.6666666666666666,0,2,,"passenger, connectivity"
+93,A,2010-2014->2015-2019,0.17647058823529413,3,7,"condition data, chip, specifications","quality, assurance, pavement management, quality assurance, pavement preservation, measurements, distress"
+94,A,2010-2014->2015-2019,0.5384615384615384,0,2,,"uk, stakeholder"
+95,B,2010-2014->2015-2019,0.42857142857142855,0,1,,design
+96,B,2010-2014->2015-2019,0.25,4,5,"cohesive, piles, unsaturated, setup","resistance, drilled, seismic, shafts, drilled shafts"
+97,A,2010-2014->2015-2019,0.6666666666666666,1,0,loyalty,
+98,A,2010-2014->2015-2019,0.42857142857142855,2,1,"storage, delivery",truckload
+100,A,2010-2014->2015-2019,0.5384615384615384,1,0,generalized,
+101,A,2010-2014->2015-2019,0.42857142857142855,2,0,"trip generation, transport land",
+102,B,2010-2014->2015-2019,0.5384615384615384,0,0,,
+103,A,2010-2014->2015-2019,0.5384615384615384,1,0,laboratory,
+104,A,2010-2014->2015-2019,1.0,0,0,,
+105,A,2010-2014->2015-2019,0.1111111111111111,4,3,"point, scanning, camera, map","stereo, vision based, fusion"
+106,A,2010-2014->2015-2019,0.6666666666666666,0,0,,
+107,A,2010-2014->2015-2019,0.6666666666666666,0,0,,
+108,B,2010-2014->2015-2019,0.42857142857142855,2,1,"eye, target",conspicuity
+109,B,2010-2014->2015-2019,0.25,2,1,"chemical, bitumen",temperature
+110,A,2010-2014->2015-2019,0.42857142857142855,1,0,signalized,
+111,A,2010-2014->2015-2019,0.6666666666666666,0,1,,international airport
+114,B,2010-2014->2015-2019,0.5384615384615384,1,0,noise,
+116,A,2010-2014->2015-2019,0.42857142857142855,1,2,optimal design,"schedule, optimization"
+117,B,2010-2014->2015-2019,0.3333333333333333,4,3,"legislation, licence, deterrence, ontario","police, traffic violations, graduated"
+118,A,2010-2014->2015-2019,0.3333333333333333,2,0,"battery electric, consumers",
+119,A,2010-2014->2015-2019,0.25,1,3,continuum,"kinematic, order, kinematic wave"
+121,A,2010-2014->2015-2019,0.3333333333333333,0,2,,"brazilian, authority"
+122,A,2010-2014->2015-2019,0.25,4,2,"situation, automation, situation awareness, automated","driver distraction, haptic"
+123,A,2010-2014->2015-2019,0.17647058823529413,6,5,"mobility service, maas, public transport, app, service maas, services","modes, potential, space, bus, environment"
+124,A,2010-2014->2015-2019,0.3333333333333333,2,2,"ships, regulations","container shipping, gas"
+126,A,2010-2014->2015-2019,0.3333333333333333,0,4,,"wavelet, concrete bridge, tomography, detecting"
+128,A,2010-2014->2015-2019,0.42857142857142855,1,2,sequencing,"programming, dynamic programming"
+129,B,2010-2014->2015-2019,0.25,6,2,"street, street parking, occupancy, curbside, parking space, availability","pricing policy, charges"
+132,B,2010-2014->2015-2019,0.3333333333333333,2,2,"reported, self reported","children, stress"
+134,A,2010-2014->2015-2019,0.42857142857142855,0,3,,"networks, transport networks, infrastructure systems"
+135,B,2010-2014->2015-2019,0.3333333333333333,4,5,"lighting, retroreflectivity, factors, traffic","led, pavement markings, markings, warning, roadway"
+136,A,2010-2014->2015-2019,0.3333333333333333,5,2,"seasonal, thaw, freeze, airfield, moisture","heat, concrete pavements"
+137,A,2010-2014->2015-2019,0.42857142857142855,3,1,"interchanges, roundabout, diamond",manual
+138,A,2010-2014->2015-2019,0.6666666666666666,0,0,,
+139,A,2010-2014->2015-2019,0.3333333333333333,4,2,"convolutional neural, learning, convolutional, neural","vehicle classification, graph"
+140,A,2010-2014->2015-2019,0.42857142857142855,1,3,economic,"cost benefit, benefit analysis, investments"
+141,A,2010-2014->2015-2019,0.42857142857142855,0,0,,
+142,A,2010-2014->2015-2019,0.8181818181818182,0,0,,
+143,A,2010-2014->2015-2019,0.42857142857142855,2,2,"demand models, synthetic","vehicle fleet, california"
+144,B,2010-2014->2015-2019,0.42857142857142855,3,3,"cyclist, gender, bicycle commuting","riding, bike, school"
+145,A,2010-2014->2015-2019,0.6666666666666666,0,0,,
+146,A,2010-2014->2015-2019,0.5384615384615384,1,3,flexural,"portland cement, cement concrete, portland"
+147,C,2010-2014->2015-2019,0.1111111111111111,4,8,"century, surveys, public transportation, future","commuter, traveler, york city, public transit, york, new york, state, implementation"
+148,A,2010-2014->2015-2019,0.05263157894736842,8,4,"control high, speed trains, trains, steering, lateral, nonlinear, suspension, path following","parameter, stability, active, tracking"
+0,C,2015-2019->2020-2025,0.05263157894736842,7,8,"curb, seattle, parking requirements, downtown, car parking, minimum, media","commercial vehicle, park, washington, streetcars, vehicle parking, workplace, national park, high occupancy"
+1,A,2015-2019->2020-2025,0.3333333333333333,0,2,,"hybrid electric, plug electric"
+2,A,2015-2019->2020-2025,0.25,3,2,"tunnel, diverging, aerodynamic","scour, road design"
+3,A,2015-2019->2020-2025,0.5384615384615384,2,1,"tolling, welfare",credits
+4,B,2015-2019->2020-2025,0.42857142857142855,1,2,home,"children, time use"
+5,A,2015-2019->2020-2025,0.3333333333333333,4,2,"filter, ins, kalman, signals","gps, position"
+6,B,2015-2019->2020-2025,0.17647058823529413,5,6,"mechanistic, bridges, flexible pavement, track, subjected","overweight, axle, tires, airfield pavement, overweight trucks, configuration"
+7,A,2015-2019->2020-2025,0.25,4,1,"delay prediction, delay, using machine, train delay",term traffic
+8,A,2015-2019->2020-2025,0.3333333333333333,4,1,"minute, 15, ridership, city",rapid transit
+9,B,2015-2019->2020-2025,0.42857142857142855,2,2,"crowdsourced, media data","clustering, sources"
+10,A,2015-2019->2020-2025,0.3333333333333333,3,4,"calibration validation, micro simulation, simulation approach","vissim, dynamic traffic, microscopic traffic, traffic assignment"
+11,A,2015-2019->2020-2025,0.6666666666666666,1,0,means,
+12,A,2015-2019->2020-2025,0.17647058823529413,3,2,"fuel cell, cell, energy management","electrical, electrical power"
+13,A,2015-2019->2020-2025,0.5384615384615384,0,2,,"calibration, state estimation"
+14,A,2015-2019->2020-2025,0.42857142857142855,0,1,,aggregate
+15,B,2015-2019->2020-2025,0.25,4,5,"object detection, identification, vehicle identification, lane detection","deep, learning, convolutional, surveillance, nighttime"
+16,A,2015-2019->2020-2025,0.3333333333333333,0,1,,line
+17,A,2015-2019->2020-2025,0.42857142857142855,2,2,"scenario, generation","accelerated, threat"
+19,A,2015-2019->2020-2025,0.5384615384615384,1,1,low emission,ghg
+20,A,2015-2019->2020-2025,0.17647058823529413,3,0,"preserving, privacy preserving, protocol",
+21,A,2015-2019->2020-2025,0.5384615384615384,0,0,,
+22,A,2015-2019->2020-2025,0.8181818181818182,0,0,,
+23,A,2015-2019->2020-2025,0.6666666666666666,1,2,evidence china,"transport, investment"
+25,B,2015-2019->2020-2025,0.3333333333333333,2,2,"concrete bridge, midwest","transition, railroad"
+26,A,2015-2019->2020-2025,0.5384615384615384,1,3,concrete pavements,"term performance, bonded, bonded concrete"
+27,B,2015-2019->2020-2025,0.25,5,4,"demand estimation, container freight, freight rates, freight flows, freight demand","commodity, elasticities, tanker, copula"
+28,C,2015-2019->2020-2025,0.3333333333333333,3,3,"aerial vehicle, radar, bridge","remote sensing, remote, engineering"
+30,A,2015-2019->2020-2025,0.25,1,4,crash injury,"accidents, motorcycle, fault, contributing"
+31,A,2015-2019->2020-2025,0.42857142857142855,0,0,,
+32,B,2015-2019->2020-2025,0.25,6,5,"maintenance, steel, concrete bridges, girder bridges, steel bridges, deterioration models","condition, decks, bridge decks, index, damage"
+33,A,2015-2019->2020-2025,0.3333333333333333,3,0,"ride sourcing, sourcing, pooling",
+34,A,2015-2019->2020-2025,0.42857142857142855,0,1,,abatement
+35,A,2015-2019->2020-2025,0.3333333333333333,1,2,riders,"safety climate, cell phone"
+36,A,2015-2019->2020-2025,0.3333333333333333,1,2,grocery,"products, nanjing"
+37,A,2015-2019->2020-2025,0.42857142857142855,1,0,connected automated,
+38,A,2015-2019->2020-2025,0.5384615384615384,3,2,"6g, challenges, ris","resource, device"
+39,A,2015-2019->2020-2025,0.5384615384615384,1,0,fuel cell,
+40,B,2015-2019->2020-2025,0.25,3,5,"driver response, feedback, left","intersections, way, wrong, wrong way, evaluation"
+41,A,2015-2019->2020-2025,0.8181818181818182,0,0,,
+42,A,2015-2019->2020-2025,0.5384615384615384,0,1,,tree
+43,B,2015-2019->2020-2025,0.17647058823529413,4,2,"graded, open graded, friction course, graded friction","base, skid resistance"
+44,A,2015-2019->2020-2025,0.5384615384615384,1,1,ev,battery
+45,A,2015-2019->2020-2025,0.17647058823529413,3,1,"pmsm, predictive, model predictive",generator
+46,A,2015-2019->2020-2025,0.3333333333333333,0,2,,"gps data, time estimation"
+47,A,2015-2019->2020-2025,0.42857142857142855,1,2,public transit,"intercity, demand"
+48,A,2015-2019->2020-2025,0.42857142857142855,1,0,scooter,
+49,C,2015-2019->2020-2025,0.0,10,9,"journal, retrieval, fundamental, editor, diagram, engineering, robotaxi, fundamental diagram, chief, variable message","lab, research lab, population synthesis, world conference, papers, dupuit, conference, synthesis, 2015"
+50,A,2015-2019->2020-2025,0.5384615384615384,1,0,scheduling,
+51,A,2015-2019->2020-2025,0.5384615384615384,3,1,"human machine, machine shared, shared control",based driver
+52,A,2015-2019->2020-2025,0.5384615384615384,1,0,random parameters,
+53,A,2015-2019->2020-2025,0.3333333333333333,1,5,interference,"vehicular ad, vehicle vehicle, ad, hoc, ad hoc"
+55,A,2015-2019->2020-2025,0.17647058823529413,5,4,"traction power, railways, power supply, current, trains","speed railway, energy, magnetic, fault"
+56,B,2015-2019->2020-2025,0.25,3,1,"lab, automatic vehicle, research lab",video
+57,B,2015-2019->2020-2025,0.3333333333333333,4,5,"ethical, automotive electronics, trust, electronics","automated vehicle, fully, connected vehicles, driving systems, fully automated"
+59,B,2015-2019->2020-2025,0.42857142857142855,1,2,transportation research,"geography, transport geography"
+60,B,2015-2019->2020-2025,0.1111111111111111,8,8,"stormwater, construction, durability, thaw, freeze thaw, freeze, hydraulic, sediment","unpaved, dust, ice, stabilization, unpaved roads, scour, installation, soils"
+61,A,2015-2019->2020-2025,0.3333333333333333,0,0,,
+62,A,2015-2019->2020-2025,0.42857142857142855,1,0,speed railway,
+63,B,2015-2019->2020-2025,0.5384615384615384,1,2,medical,"drinking, injured"
+64,A,2015-2019->2020-2025,0.3333333333333333,2,1,"bus drivers, risky riding",working conditions
+65,B,2015-2019->2020-2025,0.1111111111111111,5,4,"ship, ais, vessel, ais data, landing","terminal, multi airport, climb, probabilistic"
+66,A,2015-2019->2020-2025,0.5384615384615384,0,0,,
+67,A,2015-2019->2020-2025,0.3333333333333333,0,0,,
+69,A,2015-2019->2020-2025,0.17647058823529413,0,0,,
+70,A,2015-2019->2020-2025,0.42857142857142855,2,0,"passenger freight, consolidation",
+72,A,2015-2019->2020-2025,0.5384615384615384,1,3,construction projects,"asset, management, asset management"
+73,A,2015-2019->2020-2025,0.8181818181818182,0,0,,
+74,A,2015-2019->2020-2025,0.5384615384615384,1,0,multi airport,
+75,B,2015-2019->2020-2025,0.42857142857142855,1,2,shopping,"activity, activity travel"
+76,B,2015-2019->2020-2025,0.25,0,1,,industry
+77,A,2015-2019->2020-2025,0.3333333333333333,1,0,collision avoidance,
+78,A,2015-2019->2020-2025,0.42857142857142855,1,1,takeover,ability
+79,A,2015-2019->2020-2025,0.3333333333333333,2,1,"delivery, truck",shortest
+80,A,2015-2019->2020-2025,0.6666666666666666,0,0,,
+81,A,2015-2019->2020-2025,0.25,3,4,"chain, outsourcing, chain management","shipping, corporate, logistics performance, maritime"
+82,B,2015-2019->2020-2025,0.5384615384615384,1,0,hurricane evacuation,
+83,B,2015-2019->2020-2025,0.6666666666666666,0,0,,
+84,A,2015-2019->2020-2025,0.3333333333333333,1,3,beams,"prestressed, beam, connection"
+85,A,2015-2019->2020-2025,0.25,3,2,"track, train, anomaly","bayesian, condition"
+86,A,2015-2019->2020-2025,0.42857142857142855,2,3,"kinematics, body","finite element, finite, element"
+87,A,2015-2019->2020-2025,0.6666666666666666,0,0,,
+88,A,2015-2019->2020-2025,0.5384615384615384,1,1,magnetic,switched
+89,A,2015-2019->2020-2025,0.42857142857142855,1,0,speed deflectometer,
+90,B,2015-2019->2020-2025,0.3333333333333333,3,4,"hazardous materials, transportation problems, hazardous","railroad, rail, ratio, risk management"
+92,A,2015-2019->2020-2025,0.5384615384615384,1,2,public,"york, new york"
+93,A,2015-2019->2020-2025,0.5384615384615384,2,1,"construction projects, pavements",chip
+94,A,2015-2019->2020-2025,0.42857142857142855,2,0,"cities, street",
+95,B,2015-2019->2020-2025,0.5384615384615384,3,1,"carbon, chain management, trade",disruption
+96,B,2015-2019->2020-2025,0.25,4,2,"reinforced, soft, geosynthetic, numerical","cohesive, unsaturated"
+97,A,2015-2019->2020-2025,0.5384615384615384,0,0,,
+98,A,2015-2019->2020-2025,0.42857142857142855,1,0,order,
+99,A,2015-2019->2020-2025,0.25,3,1,"offloading, computation, intelligent",clouds
+100,A,2015-2019->2020-2025,0.42857142857142855,0,2,,"generalized, stated"
+101,A,2015-2019->2020-2025,0.3333333333333333,1,2,agglomeration,"urban form, transport land"
+102,B,2015-2019->2020-2025,0.3333333333333333,2,0,"deterioration, performance",
+103,A,2015-2019->2020-2025,0.5384615384615384,0,0,,
+104,A,2015-2019->2020-2025,0.42857142857142855,0,0,,
+105,A,2015-2019->2020-2025,0.3333333333333333,2,2,"roadside lidar, lane detection","scanning, laser"
+106,A,2015-2019->2020-2025,0.42857142857142855,2,0,"balanced, balanced mix",
+107,A,2015-2019->2020-2025,0.6666666666666666,0,0,,
+108,B,2015-2019->2020-2025,0.17647058823529413,4,4,"markings, traffic signs, road markings, signs","red light, effects, red, target"
+109,B,2015-2019->2020-2025,0.42857142857142855,2,1,"materials, bio",aging
+110,A,2015-2019->2020-2025,0.6666666666666666,1,0,fundamental,
+111,A,2015-2019->2020-2025,0.6666666666666666,0,1,,delays
+113,A,2015-2019->2020-2025,0.42857142857142855,1,0,defect,
+114,B,2015-2019->2020-2025,0.6666666666666666,0,1,,carbon
+115,B,2015-2019->2020-2025,0.3333333333333333,5,0,"energy storage, cell, energy consumption, consumption, electric buses",
+116,A,2015-2019->2020-2025,0.42857142857142855,2,1,"feeder, modular",optimal design
+117,B,2015-2019->2020-2025,0.3333333333333333,2,4,"use driving, restriction","legislation, licence, program, ontario"
+118,A,2015-2019->2020-2025,0.42857142857142855,0,1,,battery electric
+119,A,2015-2019->2020-2025,0.42857142857142855,0,0,,
+121,A,2015-2019->2020-2025,0.42857142857142855,0,3,,"governance, authorities, case"
+122,A,2015-2019->2020-2025,0.42857142857142855,1,0,automated vehicles,
+123,A,2015-2019->2020-2025,0.3333333333333333,2,0,"scooter, micromobility",
+124,A,2015-2019->2020-2025,0.42857142857142855,3,3,"carbon, container shipping, decarbonization","environmental, energy efficiency, regulations"
+125,A,2015-2019->2020-2025,0.5384615384615384,0,0,,
+126,A,2015-2019->2020-2025,0.17647058823529413,2,4,"span, measurement","health monitoring, building, modal, structural health"
+127,B,2015-2019->2020-2025,0.3333333333333333,3,1,"rgb, domain, enhancement",vision
+128,A,2015-2019->2020-2025,0.42857142857142855,0,3,,"optimization, robust, sequencing"
+129,B,2015-2019->2020-2025,0.42857142857142855,0,1,,curbside
+130,A,2015-2019->2020-2025,0.25,6,4,"assisted, uavs, path planning, uav assisted, aerial vehicles, aerial vehicle","drones, resolution, scheduling, detection"
+132,B,2015-2019->2020-2025,0.1111111111111111,5,6,"anger, child restraint, takeover, aggression, shoulder","sleep, reported, safety climate, helmet, self reported, injury"
+133,A,2015-2019->2020-2025,0.0,4,5,"trajectory, trajectory prediction, vehicle trajectory, graph","neural networks, style, recurrent, nonparametric, recurrent neural"
+134,A,2015-2019->2020-2025,0.42857142857142855,2,3,"assessment, resilience assessment","rise, critical, sea"
+135,B,2015-2019->2020-2025,0.17647058823529413,7,5,"marking, pavement marking, comprehension, guide signs, guide, noise, visual","lighting, visibility, evaluation, assessment, traffic"
+136,A,2015-2019->2020-2025,0.42857142857142855,1,3,concrete pavements,"thaw, freeze, airfield"
+137,A,2015-2019->2020-2025,0.3333333333333333,1,1,speeds,roundabout
+138,A,2015-2019->2020-2025,0.6666666666666666,0,0,,
+139,A,2015-2019->2020-2025,0.42857142857142855,2,0,"deep learning, videos",
+140,A,2015-2019->2020-2025,0.3333333333333333,2,1,"cost benefit, infrastructure projects",economic
+141,A,2015-2019->2020-2025,0.42857142857142855,0,0,,
+142,A,2015-2019->2020-2025,0.8181818181818182,0,0,,
+144,B,2015-2019->2020-2025,0.42857142857142855,3,1,"cycling infrastructure, cycling safety, cycle",commuting
+145,A,2015-2019->2020-2025,0.6666666666666666,0,0,,
+146,A,2015-2019->2020-2025,0.25,5,2,"high performance, performance concrete, curing, ultra high, piles","beams, flexural"
+148,A,2015-2019->2020-2025,0.1111111111111111,3,1,"tracking, stability, tracking control",nonlinear
+149,A,2015-2019->2020-2025,0.25,3,3,"inertial, camera, calibration","intelligent vehicles, intelligent, parking"

@@ -1,0 +1,19 @@
+{
+ "spec_sha256": "44a9e523c5652c5224dea04f6b71cd880a6fb50817f1104562ff837f889c211a",
+ "at": "2026-10-16T11:10:54",
+ "n_docs": 76984,
+ "stability_all": 0.7,
+ "stability_A": 0.69,
+ "passed": true,
+ "miss_auc": 0.733,
+ "miss_ess": 74830,
+ "miss_keep_all": 0.98,
+ "miss_keep_A": 0.976,
+ "outputs": {
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "journal_decomposition.csv": "5b5bd0f9e7f4b8baeaf688dfeb303d7b3840aac13a305c3a7af8f0114102cbf6",
+  "journal_decomposition_sens_1519_2024.csv": "8f61902f46c50aecc830d824d62cfefb527353b7e3a5263bfe0bf075f2d27841",
+  "definition_sensitivity.csv": "4147f471ce6009877e400800f189ffa936da6642b9a088e010fe4522b90bb097",
+  "missingness_sensitivity.csv": "9292a6fd4d8981188fe90327c0ca2e9c88a0bf0246449c03a9f47500e31fc7f8"
+ }
+}

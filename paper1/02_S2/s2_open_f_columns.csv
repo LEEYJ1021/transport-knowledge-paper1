@@ -1,0 +1,52 @@
+﻿file,column,dtype,null_rate,n_unique,example
+F2_author_paper.csv,pid,int64,0.0,87525,7349
+F2_author_paper.csv,name_norm,object,0.0,101842,ahmad ali
+F2_author_paper.csv,author_pos,int64,0.0,42,1
+F2_author_paper.csv,year,int64,0.0,59,2025
+F2_author_paper.csv,venue_short,object,0.0,34,T-ITS
+F2_author_paper.csv,n_authors,int64,0.0,32,6
+F2_author_paper.csv,topic150,int64,0.0,150,69
+F2_author_paper.csv,w,float64,0.0,30,0.1666666666666666
+F3_author_period_venue_topic.csv,name_norm,object,0.0,87972,a a a molenaar
+F3_author_period_venue_topic.csv,period,object,0.0,8,P95_99
+F3_author_period_venue_topic.csv,venue_short,object,0.0,34,TRR
+F3_author_period_venue_topic.csv,topic150,int64,0.0,149,6
+F3_author_period_venue_topic.csv,w,float64,0.0,695,0.4
+F4_authors.csv,name_norm,object,0.0,140553,a a a molenaar
+F4_authors.csv,first_year,int64,0.0,59,1982
+F4_authors.csv,last_year,int64,0.0,59,2013
+F4_authors.csv,n_papers,int64,0.0,119,13
+F4_authors.csv,n_venues,int64,0.0,18,1
+F4_authors.csv,cohort,object,0.0,5,<2000
+F4_authors.csv,m_P95_99,float64,0.0,171,0.6000000000000001
+F4_authors.csv,m_P00_04,float64,0.0,264,0.25
+F4_authors.csv,m_P05_09,float64,0.0,409,2.0
+F4_authors.csv,m_P10_14,float64,0.0,718,0.9166666666666666
+F4_authors.csv,m_P12_14,float64,0.0,478,0.9166666666666666
+F4_authors.csv,m_P15_19,float64,0.0,1093,0.0
+F4_authors.csv,m_P20_24,float64,0.0,1958,0.0
+F4_authors.csv,m_P22_24,float64,0.0,1258,0.0
+F4_authors.csv,continuing_main,bool,0.0,2,False
+F4_authors.csv,entrant_main,bool,0.0,2,False
+F5_continuing_authors.csv,name_norm,object,0.0,5065,a arun prakash
+F5_continuing_authors.csv,m0,float64,0.0,577,0.3333333333333333
+F5_continuing_authors.csv,em0,float64,0.0,263,0.0
+F5_continuing_authors.csv,dc0,float64,0.0,290,0.0
+F5_continuing_authors.csv,m1,float64,0.0,994,0.25
+F5_continuing_authors.csv,em1,float64,0.0,908,0.0
+F5_continuing_authors.csv,dc1,float64,0.0,161,0.0
+F5_continuing_authors.csv,d_em,float64,0.0,1116,0.0
+F5_continuing_authors.csv,d_dc,float64,0.0,410,0.0
+F5_continuing_authors.csv,first_year,int64,0.0,43,2013
+F5_continuing_authors.csv,cohort,object,0.0,4,2010-14
+F5_continuing_authors.csv,team0,float64,0.0,287,3.0
+F5_continuing_authors.csv,main_venue0,object,0.0,24,TR-B
+F5_continuing_authors.csv,coauthor_em0,float64,0.2142,256,0.1666666666666666
+F5_continuing_authors.csv,n_coauthors0,float64,0.0,48,2.0
+F7_oa_author_ids.csv,pid,int64,0.0,35594,7349
+F7_oa_author_ids.csv,rank,int64,0.0,31,0
+F7_oa_author_ids.csv,name_norm,object,0.0004,63620,ahmad ali
+F7_oa_author_ids.csv,oa_id,object,0.0,71702,https://openalex.org/A5087172650
+F2_risk_names.csv,name_norm,object,0.0,1431,a scott mcknight
+F2_risk_names.csv,ambiguous,bool,0.0,2,True
+F2_risk_names.csv,heavy,bool,0.0,2,False

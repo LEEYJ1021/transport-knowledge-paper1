@@ -1,0 +1,29 @@
+{
+ "at": "2026-10-16T11:42:57",
+ "spec_sha256": "44a9e523c5652c5224dea04f6b71cd880a6fb50817f1104562ff837f889c211a",
+ "files": {
+  "CHANGELOG_S4.md": "92e5e65b07f26578f7eb92c99f0dd1b132bb472e715a0507626b84189610fe51",
+  "D1_diagnostic_posthoc.csv": "61fb069c3bc2f404eb7dc399bc59875aa4f9a6ce117db41e0eef2354d88c5e39",
+  "S4_0_PREREG.json": "c3233dc287fb519906be32646866364eadc93dc2fa1b5f45dfe053d316bcdd0f",
+  "S4_final_summary.md": "f70ff15fe459707c0d724df585f996bc060d2031f3a9823f7e191b400ecd5091",
+  "S4_meta.json": "494b53dc3720b2cd817c767634ad058287124f1f9c8b409749a5a3ecb83f246e",
+  "definition_sensitivity.csv": "4147f471ce6009877e400800f189ffa936da6642b9a088e010fe4522b90bb097",
+  "heatmap_topic_venue_period.csv": "5e0296e3b0047b85b6e3a8e893682d8302cced46f7115fa8a947b6d34403b329",
+  "journal_decomposition.csv": "5b5bd0f9e7f4b8baeaf688dfeb303d7b3840aac13a305c3a7af8f0114102cbf6",
+  "journal_decomposition_sens_1519_2024.csv": "8f61902f46c50aecc830d824d62cfefb527353b7e3a5263bfe0bf075f2d27841",
+  "keyword_turnover.csv": "859cc9e00f13b477d19e1077d89a93d8c2b8e68adecb0d641fc7a60cffaff00e",
+  "missingness_sensitivity.csv": "9292a6fd4d8981188fe90327c0ca2e9c88a0bf0246449c03a9f47500e31fc7f8",
+  "rotation_index_periods.csv": "92bee903b5511e5f11617b569cf39b6077508a5cf9c2ca848062c8f1b76359ad",
+  "s4_1_output.txt": "ce228602e20f18ec416c1fb4713a7e6fe0c5ab8d0fd0294429d6d26271630334",
+  "s4_6_output.txt": "c959f4dbd598f0ccf33a1be87e5c449f54d78f8f35b2ee7ce6c8aed7a0d65ef1",
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "topics_order.csv": "80787f1ad2f8ce4897930c0c0bfec91f800a4f6ec738ee6241f2203069570ac1",
+  "venues_order.csv": "253b7b63bc169ff99cddefd0c77841bfe52634577e1b2b2495eac8b8559767d4",
+  "yearly_js_poolfloor_check.csv": "c48ccb01b76bc145ec893882e8713a4587810ff0c6c5f5fa39efb123dd255f03",
+  "yearly_series_for_S5.csv": "b11306ec3f520c6dd00253fb0d659c1f53d71650e374e2d0f9d686be7641bd1f",
+  "yearly_topic_shares_all.npy": "d6b17373536e9692a9b290e404582b465025ae1334c489f3c463963e987566d5",
+  "yearly_topic_shares_fixed.npy": "aba6184a4f3d3133e2987cf3bbdaafb077c544f1db955f05f0dab2410668540a",
+  "yearly_topic_shares_within.npy": "6fde22e28363287fceb273c794cdbdb95be5c7bb2507a04d86cf3b95e071ef43",
+  "yearly_venue_topic_counts.npy": "9a18ba8ab9003cbdb750cb5940aa90c7844dfe3bb19c738270088826d9fdc4d0"
+ }
+}

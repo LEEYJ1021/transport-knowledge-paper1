@@ -1,0 +1,121 @@
+﻿pid,venue_short,year,title,topic,group,group_size,sample_size,label
+7724,TR-B,2025,Column-and-row generation based exact algorithm for relay-based on-demand delivery systems,38,그 외 저널,131,30,R
+8355,VT Mag,2025,"Toward Near-Field 3D Spot Beam Focusing: Possibilities, Challenges, and Use Cases",38,VT Mag,264,30,V
+8665,TR-E,2025,Gig work: A bibliometric systematic literature review and content analysis,49,그 외 저널,420,30,R
+15701,T-ITS,2025,Robust Design for RIS-Aided Integrated Wireless Sensing and Power Transfer System,38,그 외 저널,131,30,R
+15971,CACIE,2025,Knowledge‐guided generative adversarial networks for intelligent design of internal supporting structures in foundation pits,49,CACIE,104,30,R
+16365,VT Mag,2024,"Reconfigurable Intelligent Surfaces for 6G: Emerging Hardware Architectures, Applications, and Open Challenges",38,VT Mag,264,30,R
+17185,VT Mag,2024,Artificial Intelligence-Empowered Hybrid Multiple-input/multiple-output Beamforming: Learning to Optimize for High-Throughput Scalable MIMO,38,VT Mag,264,30,R
+17397,TR-B,2024,Delay-throughput tradeoffs for signalized networks with finite queue capacity,38,그 외 저널,131,30,R
+21973,VT Mag,2024,Tackling Satellite Mobility in Leo-Based Non-Terrestrial Networks: Principles and Enhancements of Feeder Link Switch,38,VT Mag,264,30,R
+22009,T-ITS,2024,A Super-Fast Satellite Selection Algorithm Based on Power Series Expansion,38,그 외 저널,131,30,R
+22027,T-ITS,2024,Robust Resource Allocation for RIS-Aided Multi-User SLAC System,38,그 외 저널,131,30,R
+23234,AAP,2024,Enabling CMF estimation in data-constrained scenarios: A semantic-encoding knowledge mining model,49,그 외 저널,420,30,R
+25302,T-IV,2023,STAR-RIS-Empowered Cognitive Non-Terrestrial Vehicle Network With NOMA,38,그 외 저널,131,30,R
+25889,VT Mag,2023,Reconfigurable Holographic Surface: A New Paradigm to Implement Holographic Radio,38,VT Mag,264,30,R
+26383,GEIT,2023,Cooperative THz communication for UAVs in 6G and beyond,38,그 외 저널,131,30,R
+26786,TR-E,2023,A beautiful shock? Exploring the impact of pandemic shocks on the accuracy of AI forecasting in the beauty care industry,49,그 외 저널,420,30,R
+27218,VT Mag,2023,Enhancement of Satellite-To-Phone Link Budget: An Approach Using Distributed Beamforming,38,VT Mag,264,30,R
+28558,T-ITS,2023,AoI-Aware Power Control and Subcarrier Assignment in D2D-Aided Underlaying Cellular Networks for High-Speed Railways,38,그 외 저널,131,30,O
+28735,T-ITS,2023,Temporal Correlation Characteristics of Air-to-Ground Wireless Channel With UAV Wobble,38,그 외 저널,131,30,R
+32648,CACIE,2022,Elastic structural analysis based on graph neural network without labeled data,49,CACIE,104,30,R
+33320,T-ITS,2022,LSTM-Based Distributed Conditional Generative Adversarial Network for Data-Driven 5G-Enabled Maritime UAV Communications,38,그 외 저널,131,30,R
+34103,TR-A,2022,Will COVID-19 accelerate telecommuting? A cross-country evaluation for Israel and Czechia,38,그 외 저널,131,30,N
+34284,T-ITS,2022,Intelligent and Reliable Millimeter Wave Communications for RIS-Aided Vehicular Networks,38,그 외 저널,131,30,O
+34537,T-ITS,2022,Energy Efficiency Optimization in LoRa Networks—A Deep Learning Approach,38,그 외 저널,131,30,R
+35330,T-ITS,2022,Modeling and Analysis of Edge Caching for 6G mmWave Vehicular Networks,38,그 외 저널,131,30,R
+35456,T-ITS,2022,Partial-NOMA Based Physical Layer Security: Forwarding Design and Secrecy Analysis,38,그 외 저널,131,30,R
+35729,CACIE,2022,A topology description function-enhanced neural network for topology optimization,49,CACIE,104,30,R
+39911,T-ITS,2021,NOMA-Enabled Optimization Framework for Next-Generation Small-Cell IoV Networks Under Imperfect SIC Decoding,38,그 외 저널,131,30,R
+40045,T-ITS,2021,Irregular-Mapped Protograph LDPC-Coded Modulation: A Bandwidth-Efficient Solution for 6G-Enabled Mobile Networks,38,그 외 저널,131,30,R
+40382,VT Mag,2021,Directional Terahertz Communication Systems for 6G: Fact Check,38,VT Mag,264,30,V
+40929,CACIE,2021,An algorithm for random generation of admissible horizontal alignments for optimum layout design,49,CACIE,104,30,R
+41051,CACIE,2021,Broad Bayesian learning (BBL) for nonparametric probabilistic modeling with optimized architecture configuration,49,CACIE,104,30,O
+41272,OJ-ITS,2021,Beam-Based Mobility Management in 5G Millimetre Wave V2X Communications: A Survey and Outlook,38,그 외 저널,131,30,N
+42892,CACIE,2021,A deep learning model for the topological design of 2D periodic wave barriers,49,CACIE,104,30,R
+43374,ETRR,2021,Six lessons from first year COVID-19 restrictions: what can we do better in the future?,49,그 외 저널,420,30,N
+44468,VT Mag,2021,Promises Come to Fruition as 5G Reaches Critical Mass [Mobile Radio],38,VT Mag,264,30,N
+46168,VT Mag,2020,Trustworthy Deep Learning in 6G-Enabled Mass Autonomy: From Concept to Quality-of-Trust Key Performance Indicators,38,VT Mag,264,30,R
+46574,VT Mag,2020,Channel Modeling and System Concepts for Future Terahertz Communications: Getting Ready for Advances Beyond 5G,38,VT Mag,264,30,N
+47366,VT Mag,2020,"Green Deep Reinforcement Learning for Radio Resource Management: Architecture, Algorithm Compression, and Challenges",38,VT Mag,264,30,R
+48405,T-ITS,2020,Energy-Efficient Resource Allocation in Radio-Frequency-Powered Cognitive Radio Network for Connected Vehicles,38,그 외 저널,131,30,R
+50209,TranspRev,2020,Are all paper citations equal?,49,그 외 저널,420,30,R
+50652,CACIE,2020,"A journal in a league of its own with a personalized review system under a highly dedicated, engaging, and influential editor-in-chief",49,CACIE,104,30,V
+50653,CACIE,2020,Editing a journal in the digital age,49,CACIE,104,30,N
+50654,CACIE,2020,A unique journal by a unique editor in chief,49,CACIE,104,30,N
+50655,CACIE,2020,The best of the field,49,CACIE,104,30,O
+51214,VT Mag,2019,When Machine Learning Meets Big Data: A Wireless Communication Perspective,38,VT Mag,264,30,V
+52052,TR-D,2019,Can TODness improve (expected) performances of TODs? An exploration facilitated by non-traditional data,49,그 외 저널,420,30,R
+53867,TR-C,2019,Monte Carlo Tree Search-based intersection signal optimization model with channelized section spillover,38,그 외 저널,131,30,R
+53936,TR-C,2019,The danger zone of express services: When increasing frequencies can deteriorate the level of service,38,그 외 저널,131,30,O
+54984,JTG,2019,AK Verkehr Page 2019 – Germany out of control?,49,그 외 저널,420,30,N
+54993,TR-F,2019,An exploration of the paradoxical violation effect,49,그 외 저널,420,30,R
+56310,TR-B,2018,A hierarchical mixture modeling framework for population synthesis,49,그 외 저널,420,30,R
+57103,VT Mag,2018,Full-Duplex Communications: Performance in Ultradense mm-Wave Small-Cell Wireless Networks,38,VT Mag,264,30,R
+57858,T-ITS,2018,OFDM Performance Assessment for Traffic Surveillance in Drone Small Cells,38,그 외 저널,131,30,R
+57892,RTBM,2018,Understanding the complexity of mobility as a service,38,그 외 저널,131,30,V
+59538,VT Mag,2018,The Final Sprint of Fifth-Generation Toward Commercialization [Mobile Radio],38,VT Mag,264,30,V
+59891,T-ITS,2017,"Channel Measurement, Simulation, and Analysis for High-Speed Railway Communications in 5G Millimeter-Wave Band",38,그 외 저널,131,30,R
+61681,TR-B,2017,Network signal setting design with stage sequence optimisation,38,그 외 저널,131,30,R
+61804,TR-C,2017,Variable speed limit design based on mode dependent Cell Transmission Model,38,그 외 저널,131,30,R
+62568,VT Mag,2017,Indoor Use of Gray and White Spaces: Another Look at Wireless Indoor Communication,38,VT Mag,264,30,R
+62755,VT Mag,2017,5G Developments Are in Full Swing [Mobile Radio],38,VT Mag,264,30,N
+63111,TR-A,2017,Life-course data reconstruction using complementary information taken from linked lives,49,그 외 저널,420,30,R
+63245,TR-E,2017,Is there a systematic relationship between random parameters and process heuristics?,49,그 외 저널,420,30,R
+63354,TranspPol,2017,Mr. Dupuit and the marginalists,49,그 외 저널,420,30,N
+64296,VT Mag,2016,UltraDense Networks: The New Wireless Frontier for Enabling 5G Access,38,VT Mag,264,30,V
+64376,TR-B,2016,Hidden Markov Model-based population synthesis,49,그 외 저널,420,30,R
+64529,TR-A,2016,Key events and multimodality: A life course approach,49,그 외 저널,420,30,R
+64927,VT Mag,2016,"The CTTC 5G End-to-End Experimental Platform : Integrating Heterogeneous Wireless/Optical Networks, Distributed Cloud, and IoT Devices",38,VT Mag,264,30,R
+67371,TR-E,2016,TRE Special Issue IAME 2015,49,그 외 저널,420,30,N
+67756,VT Mag,2015,5G Communications Race: Pursuit of More Capacity Triggers LTE in Unlicensed Band,38,VT Mag,264,30,V
+69470,CACIE,2015,An Approach for the Automatic Classification of Work Descriptions in Construction Projects,49,CACIE,104,30,V
+69792,VT Mag,2015,Tentative 3GPP Timeline for 5G [Mobile Radio],38,VT Mag,264,30,R
+71999,TR-C,2014,Formalizing a subset of ERTMS/ETCS specifications for verification purposes,49,그 외 저널,420,30,R
+72785,VT Mag,2014,Extending the LTE\/LTE-A Business Case: Mission- and Business-Critical Mobile Broadband Communications,38,VT Mag,264,30,O
+74357,VT Mag,2014,Long-Term Evolution Direct: A Device-to-Device Discovery Platform [Mobile Radio],38,VT Mag,264,30,V
+75012,TR-C,2013,Merging behaviour: Empirical comparison between two sites and new theory development,49,그 외 저널,420,30,R
+76233,VT Mag,2013,Public Safety Mobile Broadband: A Techno-Economic Perspective,38,VT Mag,264,30,R
+77102,VT Mag,2013,First LTE-Advanced Commercial Network Deployed [Mobile Radio],38,VT Mag,264,30,O
+77948,TR-B,2012,Metropolis–Hastings sampling of paths,49,그 외 저널,420,30,R
+78246,AAP,2012,Short and user-friendly: The development and validation of the Mini-DBQ,49,그 외 저널,420,30,O
+78670,VT Mag,2012,Analysis of Multihop Relaying Networks: Communication Between Range-Limited and Cooperative Nodes,38,VT Mag,264,30,R
+79930,VT Mag,2012,Spectrum for Medical Area Body Networks [Mobile Radio],38,VT Mag,264,30,R
+82035,VT Mag,2011,Advanced International Communications,38,VT Mag,264,30,V
+84570,VT Mag,2010,First Commercial LTE Network [Mobile Radio,38,VT Mag,264,30,N
+87277,VT Mag,2008,WiMax on Rails,38,VT Mag,264,30,R
+89935,VT Mag,2007,Ultra Mobile Broadband [Mobile Radio],38,VT Mag,264,30,O
+90232,VT Mag,2007,Foreward,49,그 외 저널,420,30,O
+91198,TRR,2006,Collaborative Adaptive Sensing of the Atmosphere: New Radar System for Improving Analysis and Forecasting of Surface Weather Conditions,38,그 외 저널,131,30,O
+92303,TRR,2006,Integrating Information About Complex Systems: Role of Metadata in the Acceptability of Results from Models,49,그 외 저널,420,30,R
+92969,CACIE,2005,Automated Modeling of Three-Dimensional Structural Components Using Irregular Lattices,49,CACIE,104,30,R
+93037,TR-F,2005,A before-and-after study on green signal countdown device installation,38,그 외 저널,131,30,R
+93538,T-ITS,2005,A Novel Architecture for Multilane-Free-Flow Electronic-Toll-Collection Systems in the Millimeter-Wave Range,38,그 외 저널,131,30,R
+96055,CACIE,2004,Semiautomated Detection of Design Errors in 2D Drawings Using 3D Reconstruction,49,CACIE,104,30,R
+98218,AAP,2002,Is the claim that ‘variance kills’ an ecological fallacy?,49,그 외 저널,420,30,O
+99076,JTG,2002,Prof. Richard Timothy Ogonda: A Tribute,49,그 외 저널,420,30,N
+101824,CACIE,1999,Convergence Variability and Population Sizing in Micro‐Genetic Algorithms,49,CACIE,104,30,R
+102381,CACIE,1999,"A Parametrics Architecture for Design, Management, and Coordination in a Collaborative AEC Environment",49,CACIE,104,30,R
+104313,CACIE,1997,A Framework for the Object Life Cycle in Integrated Environments,49,CACIE,104,30,R
+106233,TRR,1996,Methodology for Creating Defensible Three-Dimensional Visualizations,49,그 외 저널,420,30,R
+106413,CACIE,1996,Identification of Fuzzy Relations with Multiple Hyperplanes by Genetic Algorithm in Structural Design,49,CACIE,104,30,R
+107554,CACIE,1995,A Plan‐Based Framework for Design: Implementation,49,CACIE,104,30,N
+108049,CACIE,1994,Visual Construction Operation Simulation: The DISCO Approach,49,CACIE,104,30,N
+108721,CACIE,1994,Linear Programming and Expert Systems,49,CACIE,104,30,O
+109019,CACIE,1993,Constructing the Membership Function of a Fuzzy Set with Objective and Subjective Information,49,CACIE,104,30,R
+109114,CACIE,1993,An Object‐Oriented Data Management Model for Numerical Analysis in Computer‐Aided Engineering,49,CACIE,104,30,R
+111621,TransSci,1990,Technical Note—Conical Volume-Delay Functions,38,그 외 저널,131,30,N
+111862,AAP,1990,Safety analysis of manual tasks in automatic production systems— Implications for design,49,그 외 저널,420,30,R
+112462,CACIE,1989,Parallel Structural Analysis Using Threads,49,CACIE,104,30,R
+112705,CACIE,1989,Frontal Solver in C Part 1: Statics,49,CACIE,104,30,V
+112746,CACIE,1989,GURU,49,CACIE,104,30,O
+112827,CACIE,1989,Frontal Solver in C Part 2: Dynamics,49,CACIE,104,30,R
+112906,CACIE,1989,Interactive Data Editor A Microcomputer User Interface For Batch Programs,49,CACIE,104,30,O
+113294,CACIE,1988,Developing Engineering Design Software Using Hypercard,49,CACIE,104,30,O
+113378,TR-B,1988,A multimodal combined model analyzed via generalized geometric programming,49,그 외 저널,420,30,R
+113810,CACIE,1987,Parallel Processing,49,CACIE,104,30,O
+114978,CACIE,1986,An Interactive Shell for Batch Programs,49,CACIE,104,30,R
+115277,AAP,1985,A comparison of reported and unreported noncrash events,49,그 외 저널,420,30,R
+118356,TransSci,1981,Book of Interest,49,그 외 저널,420,30,N
+119179,TR-B,1979,On the calibration of the combined distribution-assignment model,49,그 외 저널,420,30,R
+121587,TransSci,1975,Books of Interest,49,그 외 저널,420,30,N

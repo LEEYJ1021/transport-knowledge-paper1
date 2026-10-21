@@ -1,0 +1,98 @@
+{
+ "version": 1,
+ "created": "2026-10-13T12:42:30",
+ "seed": 2026,
+ "window": 2007,
+ "topic_start": 2000,
+ "core_list": [
+  {
+   "id": "C1",
+   "stat": "주제 유효수·HHI 시간 추세 부호",
+   "source": "S5.1(a)",
+   "status": "주제 층 필요: 이 파일에서는 계산 안 함"
+  },
+  {
+   "id": "C2",
+   "stat": "연속 노출 Spearman(Δexposure, d_all-d_fixed) 부호",
+   "source": "S5 주 분석",
+   "status": "이 파일에서는 계산 안 함"
+  },
+  {
+   "id": "C3",
+   "stat": "갱신 4항 분해의 진입·재배분 몫 방향",
+   "source": "S6",
+   "status": "저자 층 필요: 이 파일에서는 계산 안 함"
+  },
+  {
+   "id": "C4",
+   "stat": "상위 5개국 몫(top5_incl, top5_known)과 HHI(hhi_known)의 연도 추세 부호",
+   "source": "S7",
+   "status": "weights_country 단계에서 계산(19개 연도)"
+  },
+  {
+   "id": "C5",
+   "stat": "신규 저자 지역 구성 변화 방향",
+   "source": "S7.2",
+   "status": "저자 층 필요: 이 파일에서는 계산 안 함"
+  }
+ ],
+ "weights": {
+  "equal": "F2.w 방식: 위험군 이름을 뺀 뒤 남은 저자 수로 1/n_retained(논문 질량 1). f2_check로 F2 논문 100%가 이 정의임을 확인",
+  "inv_n_authors": "1/n_authors(F1의 원래 저자 수). 위험군으로 빠진 저자의 질량은 '손실 질량'으로 보고",
+  "first_last": "원래 저자 순서·수 기준: 단독 1.0 / 2인 0.5씩 / 3인 이상 제1·마지막 각 0.3, 중간 0.4/(n-2). 위험군 제외 시 남은 저자 몫을 논문 질량 1로 재정규화(가정)",
+  "full_count": "저자-논문 쌍마다 1(논문 질량 = 남은 저자 수). 국가 층에서는 소속 국가마다 1(분할 없음)",
+  "country_layer_note": "국가 층은 저자 신원이 필요 없어 위험군 제외를 적용하지 않음 -> 국가 층에서 equal = inv_n_authors(동일 값). 구분되는 가중치는 3종이며 equal과 inv_n의 차이는 저자 층에서만 생김",
+  "fixed_venues_note": "분석의 고정 저널은 PREREG.json event.fixed_venues(14개)를 쓴다. F1.fixed_venue 열은 JPT에서 PREREG와 달라 사용하지 않는다",
+  "first_last_alpha_rule": {
+   "name_key": "last_token",
+   "min_n": 3,
+   "source": "F2_author_paper(위험군 제외 후 남은 저자의 author_pos 순서)",
+   "rule": "남은 저자 3명 이상이고 name key가 author_pos 순으로 비감소(동점 허용)이면 알파벳순 논문. first_last에서만 equal(1/n)로 대체, 다른 가중치에는 영향 없음",
+   "not_applicable": "F2에 없는 논문(토픽 없음, 전원 위험군)은 판정 불가이므로 first_last를 그대로 적용"
+  },
+  "definitions_origin": "S0 PREREG.json은 가중치 이름 4개만 담고 있어 정의 문언이 없었음. 이 부록의 정의(계획서 2.1에서 옮김)가 가중치 정의의 최초 동결본",
+  "jpt_note": "사유 미확인(S0/S1 문서에 제외 기록 없음; 검색된 것은 DOI 접두 10.5038->10.1016 변경과 2022-01 Elsevier 인수 사건뿐이며 이것이 제외 사유인지는 확인되지 않음). 분석은 PREREG.json의 14개 목록을 사용"
+ },
+ "country_variants": {
+  "main": "OpenAlex 국가(S1 주 분석)",
+  "rec": "국가 미상을 동결된 복구 규칙(RECOVERY d4a87d357217)으로 보충(민감도)",
+  "terr_merge": "HK·MO를 CN과 합산한 민감도(주 분석은 영토 별도)"
+ },
+ "clean_rules": {
+  "bib_section": "bibliographic section",
+  "vt_mobile_radio": {
+   "venue": "VT Mag",
+   "regex": "\\[\\s*mobile radio\\s*\\]"
+  },
+  "repeat_title_min": 5,
+  "dup_title": "같은 저널·연도·정규화 제목 중복: 첫 건 제외 나머지 표시",
+  "topic_excluded": [
+   18
+  ],
+  "note": "표시만 하고 제거는 하지 않음. 제거 전후 비교는 별도 단계"
+ },
+ "propensity": {
+  "clip_pct": [
+   1,
+   99
+  ],
+  "positivity_floor": 0.05,
+  "model": "logistic(main effects, C=10)",
+  "cv_folds": 5,
+  "outcome": "has_topic = 토픽 열이 결측이 아니고 TOPIC_MISSING_VALUES에 없음",
+  "covariates_A": "year, venue_short, n_authors 구간, is_solo (2000~2025)",
+  "covariates_B": "A + 논문 주 국가군(상위 8 + other + UNK) (2007~2025)"
+ },
+ "portfolio": {
+  "shrink_k": 5,
+  "min_topic_papers": 3
+ },
+ "stats": {
+  "top5": "연도별 상위 5개국 몫 합(UNK 제외 국가 중). top5_incl=전체 질량 분모, top5_known=국가 아는 질량 분모",
+  "hhi_known": "국가 아는 질량 기준 국가 몫 제곱합",
+  "trend": "연도와의 Spearman 부호(보조: OLS 기울기)"
+ },
+ "pass_rule": "핵심 통계의 부호가 가중치 4종에서 모두 같음(변형·표본·영토 조합마다)",
+ "alpha_flags_sha256": "4002a150851b90a6b2803bd7ad6d751632570373dcda0271d8e98a11886f5cb7",
+ "sha256": "646135ccaa6809e092117ff1bdb15cf64a27d2ec603167b07191061aa1849118"
+}

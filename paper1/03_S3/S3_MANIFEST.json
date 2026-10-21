@@ -1,0 +1,31 @@
+{
+ "at": "2026-10-16T11:19:43",
+ "spec_sha256": "c8cbfffc8194babf23e37743acf49b831726364e4ef5e38381e70d1eef23fde1",
+ "files": {
+  "CHANGELOG_S3.md": "6984e159750a89bfff91703af7d9dd832f128f17cf1fb5a9efa39615b9ac32a6",
+  "L1_F4_inputs.csv": "36416c62dc1564850f63cf8113648c30df243c68acb3ef4c8600cb9d4a6f7036",
+  "L1_distinct_words.csv": "c14322175b1cffb22d5b3c2293305ed2a654216171479e43ce7972b2c793b7dd",
+  "L1_legacy_overlap.csv": "11a3d99a21b7ae4530a26df101a457216c5d1469bcfa7449511d81ca4c028eac",
+  "L1_meta.json": "a7cae8ed33a00968338d799e132c81c4011d1f3a8712c95a4d04adbb31c74c1f",
+  "L1_topic_period_summary.csv": "4190ccde96ed268b97d33340243b1b65cf941cafca1afc10b98c89a0409c277f",
+  "L2_meta.json": "b1172350711a01b96a88344bed4fe4a1b7b444fbe3cd066a0d57d0b09da34b57",
+  "L2_representative_papers.csv": "bd425dec97aca1f499855a2f1517c0e4c1d2604e29cfb01e47683ae9822c740e",
+  "L3_meta.json": "828e15f1687692ddd1a5d731357ad3621b5e307b62fb75f1a9ac59a364a4d7e2",
+  "L3_topic_metrics.csv": "70eb3cde412ae98758f521e3d34f715a0a92551e0ab7f8de99a0dcf33870328f",
+  "L4_meta.json": "51190821d144fd554431ea475dcbf1fca8588fc5f54ea70d65ee4d4c3c3b1862",
+  "L4_structure_fingerprint.csv": "ef907947a82996f0d72d855a4d8757e9c32724b67e7f986749318bbddd7cf304",
+  "L5_meta.json": "ebcdf607f35f0aa913e2eeccbc23a0832d6debafe5694c2e56146c1e24f7d28f",
+  "L5_topic38_49_decision.csv": "ad5969a0571881ae2bd71d84032787da3cddec9f9fb232cbb69d42c72f541e28",
+  "L5_topic38_49_meta.json": "9ba87056797cedd17767372bab8dd4cfbccf8f72db5f418e82a013ccdda0e655",
+  "L5_topic38_49_sensitivity.csv": "b599918715d76661b26cc85faa65242e9f3d6239f11d296e3bc3124056284073",
+  "L5_topic_flags.csv": "0e830435a3d59928c5c71871d060422a82f1de81067dca2755f5659693df89e9",
+  "L7_meta.json": "aa6b835dc917c2826c951609cc2763667972648f136fa1acd0104af67fda6b24",
+  "L7_topic_grade.csv": "d0fb3c9b855db88ad8d928297d09dc007ab9f04ff8b995568d0cad6c6559da1a",
+  "S3_0_PREREG.json": "751383e593b772f32dfc41fbf210b4f23e10d95608e7f65998637e0b5c549ebc",
+  "S3_final_summary.md": "9a1d829d138ce432fa16ad659f51cba481777b36bb45807fbd749002c1fa5d78",
+  "S3_human_review_checklist.csv": "3b563f1a8758654b83493dc6d1db4eeea5f374d86e515147d2bdd6cb0ced487b",
+  "supplement_label_grid.pdf": "67fed365eb7868ca204a021423791b6e9f5c271e8431682b3834aec325c6b65c",
+  "topic_evidence_cards.csv": "b08ff93bdfee638cfad314d6644de61d3ea06d31c29f414f44bf2b532210d523",
+  "topic_grade.csv": "a1e2fb3854df40b60144f8290563be7803c191fe7d35a5ac6d5144e1cdfab5da"
+ }
+}
