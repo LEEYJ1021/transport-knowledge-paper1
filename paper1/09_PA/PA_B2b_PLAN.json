@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_B2_PLAN.json",
+ "status": "사후 명세. PA-A1, PA-B2 결과(관측 기술 표 포함)를 본 뒤 작성. PA-B2b 결과는 미열람. S0~S8 판정 불변.",
+ "focus_year": 2020,
+ "B": 200,
+ "samples": [
+  "all",
+  "fixed14",
+  "within"
+ ],
+ "variants": {
+  "base": "제외 없음(관측 재현 점검용)",
+  "drop_top1_venue": "2019->2020 논문 수 증가 1위 저널 제외",
+  "drop_top3_venues": "증가 상위 3개 저널 제외",
+  "drop_top5_venues": "증가 상위 5개 저널 제외",
+  "drop_topic71": "COVID 토픽(topic 71) 제외 후 비중 재정규화",
+  "drop_top5_venues_and_topic71": "상위 5개 저널과 토픽 71 동시 제외"
+ },
+ "top_venue_rule": "nv[2020]-nv[2019]가 큰 순서(전 저널 대상, 코드에서 결정적으로 계산)",
+ "detector": "s5_lib.detect 그대로. 제외 후 저널·토픽 부분배열로 s5_lib.sample_P 재계산. pen = c_primary*phi_s*(Kv-1)*log(T), phi_s는 S5 값 고정(제외 후 비용/벌점 비율이 달라짐), Kv=남은 토픽 수",
+ "stats": "(a) 관측 변화점과 R, (b) 2020 점프 J(PA-A1과 동일 3년 창 Hellinger, 가중치 4n), (c) 연도x저널 셀 다항 재표집(셀 카운트 기반 직접 구현, B회)에서 2020±1년 변화점 회수율",
+ "reading": "변형별 표본별: 변화점 유지 = 관측 변화점 중 2020±1이 있고 AND 부트스트랩 회수율>=0.80. J 비율 = J(변형)/J(base, 같은 표본): >=0.80 '점프 유지', 0.50~0.80 '부분 감소', <0.50 '해당 성분이 점프의 주요 원천'. 변화점 유지와 J 비율을 따로 보고하고 하나의 결론으로 합치지 않음",
+ "caveat": "제외는 저널 구성·토픽 정의를 바꾸므로 R은 변형 간 직접 비교 불가. N2 귀무는 재계산하지 않음. 토픽 71 외 COVID 관련 토픽은 카드를 읽기 전에는 지정하지 않음. 임베딩 보유율(측정 아티팩트)은 이 분석에 없음",
+ "forbidden": "결과를 본 뒤 변형 정의·임계값 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T12:10:47",
+ "sha256": "3e49bd74320e37922add0e86bfbf3bbd34221f832b55d53e011fcf46876b43c6",
+ "refs": {
+  "PA_B2_PLAN.json": "7c5feff9e162a726beae82b426e42b722493b380aad01b56b169f8ddae25dc35",
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S5_0_PREREG.json": "4c67abd884031748c8e1e0aa0bbb3052bcca3efa1f4be52f56eeafe8f9771d4f",
+  "s5_lib.py": "9143b0048532e49ff681a41a400b140e29656456d0dbaaaed27339567ebee9fa"
+ }
+}
