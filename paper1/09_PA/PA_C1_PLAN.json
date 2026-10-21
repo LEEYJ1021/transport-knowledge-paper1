@@ -1,0 +1,31 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세. S6·S7 결과, Pair·load_all·author_rows 소스, PA-A2a·A2b·A2c·C2 결과, authorship_level 열 형식(2글자 코드 100%, 빈 값 약 5%)은 열람한 상태. PA-C1 결과 미열람. 시나리오를 3개로 둔 이유: 중국 소속 진입 저자만 빼면 진입 질량이 기계적으로 줄어 강한 시험이 되고, 모든 역할에서 빼는 b_all이 더 공정한 대조이기 때문. S0~S8 판정 불변.",
+ "target": "마지막 쌍 P1519->P2025만(S6·S7 기간이 일치하는 유일한 쌍). S6 주 설정 spec['main']과 s6_lib.make_pair 그대로",
+ "cn_def": "2020~2025 출판 저자 중 CN(HK·MO 제외) 질량/알려진 국가 질량(UNK, ZZ_former 제외) >= 0.5. 질량=논문당 1/n_authors를 소속 국가 수로 균등 분할(S7 author_rows와 동일, 위험군 이름 제외, cs_main). 알려진 질량 0이면 비해당",
+ "scenarios": {
+  "a_new": "CN 소속 and 역할 E_new인 저자의 모든 행 제거",
+  "a_entrants": "CN 소속 and 역할 E_new 또는 E_ret인 저자의 모든 행 제거",
+  "b_all": "CN 소속 저자를 모든 역할에서 모든 기간 행 제거"
+ },
+ "stats": "entry_share, adapt_share, entry_minus_adapt (4항 분모, 진입=신규+복귀: PA-A2c와 동일)",
+ "boot": "저자 가중 wa~Exp(1)을 원본 저자 전체에서 뽑아 제외 후 같은 저자에게 같은 값(대응 부트스트랩), B=spec['B_boot'], 역할은 재표집에서 고정. 보고: delta(sub-orig) 백분위·basic 구간, 제외 후 수준의 백분위·basic 구간",
+ "reading": "시나리오별로 entry_minus_adapt의 obs_sub>0 이고 제외 후 수준의 basic 구간 하한>0이면 '진입 우세 유지', 아니면 '유지 안 됨'. 시나리오를 합치지 않음. 변화량 delta는 병기만",
+ "diagnostics": "역할별(P, E_new, E_ret, X_final, X_gap) 저자 수·CN 소속 저자 비율·질량 비중(P·E는 후기 질량, X는 전기 질량). 총 CN 소속 이름 수",
+ "reproduce_check": "(a) 직접 만든 P2025 CN 질량 몫이 s7_author_group_decomp.csv(variant=base, pair=P1519->P2025, group=CN)의 share1과 1e-6 이내, (b) orig total_half가 renewal_decomposition.csv와 1e-6 이내, (c) orig entry_share가 PA_A2c_results.csv(mode=author)와 1e-6 이내, (d) 제외 후 저자 집합이 원본의 부분집합",
+ "caveat": "분류는 inv_n_authors(S7), 분해는 S6 주 설정 가중이라 혼합임. 소속은 국적이 아님. 이름 기반 식별 한계 그대로. 복구 국가(countries_rec) 미사용. 마지막 쌍 하나만 대상이며 b_all은 퇴출 저자(2020-25 비출판)를 판정할 수 없어 대칭이 완전하지 않음",
+ "forbidden": "결과를 본 뒤 CN 정의(0.5)·시나리오·B·판독 기준 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T13:46:24",
+ "sha256": "7621517d48016bfddba2bbe44179e181308225f464db7929c904d8d8118c7293",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S7_0_PREREG.json": "87cda08fc79ddbb19406b0f58c432f0849ee4784a62857e024b79b4c824ef48d",
+  "s7_author_group_decomp.csv": "978216aec579cf257c20021379380bedc00b1a14cad38eb181eeb9c881c6cefa",
+  "s6_lib.py": "8df8416f4112d0ace4cf037f0306e2ef608ce288c00c43682c03203bb53a659f",
+  "s7_run.py": "8ebe28c6be09e39cb861cd5a0f6f58b6594883e004f6d198c61518a2b5a94d15",
+  "renewal_decomposition.csv": "7f9608b32c034d884f5275929d38e6481caf23d4e8c2397d186cf512658416a1",
+  "PA_A2c_results.csv": "b9d7d79e8d8268bbaf10ec047aa97e418d15a6cf330a2dfb8babff81e5387cc2"
+ }
+}
