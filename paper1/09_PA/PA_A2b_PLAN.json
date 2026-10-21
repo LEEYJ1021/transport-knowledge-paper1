@@ -1,0 +1,33 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-A2의 2번 교정). S6 결과·Pair 소스·PA-A2c 결과 열람 상태. PA-A2b 결과 미열람. S0~S8 판정 불변.",
+ "setting": "S6 주 설정 spec['main']과 s6_lib.make_pair 그대로, 쌍은 pairs_of(spec) 전부. 적응·재배분·진입 총량·퇴출은 Pair.decompose 그대로(정의와 무관)",
+ "definitions": {
+  "s6": "E이고 첫 출판 연도 >= t1 시작 (S6 원본, 재현 점검)",
+  "y2": "E이고 첫 출판 연도 in [t1 시작, t1 시작+1]",
+  "y5": "E이고 t1 시작 전 5년(t1시작-5 ~ t1시작-1)의 분석 코퍼스 행(L['R'])에 없던 저자. 첫 쌍은 2000년 이전 자료가 없어 전원 해당"
+ },
+ "stats": {
+  "new_share": "half(entry_def)/(half(adapt)+half(realloc)+half(entry_total)+half(exit))",
+  "adapt_share": "half(adapt)/같은 분모",
+  "new_minus_adapt": "new_share - adapt_share",
+  "rest_entry_share": "(entry_total - entry_def의 half)/같은 분모는 쓰지 않고 half(entry_total - entry_def)/같은 분모"
+ },
+ "boot": "저자 가중 wa~Exp(1)만 적용(PA-A2c 저자 모드와 동일), B=spec['B_boot'], 역할·마스크는 재표집에서 고정",
+ "report": "정의x쌍별: 관측, 부트스트랩 중앙값, 백분위 구간, basic 구간(2*obs-q_hi, 2*obs-q_lo)",
+ "reading": "정의별로 new_minus_adapt의 관측>0이고 basic 하한>0인 쌍 수를 보고. 정의 간 평균하거나 하나의 결론으로 합치지 않음. 첫 쌍은 s6 원본에서도 통과하지 못했을 가능성이 있으며 그 경우 그대로 보고",
+ "reproduce_check": "(a) s6 정의의 entry_def가 decompose의 entry_new와 1e-9 이내, (b) total_half가 renewal_decomposition.csv와 1e-6 이내. 아니면 중단",
+ "caveat": "진입 총량은 정의와 무관하므로 이 분석은 신규/복귀 분할 민감도만 본다. y5는 분석 코퍼스(주제 있는 논문)의 행을 기준으로 해 F4 첫 출판 연도(주제 없는 논문 포함)와 기준이 다르다. 이름 기반 식별 문제는 다루지 않음(PA-A2a)",
+ "forbidden": "결과를 본 뒤 정의·B·판독 기준 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T12:03:41",
+ "sha256": "e6bf19450afb8633020477aca83ca726051b76a1f0a237ba26f3151f5c14681a",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "S6_0_PREREG.json": "645bb2f0d4e61bd930afe9bc778d027f71887583fa2ff912b0bc1962965f2de7",
+  "s6_lib.py": "8df8416f4112d0ace4cf037f0306e2ef608ce288c00c43682c03203bb53a659f",
+  "renewal_decomposition.csv": "7f9608b32c034d884f5275929d38e6481caf23d4e8c2397d186cf512658416a1",
+  "PA_A2c_PLAN.json": "4eab7ed0c29f524dd85e0b9e983d4fc687cbb62e1dfc1bc56302f7a1978af027"
+ }
+}
