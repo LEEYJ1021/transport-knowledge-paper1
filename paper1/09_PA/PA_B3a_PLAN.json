@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(PA-B3 중 핵심 집합 재요약 B3a). D1=F6.emerging(2005-09 대 2015-19, r>=3 and s1>=0.005), D2·D3=주 대비 상위 14(로그 비율·Δs), D4=민감도 대비 Δs 상위 14의 정의는 s4_main.py 열람으로 확인한 상태. definition_sensitivity.csv의 31개 토픽 행 수와 열 구조는 열람, 집합별 결과는 미열람. D1' 재구성(B3b)은 별도 계획. S0~S8 판정 불변.",
+ "sets": "핵심 = n_defs>=3, 중간 = n_defs==2(보고만), 정의 특이적 = n_defs==1. definition_sensitivity.csv의 31개 토픽",
+ "join": "topic_quadrants.csv(topic, between_share, delta, within, quadrant, quadrant_within, big, quality_high)와 topic으로 조인. grade는 definition_sensitivity.csv 값 사용",
+ "stats": "집합별: 토픽 수, 등급(A/B/C) 수, big 비율, quality_high 비율, quadrant·quadrant_within 분포, between_share와 within/delta의 중앙값·사분위",
+ "reading": "핵심 집합과 정의 특이적 집합의 between_share 중앙값 대소 방향만 보고. 임계값·유의성 판정 없음. 집합 간 차이를 효과로 해석하지 않음",
+ "reproduce_check": "(a) 행 수 31, (b) 토픽이 모두 topic_quadrants.csv에 존재, (c) n_defs가 D1~D4 합과 일치, (d) D1~D4 쌍별 Jaccard의 최소·최대를 소수 둘째 자리로 반올림하면 0.04와 0.47(S4 요약 범위). 어긋나면 중단",
+ "caveat": "집합이 작아 기술 통계이며 검정이 아님. D2~D4가 모두 상위 14 고정이고 D2·D3은 같은 대비라 n_defs>=3이 독립 정의 합의가 아님. D1은 구간과 규칙이 모두 달라 이질성의 원인을 분리하지 못함(B3b). between_share는 delta가 작으면 불안정. 신규 저자 진입 몫(지침서 B3-3)은 범위 밖",
+ "forbidden": "결과를 본 뒤 집합 정의·판독 규칙 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T14:18:25",
+ "sha256": "b6a78adb8c6027759b7c57d6dfb2b759a7de13d108af0c973270b9e51ef5e988",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "definition_sensitivity.csv": "4147f471ce6009877e400800f189ffa936da6642b9a088e010fe4522b90bb097",
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "s4_main.py": "f803cb90bdc2429d5155e44810c169a4bd0cc04dedd5aea114f1896864e5eada"
+ }
+}
