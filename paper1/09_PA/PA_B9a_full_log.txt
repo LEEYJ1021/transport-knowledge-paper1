@@ -1,0 +1,93 @@
+[재현 OK] 4쌍의 n, raw rho, 편 rho가 country_partial_spearman.csv(none)와 일치 | 노트북 셀 24 앞부분 해시 일치
+
+[층별 n(설계 정보)]
+ stratum               ALL                           HIC      LIC      LMC      UMC     
+control               gdp gdp_pop income_dummy none gdp none gdp none gdp none gdp none
+domain  indicator                                                                      
+safety  road_deaths    75      75           75   75  45   45   0    0  11   11  19   19
+        vehicles       73      73           73   73  45   45   0    0  11   11  17   17
+transit transport_co2  76      76           76   76  48   48   0    0  10   10  18   18
+        urban_pop      78      78           78   78  48   48   0    0  11   11  19   19
+
+[Post-hoc] PA-B9a 편·순위상관(전체 표본 통제 변형)
+  domain     indicator stratum      control  n     rho      lo     hi  sign_same  excludes0 verdict
+ safety   road_deaths     ALL         none 75  0.2467 -0.0047 0.4571       True      False     비관찰
+ safety   road_deaths     ALL          gdp 75  0.2373  0.0077 0.4425       True       True      관찰
+ safety   road_deaths     ALL income_dummy 75  0.2371  0.0002 0.4661       True       True      관찰
+ safety   road_deaths     ALL      gdp_pop 75  0.2537  0.0010 0.4626       True       True      관찰
+ safety      vehicles     ALL         none 73 -0.0336 -0.2742 0.2074      False      False     비관찰
+ safety      vehicles     ALL          gdp 73  0.0790 -0.1491 0.2902       True      False     비관찰
+ safety      vehicles     ALL income_dummy 73  0.0877 -0.1800 0.3365       True      False     비관찰
+ safety      vehicles     ALL      gdp_pop 73  0.0853 -0.1163 0.3016       True      False     비관찰
+transit     urban_pop     ALL         none 78  0.0024 -0.2375 0.2385       True      False     비관찰
+transit     urban_pop     ALL          gdp 78  0.0230 -0.2150 0.2573       True      False     비관찰
+transit     urban_pop     ALL income_dummy 78  0.0339 -0.1955 0.2741       True      False     비관찰
+transit     urban_pop     ALL      gdp_pop 78  0.0530 -0.1766 0.2866       True      False     비관찰
+transit transport_co2     ALL         none 76 -0.1186 -0.3373 0.1370       True      False     비관찰
+transit transport_co2     ALL          gdp 76 -0.1161 -0.3263 0.1124       True      False     비관찰
+transit transport_co2     ALL income_dummy 76 -0.0314 -0.2536 0.1851       True      False     비관찰
+transit transport_co2     ALL      gdp_pop 76 -0.1081 -0.3300 0.1365       True      False     비관찰
+
+[Post-hoc] PA-B9a 소득군 내
+  domain     indicator stratum control  n     rho      lo     hi  sign_same  excludes0 verdict
+ safety   road_deaths     HIC    none 45  0.1140 -0.2190 0.4335       True      False     비관찰
+ safety   road_deaths     HIC     gdp 45  0.1886 -0.1455 0.4874       True      False     비관찰
+ safety   road_deaths     UMC    none 19     NaN     NaN    NaN      False      False      NA
+ safety   road_deaths     UMC     gdp 19     NaN     NaN    NaN      False      False      NA
+ safety   road_deaths     LMC    none 11     NaN     NaN    NaN      False      False      NA
+ safety   road_deaths     LMC     gdp 11     NaN     NaN    NaN      False      False      NA
+ safety   road_deaths     LIC    none  0     NaN     NaN    NaN      False      False      NA
+ safety   road_deaths     LIC     gdp  0     NaN     NaN    NaN      False      False      NA
+ safety      vehicles     HIC    none 45  0.0967 -0.2418 0.4044       True      False     비관찰
+ safety      vehicles     HIC     gdp 45  0.0773 -0.1952 0.3980       True      False     비관찰
+ safety      vehicles     UMC    none 17     NaN     NaN    NaN      False      False      NA
+ safety      vehicles     UMC     gdp 17     NaN     NaN    NaN      False      False      NA
+ safety      vehicles     LMC    none 11     NaN     NaN    NaN      False      False      NA
+ safety      vehicles     LMC     gdp 11     NaN     NaN    NaN      False      False      NA
+ safety      vehicles     LIC    none  0     NaN     NaN    NaN      False      False      NA
+ safety      vehicles     LIC     gdp  0     NaN     NaN    NaN      False      False      NA
+transit     urban_pop     HIC    none 48  0.1251 -0.2093 0.4331       True      False     비관찰
+transit     urban_pop     HIC     gdp 48  0.0643 -0.2770 0.3905       True      False     비관찰
+transit     urban_pop     UMC    none 19     NaN     NaN    NaN      False      False      NA
+transit     urban_pop     UMC     gdp 19     NaN     NaN    NaN      False      False      NA
+transit     urban_pop     LMC    none 11     NaN     NaN    NaN      False      False      NA
+transit     urban_pop     LMC     gdp 11     NaN     NaN    NaN      False      False      NA
+transit     urban_pop     LIC    none  0     NaN     NaN    NaN      False      False      NA
+transit     urban_pop     LIC     gdp  0     NaN     NaN    NaN      False      False      NA
+transit transport_co2     HIC    none 48  0.0249 -0.2714 0.3237      False      False     비관찰
+transit transport_co2     HIC     gdp 48 -0.0551 -0.3658 0.2621       True      False     비관찰
+transit transport_co2     UMC    none 18     NaN     NaN    NaN      False      False      NA
+transit transport_co2     UMC     gdp 18     NaN     NaN    NaN      False      False      NA
+transit transport_co2     LMC    none 10     NaN     NaN    NaN      False      False      NA
+transit transport_co2     LMC     gdp 10     NaN     NaN    NaN      False      False      NA
+transit transport_co2     LIC    none  0     NaN     NaN    NaN      False      False      NA
+transit transport_co2     LIC     gdp  0     NaN     NaN    NaN      False      False      NA
+
+[동결 판독] 행별 verdict(합치지 않음)
+ control                        gdp gdp_pop income_dummy none
+domain  indicator     stratum                               
+safety  road_deaths   ALL       관찰      관찰           관찰  비관찰
+                      HIC      비관찰     NaN          NaN  비관찰
+                      LIC       NA     NaN          NaN   NA
+                      LMC       NA     NaN          NaN   NA
+                      UMC       NA     NaN          NaN   NA
+        vehicles      ALL      비관찰     비관찰          비관찰  비관찰
+                      HIC      비관찰     NaN          NaN  비관찰
+                      LIC       NA     NaN          NaN   NA
+                      LMC       NA     NaN          NaN   NA
+                      UMC       NA     NaN          NaN   NA
+transit transport_co2 ALL      비관찰     비관찰          비관찰  비관찰
+                      HIC      비관찰     NaN          NaN  비관찰
+                      LIC       NA     NaN          NaN   NA
+                      LMC       NA     NaN          NaN   NA
+                      UMC       NA     NaN          NaN   NA
+        urban_pop     ALL      비관찰     비관찰          비관찰  비관찰
+                      HIC      비관찰     NaN          NaN  비관찰
+                      LIC       NA     NaN          NaN   NA
+                      LMC       NA     NaN          NaN   NA
+                      UMC       NA     NaN          NaN   NA
+※ 비관찰은 효과 없음이 아니라 검정력 한계일 수 있음. 기준 부호가 불확실한 세 쌍은 해석하지 않음. 48행 탐색적, 소득군은 wb_income_current 고정. S0~S8 판정 불변.
+
+real	0m11.862s
+user	0m17.273s
+sys	0m0.292s
