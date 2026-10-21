@@ -1,0 +1,84 @@
+nohup: ignoring input
+[재현 점검] 간극 지도 일치 | 지표 일관 일치 | 편 순위상관 점추정 일치
+[재현 점검] 부트스트랩 구간 일치
+
+[Post-hoc] PA-B8a 미달 4개 도메인(사전 precision 기준 미달, 참고용)
+[도메인 precision]
+              domain  n_prec  precision  p_lo  p_hi  recall
+electrification_env      25       0.80 0.609 0.911   0.789
+            freight      25       0.80 0.609 0.911   0.500
+       active_urban      25       0.76 0.566 0.885   1.000
+     infrastructure      25       0.84 0.653 0.936   0.692
+
+[정렬 간극 지도: 역량 렌즈, P2025, 제외 없음]
+ group                               HIC   LIC   LMC   UMC
+domain              indicator                            
+active_urban        road_deaths    7.34  0.01  0.08  0.63
+                    urban_pop      2.75  0.01  0.12  0.56
+electrification_env transport_co2  0.87  0.04  0.47  1.40
+                    vehicles       1.12  0.05  0.31  1.13
+freight             transport_co2  1.01  0.05  0.30  1.21
+                    vehicles       1.29  0.05  0.20  0.99
+infrastructure      urban_pop      2.34  0.04  0.16  0.78
+                    vehicles       1.40  0.28  0.26  0.85
+
+[HIC 과잉·LIC/LMC 과소 패턴(SBR HIC>1, LIC<1, LMC<1)]
+ domain               indicator    
+active_urban         road_deaths       True
+                     urban_pop         True
+electrification_env  transport_co2    False
+                     vehicles          True
+freight              transport_co2     True
+                     vehicles          True
+infrastructure       urban_pop         True
+                     vehicles          True
+
+[도메인별 지표 일관 비율(참고, 판정 아님)]
+ lens                 capability  target  ref_>=0.75(capability)
+domain                                                         
+active_urban              1.000   0.938                    True
+electrification_env       0.938   0.938                    True
+freight                   0.938   0.750                    True
+infrastructure            1.000   0.938                    True
+
+[제외 민감도: 주 결과와 같은 쪽인 셀 비율]
+       excl       lens              domain   n  same_side_as_main
+   excl_CN capability        active_urban  32              1.000
+   excl_CN capability electrification_env  32              0.906
+   excl_CN capability             freight  32              0.969
+   excl_CN capability      infrastructure  32              1.000
+   excl_CN     target        active_urban  32              0.969
+   excl_CN     target electrification_env  32              0.781
+   excl_CN     target             freight  32              0.719
+   excl_CN     target      infrastructure  32              0.875
+   excl_CN        ALL                 ALL 256              0.902
+   excl_IN capability        active_urban  32              1.000
+   excl_IN capability electrification_env  32              1.000
+   excl_IN capability             freight  32              0.969
+   excl_IN capability      infrastructure  32              1.000
+   excl_IN     target        active_urban  32              0.969
+   excl_IN     target electrification_env  32              0.906
+   excl_IN     target             freight  32              0.938
+   excl_IN     target      infrastructure  32              0.875
+   excl_IN        ALL                 ALL 256              0.957
+excl_CN_IN capability        active_urban  32              1.000
+excl_CN_IN capability electrification_env  32              0.906
+excl_CN_IN capability             freight  32              0.969
+excl_CN_IN capability      infrastructure  32              1.000
+excl_CN_IN     target        active_urban  32              0.969
+excl_CN_IN     target electrification_env  32              0.656
+excl_CN_IN     target             freight  32              0.688
+excl_CN_IN     target      infrastructure  32              0.781
+excl_CN_IN        ALL                 ALL 256              0.871
+
+[국가 수준 편 순위상관(전 기간 풀링, 제외 없음)]
+ excl              domain     indicator  n  raw_rho  partial_rho     lo    hi
+none electrification_env transport_co2 76   -0.141       -0.032 -0.265 0.198
+none electrification_env      vehicles 73   -0.228       -0.167 -0.382 0.061
+none             freight      vehicles 73    0.231        0.188 -0.038 0.418
+none             freight transport_co2 76    0.032       -0.128 -0.341 0.089
+none        active_urban     urban_pop 78    0.050       -0.099 -0.329 0.147
+none        active_urban   road_deaths 75   -0.247       -0.116 -0.323 0.097
+none      infrastructure      vehicles 73   -0.213       -0.054 -0.274 0.156
+none      infrastructure     urban_pop 78   -0.067        0.158 -0.068 0.354
+※ 사전 precision 미달 도메인의 참고용 결과. 통과 도메인과 같은 선상의 증거가 아니며 본문 판정(2/6 통과)을 바꾸지 않음. 국가 단위 상관은 생태학적 오류 가능, 인과 아님.
