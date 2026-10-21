@@ -1,0 +1,25 @@
+{
+ "version": 1,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(지침서 B7-3의 단순화). S4 IPW(라벨 유지 0.98), B7a·B7b 결과, s5_lib 소스 열람 상태. 결과 미열람. S4의 IPW 모델은 아님. 이전에 보류했으나 연구자 요청으로 수행. S0~S8 판정 불변.",
+ "weights": "저널 j x 연도 t 셀 w_jt=(n_obs+n_miss)/n_obs (n_obs>0일 때; 결측은 분석 저널 안의 has_topic 거짓 논문). 셀 안 토픽 분포는 관측과 같다고 가정하는 사후층화로, 2007년 하락 같은 연도별 결측률 변화를 직접 보정",
+ "labels": "가중 카운트로 주 대비 delta_ipw 계산, big 컷은 전체 149토픽 |delta_ipw|의 2/3 분위로 재계산, quality_high는 topic_quadrants.csv 고정, 라벨은 s4_main.py label()과 같은 규칙(총변화 기준)",
+ "changepoints": "s5_lib.sample_P에 가중 카운트(cnt*w)를 넣고 s5_lib.detect를 S5 값(pen=c_primary*phi*(K-1)*log(T), phi·k_max·min_len 고정)으로 실행. 귀무 시뮬레이션은 하지 않고 관측 변화점과 R만 보고",
+ "reading": "(1) 원 big 50개 중 부호 유지 비율 >=0.90 '유지', 0.70~0.90 '부분', <0.70 '민감'. (2) 원 big의 같은 라벨 유지율 >=0.95 '둔감', 아니면 '민감'. (3) 표본별로 S5 관측 변화점 각각이 가중 후 변화점 ±1년 안에 있는가를 보고(판정 없음). 세 가지를 합치지 않음",
+ "reproduce_check": "(a) 셀 관측 카운트가 yearly_venue_topic_counts.npy의 저널·연도 합과 일치, (b) 관측 delta가 topic_quadrants.csv와 1e-9 이내이고 재계산 라벨이 quadrant와 일치, (c) 가중 없는 detect의 R이 regime_nulls.csv obs_R과 1e-3 이내",
+ "caveat": "셀 안 토픽 분포가 같다는 가정(저널 내 무작위 결측, B7a의 k=1과 같은 가정이나 연도 단위). 가중으로 유효 표본 크기가 늘어 S5 벌점 대비 비용 비율이 달라짐(변화점 이동이 탐지기 설정 효과일 수 있음). 결측 사유가 토픽과 무관하다는 보장 없음",
+ "forbidden": "결과를 본 뒤 가중·임계값 변경(변경 시 v2 계획으로 분리하고 사유 기록)",
+ "created": "2026-10-21T15:09:10",
+ "sha256": "7f3ff69919860ccca52e62ff6c21797df5013c4b51b848a61e86cd615ff24f85",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "pa_common.py": "94010d7067cc23a1d00f511ba0e4e9f8a459f9995322b217594f9c5437e2d64e",
+  "pa_b7c.py": "7ab31d06a84b8909250f3bd449e5254c1bd9afb7d029590d4fdb78fcd3c27133",
+  "topic_quadrants.csv": "df306b1cdd678f829526fffb2115a62e9e8c2f70cf11847e82836a6d09e4496a",
+  "yearly_venue_topic_counts.npy": "9a18ba8ab9003cbdb750cb5940aa90c7844dfe3bb19c738270088826d9fdc4d0",
+  "s5_lib.py": "9143b0048532e49ff681a41a400b140e29656456d0dbaaaed27339567ebee9fa",
+  "S5_0_PREREG.json": "4c67abd884031748c8e1e0aa0bbb3052bcca3efa1f4be52f56eeafe8f9771d4f",
+  "S5_meta.json": "a6fec9dd6e902404d14ef8c90d744cc50af9ca1e4b71fbb31b84b4b9d30f7fbd",
+  "regime_nulls.csv": "21700f7736f76989b57bbae60461ab9f75ec0fbc276cd1aa626149591f0e7bed"
+ }
+}
