@@ -1,0 +1,24 @@
+{
+ "version": 1,
+ "seed": 2026,
+ "parent": "PA_0_PLAN_v2.json",
+ "status": "사후 명세(지침서 B4-2의 Jaccard p10 부분). B4·B4b 결과(F1·F3 제외 4개뿐), S3 L3_topic_metrics.csv에 jaccard_p10 열 존재 확인 열람. 결과 미열람. S0~S8 판정 불변.",
+ "exclusion": "L3_topic_metrics.csv의 jaccard_p10이 가장 낮은 ceil(0.10*토픽 수)개 토픽 제외(동률은 topic 번호 순). 제외 집합과 F1·F3 실패 4개, S3 등급의 겹침을 보고",
+ "reestimate": "B4와 같은 절차. S5: 잔존 토픽만으로 s5_lib.detect(pen=c*phi*(K-1)*log T, K=잔존 수, phi는 S5 값 고정), N1·N2 귀무 B=500, 통과 규칙 N1·N2 모두 p<0.05. S6: R을 잔존 토픽 행으로 제한한 주 설정, 대응 저자 부트스트랩 B=spec['B_boot'], entry_minus_adapt 변화",
+ "reading": "S5: 표본별 (a) 통과 여부가 S5와 같은지 (b) S5 관측 변화점이 +-1년 유지되는지. S6: 쌍별 |변화|<=0.03이고 부호 유지면 '둔감'(첫 쌍은 원값이 0 근처라 부호가 바뀌기 쉬움). 합치지 않음",
+ "reproduce_check": "S5 관측 R이 regime_nulls.csv obs_R과 1e-3 이내, S6 total_half·A2c entry_share 재현, 부분 자료 저자 집합이 원본의 부분집합, 제외 토픽 수 15",
+ "caveat": "jaccard_p10은 부트스트랩 군집 안정성이라 작은 토픽이 불리할 수 있음. 하위 10%는 임의 기준(동결). 등급 타당성은 검증하지 않음",
+ "forbidden": "결과를 본 뒤 비율(10%)·판독 변경(변경 시 v2 계획으로 분리)",
+ "created": "2026-10-21T15:27:25",
+ "sha256": "a91a9a76153aa027df85cbf9c3a837279c84e2ffb7f038ffd3f40fdda1b0dd51",
+ "refs": {
+  "PA_0_PLAN_v2.json": "6943938a6854d894a9e67f0fdc0024b547aae943592047c68a2f3abf1aeb8447",
+  "pa_common.py": "94010d7067cc23a1d00f511ba0e4e9f8a459f9995322b217594f9c5437e2d64e",
+  "pa_b4d.py": "75c2a13cf64ff5f2c5b4033d4cc14cd2d6391e3093dd37e30cd8eb7447d54875",
+  "L3_topic_metrics.csv": "70eb3cde412ae98758f521e3d34f715a0a92551e0ab7f8de99a0dcf33870328f",
+  "L7_topic_grade.csv": "d0fb3c9b855db88ad8d928297d09dc007ab9f04ff8b995568d0cad6c6559da1a",
+  "S5_0_PREREG.json": "4c67abd884031748c8e1e0aa0bbb3052bcca3efa1f4be52f56eeafe8f9771d4f",
+  "PA_B4_PLAN.json": "ce3f2f86ccca5aaae402d610e77b59e1c7bd34782e5742c6e7ab4274f8bacb7e",
+  "pa_extra.py": "72f45d678a5db15143c11dbdea88fe1850969a3a54185d78a5451d83e2d667a1"
+ }
+}
