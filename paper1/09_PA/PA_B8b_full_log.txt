@@ -1,0 +1,9 @@
+
+[Post-hoc] PA-B8b (사후 개정 사전 v3, 통과/실패 판정 없음)
+              domain   n  precision_v3    lo    hi  kappa  n_disagree  precision_v2
+       active_urban  25          0.80 0.609 0.911  0.702           2          0.76
+electrification_env  25          0.96 0.805 0.993  0.000           1          0.80
+            freight  25          1.00 0.867 1.000    NaN           0          0.80
+     infrastructure  25          0.96 0.805 0.993  0.000           2          0.84
+                ALL 100          0.93 0.863 0.966  0.521           5           NaN
+※ n=25는 구간이 넓음. 오탐 패턴을 본 사전이라 낙관 편향. S8 판정(2/6) 불변.
