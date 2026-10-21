@@ -1,0 +1,12 @@
+  base 완료
+  drop_top1_venue 완료
+  drop_top3_venues 완료
+  drop_top5_venues 완료
+  drop_topic71 완료
+  drop_top5_venues_and_topic71 완료
+
+[QUICK] 오류 없이 완료. 수치는 출력하지 않음(_QUICK 파일을 열어 해석하지 마세요).
+
+real	0m1.388s
+user	0m4.133s
+sys	0m0.073s
